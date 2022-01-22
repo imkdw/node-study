@@ -1,7 +1,7 @@
 const http = require('http');
 const fs = require('fs').promises;
 
-// http모듈의 createServer 메서드를 사용해서 웹서버를 오픈한다.
+// http모듈의 createServer 메서드를 사용해서 웹wz서버를 오픈한다.
 // 이 때 비동기 fs를 사용하기 위해서 async 함수를 만든다.
 http.createServer(async (req, res) => {
   // 예외처리를 하기위해서 try...catch 문을 사용한다.
