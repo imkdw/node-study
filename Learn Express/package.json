@@ -1,0 +1,35 @@
+{
+  "name": "learn-express",
+  "version": "1.0.0",
+  "description": "Express Project With Node.js 교과서",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imkdw/node-study.git"
+  },
+  "keywords": [
+    "express",
+    "api"
+  ],
+  "author": "Imkdw",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/imkdw/node-study/issues"
+  },
+  "homepage": "https://github.com/imkdw/node-study#readme",
+  "dependencies": {
+    "body-parser": "^1.19.1",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^14.2.0",
+    "express": "^4.17.2",
+    "express-session": "^1.17.2",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.4"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}

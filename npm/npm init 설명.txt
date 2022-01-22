@@ -1,0 +1,38 @@
+PS C:\Users\imkdw\Documents\GitHub\node-study\npm> npm init
+This utility will walk you through creating a package.json file.
+It only covers the most common items, and tries to guess sensible defaults.
+
+See `npm help init` for definitive documentation on these fields
+and exactly what they do.
+
+Use `npm install <pkg>` afterwards to install a package and
+save it as a dependency in the package.json file.
+
+Press ^C at any time to quit.
+
+package name: (npm) -> 프로젝트 이름을 뜻함
+version: (1.0.0) -> 프로젝트의 버전을 뜻함
+description: -> 프로젝트의 설명을 뜻함
+entry point: (index.js) -> 자바스크립트 실행 파일의 진입점을 뜻함
+test command: -> 코드를 테스트할 때 입력할 명령어를 뜻함
+git repository: -> 코드를 저장해둔 git 저장소 주소를 뜻함.
+keywords: -> 키워드는 npm 공식 홈페이지에서 패키지를 쉽게 찾을수 있도록 해줌
+author: -> 개발자(작성자)의 이름을 뜻함
+license: (ISC) -> 패키지의 라이센스를 뜻함
+
+결과물은 package.json으로 저장된다.
+
+{
+  "name": "npm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
+
+scripts 부분에는 npm 명령어를 저장해두는 부분이다.
+npm run [scripts[key]] 형식으로 실행되며 npm run test를 할경우 "echo \"Error: no test specified\" && exit 1" 이 실행된다.
