@@ -21,7 +21,7 @@ module.exports = class User extends Sequelize.Model {
         type: Sequelize.TEXT,
         allowNull: true
       },
-      craete_at: {
+      created_at: {
         type: Sequelize.DATE,
         allowNull: false,
         defaultValue: Sequelize.NOW
@@ -36,8 +36,10 @@ module.exports = class User extends Sequelize.Model {
       // 한글이 안깨지긴 위해선 각각 utf8, utf8_general_ci로 설정해야 한다.
       // 이모티콘도 사용할려면 utf8mb4, utf8mb4_general_ci를 입력하면 된다.
       charset: 'utf8',
-      collate: 'utf_general_ci'
+      collate: 'utf8_general_ci'
     });
   }
-  static associations(db) { }
+  static associate(db) {
+    db.User.hasMany(db.Comment, { foreignKey: 'commenter', sourceKey: 'id' });
+  }
 };

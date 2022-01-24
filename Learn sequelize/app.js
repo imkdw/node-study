@@ -1,29 +1,39 @@
 const express = require('express');
 const path = require('path');
 const morgan = require('morgan');
-const nunjuncks = require('nunjucks');
+const nunjucks = require('nunjucks');
 
 const { sequelize } = require('./models');
+const indexRouter = require('./routes');
+const usersRouter = require('./routes/users');
+const commentsRouter = require('./routes/comments');
 
 const app = express();
 app.set('port', process.env.PORT || 3000);
 app.set('view engine', 'html');
-nunjuncks.configure('views', {
+nunjucks.configure('views', {
   express: app,
-  watch: true
+  watch: true,
 });
-
 sequelize.sync({ force: false })
-  .then(() => console.log('DB 연결 성공'))
-  .catch((err) => console.error(err));
+  .then(() => {
+    console.log('데이터베이스 연결 성공');
+  })
+  .catch((err) => {
+    console.error(err);
+  });
 
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
+app.use('/comments', commentsRouter);
+
 app.use((req, res, next) => {
-  const error = new Error(`${req.method} ${req.url} no have router`);
+  const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
   error.status = 404;
   next(error);
 });
@@ -35,5 +45,6 @@ app.use((err, req, res, next) => {
   res.render('error');
 });
 
-app.listen(app.get('port'), () => console.log(`${app.get('port')}번 포트로 서버 오픈`));
-
+app.listen(app.get('port'), () => {
+  console.log(app.get('port'), '번 포트에서 대기 중');
+});
