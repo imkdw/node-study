@@ -1,0 +1,38 @@
+// 사용자 정보 테이블 SQL
+create table nodejs.users (
+	id int not null auto_increment,
+    name varchar(20) not null,
+    age int unsigned not null,
+    married tinyint not null,
+    comment text null,
+    created_at datetime not null default now(),
+    primary key(id),
+    unique index name_unique (name ASC))
+    comment = '사용자 정보'
+    default character set=utf8mb4
+    engine=InnoDB;
+
+
+// 댓글 테이블 SQL
+create table nodejs.comments (
+	id int not null auto_increment,
+    commenter int not null,
+    comment varchaR(100) not null,
+    created_at datetime not null default now(),
+    primary key(id),
+    index commenter_idx (commenter asc),
+    constraint commenter
+    foreign key (commenter)
+    references nodejs.users(id)
+    on delete cascade
+    on update cascade)
+    comment='댓글'
+    default character set=utf8mb4
+    engine=InnoDB;
+
+// 유저 테이블 데이터 삽입 SQL
+insert into nodejs.users (name, age, married, comment) values ('kim', 24, 0, '자기소개1');
+insert into nodejs.users(name, age, married, comment) values ('dong', 42, 1, '자기소개2');
+
+// 댓글 테이블 데이터 삽입 SQL
+insert into nodejs.comments (commenter, comment) values (1, '반갑습니다. 댓글입니다.');

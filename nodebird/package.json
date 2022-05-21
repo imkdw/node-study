@@ -1,0 +1,16 @@
+{
+  "name": "nodebird",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "module": "commonjs",
+  "scripts": {
+    "start": "tsc-watch --onSuccess \"node dist/app.js\""
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^17.0.35",
+    "tsc-watch": "^5.0.3"
+  }
+}
