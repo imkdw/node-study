@@ -1,17 +1,14 @@
-import express, { Request, Response, NextFunction } from "express";
-import morgan from "morgan";
-import dotenv from "dotenv";
-
-dotenv.config();
-
-const app = express();
-app.set("port", process.env.PORT || 5000);
-app.use(morgan("dev"));
-
-app.get("/", (req: Request, res: Response) => {
-  res.send("Welcome");
+import { Sequelize, DataTypes, Model } from "sequelize";
+const sequelize = new Sequelize("sequelize", "root", "1234", {
+  host: "localhost",
+  dialect: "mysql",
+  define: {
+    freezeTableName: true, // 테이블 이름 자동추론을 비활성화
+  },
 });
 
-app.listen(app.get("port"), () => {
-  console.log(`Server is ${app.get("port")}`);
+export const User = sequelize.define("User", {
+  name: {
+    type: DataTypes.STRING,
+  },
 });
