@@ -8,7 +8,19 @@ const sequelize = new Sequelize("sequelize", "root", "1234", {
 });
 
 export const User = sequelize.define("User", {
-  name: {
+  firstName: {
     type: DataTypes.STRING,
+    allowNull: false,
+  },
+  lastName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+});
+
+Post.findAll({
+  where: {
+    authorId: 2,
+    status: "active",
   },
 });
