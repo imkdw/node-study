@@ -21,6 +21,7 @@ export const User = sequelize.define("User", {
 Post.findAll({
   where: {
     authorId: 2,
+    data: 1,
     status: "active",
   },
 });
