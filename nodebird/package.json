@@ -10,7 +10,25 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/cookie-parser": "^1.4.3",
+    "@types/express": "^4.17.13",
+    "@types/express-session": "^1.17.4",
+    "@types/morgan": "^1.9.3",
     "@types/node": "^17.0.35",
+    "@types/nunjucks": "^3.2.1",
+    "@types/sequelize": "^4.28.13",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "express-session": "^1.17.3",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.4",
+    "mysql2": "^2.3.3",
+    "nunjucks": "^3.2.3",
+    "sequelize": "^6.20.0",
+    "sequelize-cli-typescript": "^3.2.0-c"
+  },
+  "devDependencies": {
     "tsc-watch": "^5.0.3"
   }
 }
