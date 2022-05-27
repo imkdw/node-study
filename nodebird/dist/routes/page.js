@@ -1,8 +1,29 @@
 "use strict";
-exports.__esModule = true;
-exports.pageRouter = void 0;
-var pageRouter = function () {
-    console.log("Hi");
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.pageRouter = pageRouter;
+exports.__esModule = true;
+var express_1 = __importDefault(require("express"));
+var PageRouter = express_1["default"].Router();
+PageRouter.use(function (req, res, next) {
+    res.locals.user = null;
+    res.locals.followerCount = 0;
+    res.locals.followingCount = 0;
+    res.locals.followList = [];
+    next();
+});
+PageRouter.get("/profile", function (req, res) {
+    res.render("profile.html", { title: "내 정보 - NodeBird" });
+});
+PageRouter.get("/join", function (req, res) {
+    res.render("join", { title: "회원가입 - NodeBird" });
+});
+PageRouter.get("/", function (req, res, next) {
+    var twits = [];
+    res.render("main", {
+        title: "NodeBird",
+        twits: twits
+    });
+});
+exports["default"] = PageRouter;
 //# sourceMappingURL=page.js.map
