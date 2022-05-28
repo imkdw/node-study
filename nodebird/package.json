@@ -5,7 +5,7 @@
   "main": "index.js",
   "module": "commonjs",
   "scripts": {
-    "start": "tsc-watch --onSuccess \"node dist/app.js\""
+    "start": "tsc-watch --onSuccess \"node dist/src/app.js\""
   },
   "author": "",
   "license": "ISC",

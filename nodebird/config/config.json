@@ -1,0 +1,9 @@
+{
+  "development" : {
+    "username": "root",
+    "password": "1234",
+    "database": "nodebird",
+    "host": "localhost",
+    "dialect": "mysql"
+  }
+}

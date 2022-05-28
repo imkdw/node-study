@@ -6,6 +6,7 @@ import session from "express-session";
 import nunjucks from "nunjucks";
 import dotenv from "dotenv";
 import pageRouter from "./routes/page";
+import { sequelize } from "../models/index";
 
 dotenv.config();
 
@@ -16,6 +17,11 @@ nunjucks.configure("views", {
   express: app,
   watch: true,
 });
+
+sequelize
+  .sync()
+  .then(() => console.log("success"))
+  .catch((error) => console.error(error));
 
 app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "../public")));
@@ -37,18 +43,17 @@ app.use(
 
 app.use("/", pageRouter);
 
-// app.use((req: Request, res: Response, next: NextFunction) => {
-//   const error = new Error(`${req.method} ${req.url} 라우터가 없음.`);
-//   // error.status = 404;
-//   next(error);
-// });
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const error = new Error(`${req.method} ${req.url} 라우터가 없음.`);
+  next(error);
+});
 
-// app.use((err, req: Request, res: Response, next: NextFunction) => {
-//   res.locals.message = err.message;
-//   res.locals.error = process.env.NODE_ENV !== "production" ? err : {};
-//   res.status(err.status || 500);
-//   // res.render("error");
-// });
+app.use((err, req: Request, res: Response, next: NextFunction) => {
+  res.locals.message = err.message;
+  res.locals.error = process.env.NODE_ENV !== "production" ? err : {};
+  res.status(err.status || 500);
+  res.render("error");
+});
 
 app.listen(app.get("port"), () => {
   console.log(`${app.get("port")}번 포트에서 대기중`);

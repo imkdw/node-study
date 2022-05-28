@@ -22,6 +22,7 @@ create table nodejs.comments (
     primary key(id),
     index commenter_idx (commenter asc),
     constraint commenter
+    index commenter_idx (commenter desc),
     foreign key (commenter)
     references nodejs.users(id)
     on delete cascade
@@ -32,7 +33,7 @@ create table nodejs.comments (
 
 // 유저 테이블 데이터 삽입 SQL
 insert into nodejs.users (name, age, married, comment) values ('kim', 24, 0, '자기소개1');
-insert into nodejs.users(name, age, married, comment) values ('dong', 42, 1, '자기소개2');
+insert into nodejs.users (name, age, married, comment) values ('dong', 42, 1, '자기소개2');
 
 // 댓글 테이블 데이터 삽입 SQL
 insert into nodejs.comments (commenter, comment) values (1, '반갑습니다. 댓글입니다.');
