@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+import { isLoggedIn, isNotLoggedIn } from "./middlewares";
 
 const PageRouter = express.Router();
 
@@ -11,11 +12,11 @@ PageRouter.use((req, res, next) => {
   next();
 });
 
-PageRouter.get("/profile", (req, res) => {
+PageRouter.get("/profile", isLoggedIn, (req, res) => {
   res.render("profile.html", { title: "내 정보 - NodeBird" });
 });
 
-PageRouter.get("/join", (req, res) => {
+PageRouter.get("/join", isNotLoggedIn, (req, res) => {
   res.render("join", { title: "회원가입 - NodeBird" });
 });
 

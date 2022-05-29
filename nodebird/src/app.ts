@@ -7,6 +7,7 @@ import nunjucks from "nunjucks";
 import dotenv from "dotenv";
 import pageRouter from "./routes/page";
 import { sequelize } from "../models/index";
+import passport from "passport";
 
 dotenv.config();
 
@@ -19,7 +20,7 @@ nunjucks.configure("views", {
 });
 
 sequelize
-  .sync()
+  .sync({ force: false })
   .then(() => console.log("success"))
   .catch((error) => console.error(error));
 

@@ -21,7 +21,7 @@ nunjucks_1["default"].configure("views", {
     watch: true
 });
 index_1.sequelize
-    .sync()
+    .sync({ force: false })
     .then(function () { return console.log("success"); })["catch"](function (error) { return console.error(error); });
 app.use((0, morgan_1["default"])("dev"));
 app.use(express_1["default"].static(path_1["default"].join(__dirname, "../public")));
