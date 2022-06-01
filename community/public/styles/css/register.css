@@ -1,0 +1,17 @@
+@import "reset.css";
+.registerForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.registerForm h3 {
+  font-size: 20px;
+  font-weight: bold;
+}
+.registerForm input {
+  width: 200px;
+  height: 30px;
+}
+
+/*# sourceMappingURL=register.css.map */
