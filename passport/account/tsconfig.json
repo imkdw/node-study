@@ -3,7 +3,7 @@
     "module": "commonjs",
     "sourceMap": true,
     "esModuleInterop": true,
-    "outDir": "dist"
+    "outDir": "dist",
   },
   "exclude": [
     "node_modules"
