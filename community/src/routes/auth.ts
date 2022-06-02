@@ -2,13 +2,18 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import db from "../db";
+import { Query } from "mysql";
 
 /** 기존에 존재하는 아이디인지 검사 */
-function checkExistUserId(userId: string): number | void {
+async function checkExistUserId(userId: string) {
   const checkIdQuery = `SELECT * from users where userId="${userId}"`;
-  db.query(checkIdQuery, (err: any, results, fields) => {
-    return "sex";
+  let result = "temp";
+  db.query(checkIdQuery, (err: any, results) => {
+    console.log(results);
+    result = results;
   });
+
+  return result;
 }
 
 const authRouter = express.Router();
@@ -23,7 +28,7 @@ authRouter.post("/register", async (req, res, next) => {
   }
 
   db.connect();
-  const temp = checkExistUserId(userId);
+  const temp = await checkExistUserId(userId);
   console.log(temp);
 
   bcrypt.genSalt(10, (err, salt) => {

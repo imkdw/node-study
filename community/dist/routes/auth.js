@@ -44,37 +44,50 @@ var bcrypt_1 = __importDefault(require("bcrypt"));
 var db_1 = __importDefault(require("../db"));
 /** 기존에 존재하는 아이디인지 검사 */
 function checkExistUserId(userId) {
-    var checkIdQuery = "SELECT * from users where userId=\"".concat(userId, "\"");
-    db_1["default"].query(checkIdQuery, function (err, results, fields) {
-        return "sex";
+    return __awaiter(this, void 0, void 0, function () {
+        var checkIdQuery, result;
+        return __generator(this, function (_a) {
+            checkIdQuery = "SELECT * from users where userId=\"".concat(userId, "\"");
+            result = "temp";
+            db_1["default"].query(checkIdQuery, function (err, results) {
+                console.log(results);
+                result = results;
+            });
+            return [2 /*return*/, result];
+        });
     });
 }
 var authRouter = express_1["default"].Router();
 authRouter.post("/register", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var _a, userId, password, rePassword, temp;
     return __generator(this, function (_b) {
-        _a = req.body, userId = _a.userId, password = _a.password, rePassword = _a.rePassword;
-        /** 패스워드 일치여부 검사 로직 */
-        if (password !== rePassword) {
-            res.status(401);
-            return [2 /*return*/];
-        }
-        db_1["default"].connect();
-        temp = checkExistUserId(userId);
-        console.log(temp);
-        bcrypt_1["default"].genSalt(10, function (err, salt) {
-            bcrypt_1["default"].hash(password, salt, function (err, hash) {
-                var registerQuery = "INSERT IGNORE INTO users(userId, password) value ('".concat(userId, "', '").concat(hash, "')");
-                db_1["default"].query(registerQuery, function (err, results, fields) {
-                    if (err) {
-                        console.error(err);
-                    }
-                    console.log("[\uC131\uACF5] ".concat(userId, "\uB2D8 \uD68C\uC6D0\uAC00\uC785 \uC644\uB8CC"));
-                    db_1["default"].end();
+        switch (_b.label) {
+            case 0:
+                _a = req.body, userId = _a.userId, password = _a.password, rePassword = _a.rePassword;
+                /** 패스워드 일치여부 검사 로직 */
+                if (password !== rePassword) {
+                    res.status(401);
+                    return [2 /*return*/];
+                }
+                db_1["default"].connect();
+                return [4 /*yield*/, checkExistUserId(userId)];
+            case 1:
+                temp = _b.sent();
+                console.log(temp);
+                bcrypt_1["default"].genSalt(10, function (err, salt) {
+                    bcrypt_1["default"].hash(password, salt, function (err, hash) {
+                        var registerQuery = "INSERT IGNORE INTO users(userId, password) value ('".concat(userId, "', '").concat(hash, "')");
+                        db_1["default"].query(registerQuery, function (err, results, fields) {
+                            if (err) {
+                                console.error(err);
+                            }
+                            console.log("[\uC131\uACF5] ".concat(userId, "\uB2D8 \uD68C\uC6D0\uAC00\uC785 \uC644\uB8CC"));
+                            db_1["default"].end();
+                        });
+                    });
                 });
-            });
-        });
-        return [2 /*return*/];
+                return [2 /*return*/];
+        }
     });
 }); });
 exports["default"] = authRouter;
