@@ -54,8 +54,9 @@
 
         const response = await fetch(`/auth/register`, userData);
         if (response.status === 200) {
-          console.log(response);
+          console.log(response.body);
         } else {
+          console.log(response);
           console.error(response.status, response.statusText);
         }
       });

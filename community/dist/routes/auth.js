@@ -45,49 +45,52 @@ var db_1 = __importDefault(require("../db"));
 /** 기존에 존재하는 아이디인지 검사 */
 function checkExistUserId(userId) {
     return __awaiter(this, void 0, void 0, function () {
-        var checkIdQuery, result;
+        var checkIdQuery, data;
         return __generator(this, function (_a) {
-            checkIdQuery = "SELECT * from users where userId=\"".concat(userId, "\"");
-            result = "temp";
-            db_1["default"].query(checkIdQuery, function (err, results) {
-                console.log(results);
-                result = results;
-            });
-            return [2 /*return*/, result];
+            switch (_a.label) {
+                case 0:
+                    checkIdQuery = "SELECT * from users where userId=\"".concat(userId, "\"");
+                    return [4 /*yield*/, db_1["default"].query(checkIdQuery)];
+                case 1:
+                    data = _a.sent();
+                    console.log(data);
+                    return [2 /*return*/];
+            }
         });
     });
 }
 var authRouter = express_1["default"].Router();
+/**
+ * [POST] /register
+ */
 authRouter.post("/register", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, userId, password, rePassword, temp;
+    var _a, userId, password, rePassword;
     return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0:
-                _a = req.body, userId = _a.userId, password = _a.password, rePassword = _a.rePassword;
-                /** 패스워드 일치여부 검사 로직 */
-                if (password !== rePassword) {
-                    res.status(401);
-                    return [2 /*return*/];
-                }
-                db_1["default"].connect();
-                return [4 /*yield*/, checkExistUserId(userId)];
-            case 1:
-                temp = _b.sent();
-                console.log(temp);
-                bcrypt_1["default"].genSalt(10, function (err, salt) {
-                    bcrypt_1["default"].hash(password, salt, function (err, hash) {
-                        var registerQuery = "INSERT IGNORE INTO users(userId, password) value ('".concat(userId, "', '").concat(hash, "')");
-                        db_1["default"].query(registerQuery, function (err, results, fields) {
-                            if (err) {
-                                console.error(err);
-                            }
-                            console.log("[\uC131\uACF5] ".concat(userId, "\uB2D8 \uD68C\uC6D0\uAC00\uC785 \uC644\uB8CC"));
-                            db_1["default"].end();
-                        });
-                    });
-                });
-                return [2 /*return*/];
+        _a = req.body, userId = _a.userId, password = _a.password, rePassword = _a.rePassword;
+        /** 패스워드 일치여부 검사 로직 */
+        if (password !== rePassword) {
+            res.status(401);
+            return [2 /*return*/];
         }
+        bcrypt_1["default"].genSalt(10, function (err, salt) {
+            bcrypt_1["default"].hash(password, salt, function (err, hash) {
+                var registerQuery = "INSERT INTO users(userId, password) value ('".concat(userId, "', '").concat(hash, "')");
+                db_1["default"].query(registerQuery, function (err, results) {
+                    if (err) {
+                        if (err.code === "ER_DUP_ENTRY") {
+                            console.log("".concat(userId, "\uB294 \uC774\uBBF8 \uC874\uC7AC\uD558\uB294 \uACC4\uC815\uC785\uB2C8\uB2E4."));
+                            res.status(401).json({
+                                errCode: "EXIST_USER",
+                                errMsg: "이미 존재하는 사용자 입니다."
+                            });
+                            return;
+                        }
+                    }
+                    console.log("가입완료");
+                });
+            });
+        });
+        return [2 /*return*/];
     });
 }); });
 exports["default"] = authRouter;
