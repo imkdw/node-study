@@ -2,25 +2,24 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import db from "../db";
+import dotenv from "dotenv";
 
-/** 기존에 존재하는 아이디인지 검사 */
-async function checkExistUserId(userId: string) {
-  const checkIdQuery = `SELECT * from users where userId="${userId}"`;
-  const data = await db.query(checkIdQuery);
-  console.log(data);
-}
+dotenv.config();
 
 const authRouter = express.Router();
 
 /**
- * [POST] /register
+ * [POST] /auth/register
  */
 authRouter.post("/register", async (req, res, next) => {
   const { userId, password, rePassword } = req.body;
 
   /** 패스워드 일치여부 검사 로직 */
   if (password !== rePassword) {
-    res.status(401);
+    res.status(401).send({
+      errCode: "PASSWORD_NOT_MATCH",
+      errMsg: "패스워드가 동일하지 않습니다.",
+    });
     return;
   }
 
@@ -29,20 +28,83 @@ authRouter.post("/register", async (req, res, next) => {
       const registerQuery = `INSERT INTO users(userId, password) value ('${userId}', '${hash}')`;
       db.query(registerQuery, (err: any, results) => {
         if (err) {
+          /** 이미 존재하는 사용자 검증 */
           if (err.code === "ER_DUP_ENTRY") {
-            console.log(`${userId}는 이미 존재하는 계정입니다.`);
-            res.status(401).json({
+            res.status(401).send({
               errCode: "EXIST_USER",
               errMsg: "이미 존재하는 사용자 입니다.",
             });
+
             return;
           }
         }
 
-        console.log("가입완료");
+        console.log(`[회원가입] ${userId}님 회원가입 완료`);
+        res.status(200).send();
       });
     });
   });
 });
+
+/**
+ * [GET] /auth/login
+ */
+authRouter.post("/login", (req, res, next) => {
+  const { userId, password } = req.body;
+
+  /** 공백 입력 검증 */
+  if (userId.length === 0 || password.length === 0) {
+    res.status(401).send({
+      errCode: "INVALID_ACCOUNT",
+      errMsg: "아이디 또는 패스워드를 입력해주세요.",
+    });
+
+    return;
+  }
+
+  const loginQuery = `SELECT * from users where userId="${userId}"`;
+  db.query(loginQuery, (err: any, results) => {
+    if (err) {
+      throw err;
+    }
+
+    /** 로그인한 유저가 존재하는지 검증 */
+    if (Object.keys(results).length === 0) {
+      res.status(401).send({
+        errCode: "ACCOUNT_NOT_MATCH",
+        errMsg: "아이디 또는 비밀번호가 올바르지 않습니다.",
+      });
+
+      return;
+    }
+
+    const existPassword = results[0].password;
+    if (bcrypt.compare(password, existPassword)) {
+      const jwtSecretKey = process.env.JWT_SECRET_KEY;
+      const token = jwt.sign(
+        {
+          userId,
+        },
+        jwtSecretKey,
+        {
+          expiresIn: "1m",
+          issuer: "imkdw",
+        }
+      );
+
+      res.status(200).send({ accessToken: token });
+    } else {
+      res.status(401).send({
+        errCode: "ACCOUNT_NOT_MATCH",
+        errMsg: "아이디 또는 비밀번호가 올바르지 않습니다.",
+      });
+    }
+  });
+});
+
+/**
+ * [GET] /auth/logout
+ */
+authRouter.get("/logout", (req, res, next) => {});
 
 export default authRouter;

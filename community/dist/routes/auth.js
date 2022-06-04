@@ -40,28 +40,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 exports.__esModule = true;
 var express_1 = __importDefault(require("express"));
+var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var bcrypt_1 = __importDefault(require("bcrypt"));
 var db_1 = __importDefault(require("../db"));
-/** 기존에 존재하는 아이디인지 검사 */
-function checkExistUserId(userId) {
-    return __awaiter(this, void 0, void 0, function () {
-        var checkIdQuery, data;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    checkIdQuery = "SELECT * from users where userId=\"".concat(userId, "\"");
-                    return [4 /*yield*/, db_1["default"].query(checkIdQuery)];
-                case 1:
-                    data = _a.sent();
-                    console.log(data);
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
+var dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1["default"].config();
 var authRouter = express_1["default"].Router();
 /**
- * [POST] /register
+ * [POST] /auth/register
  */
 authRouter.post("/register", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var _a, userId, password, rePassword;
@@ -69,7 +55,10 @@ authRouter.post("/register", function (req, res, next) { return __awaiter(void 0
         _a = req.body, userId = _a.userId, password = _a.password, rePassword = _a.rePassword;
         /** 패스워드 일치여부 검사 로직 */
         if (password !== rePassword) {
-            res.status(401);
+            res.status(401).send({
+                errCode: "PASSWORD_NOT_MATCH",
+                errMsg: "패스워드가 동일하지 않습니다."
+            });
             return [2 /*return*/];
         }
         bcrypt_1["default"].genSalt(10, function (err, salt) {
@@ -77,21 +66,71 @@ authRouter.post("/register", function (req, res, next) { return __awaiter(void 0
                 var registerQuery = "INSERT INTO users(userId, password) value ('".concat(userId, "', '").concat(hash, "')");
                 db_1["default"].query(registerQuery, function (err, results) {
                     if (err) {
+                        /** 이미 존재하는 사용자 검증 */
                         if (err.code === "ER_DUP_ENTRY") {
-                            console.log("".concat(userId, "\uB294 \uC774\uBBF8 \uC874\uC7AC\uD558\uB294 \uACC4\uC815\uC785\uB2C8\uB2E4."));
-                            res.status(401).json({
+                            res.status(401).send({
                                 errCode: "EXIST_USER",
                                 errMsg: "이미 존재하는 사용자 입니다."
                             });
                             return;
                         }
                     }
-                    console.log("가입완료");
+                    console.log("[\uD68C\uC6D0\uAC00\uC785] ".concat(userId, "\uB2D8 \uD68C\uC6D0\uAC00\uC785 \uC644\uB8CC"));
+                    res.status(200).send();
                 });
             });
         });
         return [2 /*return*/];
     });
 }); });
+/**
+ * [GET] /auth/login
+ */
+authRouter.post("/login", function (req, res, next) {
+    var _a = req.body, userId = _a.userId, password = _a.password;
+    /** 공백 입력 검증 */
+    if (userId.length === 0 || password.length === 0) {
+        res.status(401).send({
+            errCode: "INVALID_ACCOUNT",
+            errMsg: "아이디 또는 패스워드를 입력해주세요."
+        });
+        return;
+    }
+    var loginQuery = "SELECT * from users where userId=\"".concat(userId, "\"");
+    db_1["default"].query(loginQuery, function (err, results) {
+        if (err) {
+            throw err;
+        }
+        /** 로그인한 유저가 존재하는지 검증 */
+        if (Object.keys(results).length === 0) {
+            res.status(401).send({
+                errCode: "ACCOUNT_NOT_MATCH",
+                errMsg: "아이디 또는 비밀번호가 올바르지 않습니다."
+            });
+            return;
+        }
+        var existPassword = results[0].password;
+        if (bcrypt_1["default"].compare(password, existPassword)) {
+            var jwtSecretKey = process.env.JWT_SECRET_KEY;
+            var token = jsonwebtoken_1["default"].sign({
+                userId: userId
+            }, jwtSecretKey, {
+                expiresIn: "1m",
+                issuer: "imkdw"
+            });
+            res.status(200).send({ accessToken: token });
+        }
+        else {
+            res.status(401).send({
+                errCode: "ACCOUNT_NOT_MATCH",
+                errMsg: "아이디 또는 비밀번호가 올바르지 않습니다."
+            });
+        }
+    });
+});
+/**
+ * [GET] /auth/logout
+ */
+authRouter.get("/logout", function (req, res, next) { });
 exports["default"] = authRouter;
 //# sourceMappingURL=auth.js.map

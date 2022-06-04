@@ -54,10 +54,11 @@
 
         const response = await fetch(`/auth/register`, userData);
         if (response.status === 200) {
-          console.log(response.body);
+          alert(`${userId}님 회원가입이 완료되었습니다.`);
         } else {
-          console.log(response);
-          console.error(response.status, response.statusText);
+          const { errCode, errMsg } = await response.json();
+          alert(errMsg);
+          return;
         }
       });
     </script>
