@@ -7,6 +7,7 @@ import path from "path";
 /** 라우터 모듈 */
 import indexRouter from "./routes/index";
 import authRouter from "./routes/auth";
+import userRouter from "./routes/user";
 
 /** .env 파일 활성화 */
 dotenv.config();
@@ -24,6 +25,7 @@ app.use(express.urlencoded({ extended: false }));
 /** 라우터 정의 */
 app.use("/", indexRouter);
 app.use("/auth", authRouter);
+app.use("/user", userRouter);
 
 /** 템플릿 엔진 설정 */
 app.set("view engine", "html");

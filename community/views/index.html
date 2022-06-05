@@ -9,39 +9,36 @@
   </head>
   <body>
     <h1>Welcome Community</h1>
-    <a href="login.html">로그인</a>
-    <a href="register.html">회원가입</a>
-    <a href="profile.html" id="profileLink">내 정보</a>
-    <a href="#" id="logoutLink">로그아웃</a>
+    <a href="login.html" id="login">로그인</a>
+    <a href="register.html" id="register">회원가입</a>
+    <a href="profile.html" class="disabled" id="myInfo">내 정보</a>
+    <a href="#" class="disabled" id="logout">로그아웃</a>
     <script>
-      const logoutLink = document.getElementById("logoutLink");
-      const accessToken = JSON.parse(localStorage.getItem("accessToken"));
-
-      logoutLink.addEventListener("click", () => {
-        localStorage.removeItem("accessToken");
-        location.href = "/";
-      });
-
-      function enableProfileLink() {
+      function checkLoggedIn() {
         const accessToken = JSON.parse(localStorage.getItem("accessToken"));
-        const profileLink = document.getElementById("profileLink");
         if (accessToken) {
-          profileLink.classList.remove("disabled");
-        } else {
-          profileLink.classList.add("disabled");
+          const login = document.getElementById("login");
+          const register = document.getElementById("register");
+          const myInfo = document.getElementById("myInfo");
+          const logout = document.getElementById("logout");
+          const elems = [login, register, myInfo, logout];
+
+          elems.forEach((elem) => {
+            elem.classList.toggle("disabled");
+          });
         }
       }
 
-      function enableLogoutLink() {
-        if (accessToken) {
-          logoutLink.classList.remove("disabled");
-        } else {
-          logoutLink.classList.add("disabled");
-        }
+      function logout() {
+        const logout = document.getElementById("logout");
+        logout.addEventListener("click", () => {
+          localStorage.removeItem("accessToken");
+          location.href = "/";
+        });
       }
 
-      enableProfileLink();
-      enableLogoutLink();
+      checkLoggedIn();
+      logout();
     </script>
   </body>
 </html>

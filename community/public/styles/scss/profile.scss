@@ -1,0 +1,16 @@
+.info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+
+  div {
+    width: 250px;
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.disabled {
+  display: none;
+}

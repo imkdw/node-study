@@ -8,11 +8,17 @@ dotenv.config();
 
 const authRouter = express.Router();
 
+const errMsgs = {
+  PASSWORD_NOT_MATCH: "비밀번호가 동일하지 않습니다.",
+  ACCOUNT_NOT_MATCH: "아이디 또는 비밀번호가 올바르지 않습니다,",
+  EXIST_USER: "이미 존재하는 사용자 입니다.",
+};
+
 /**
  * [POST] /auth/register
  */
 authRouter.post("/register", async (req, res, next) => {
-  const { userId, password, rePassword } = req.body;
+  const { userId, password, rePassword, name, email } = req.body;
 
   /** 패스워드 일치여부 검사 로직 */
   if (password !== rePassword) {
@@ -25,7 +31,7 @@ authRouter.post("/register", async (req, res, next) => {
 
   bcrypt.genSalt(10, (err, salt) => {
     bcrypt.hash(password, salt, (err, hash) => {
-      const registerQuery = `INSERT INTO users(userId, password) value ('${userId}', '${hash}')`;
+      const registerQuery = `INSERT INTO users(userId, password, name, email) value ('${userId}', '${hash}', '${name}', '${email}')`;
       db.query(registerQuery, (err: any, results) => {
         if (err) {
           /** 이미 존재하는 사용자 검증 */
@@ -55,8 +61,8 @@ authRouter.post("/login", (req, res, next) => {
   /** 공백 입력 검증 */
   if (userId.length === 0 || password.length === 0) {
     res.status(401).send({
-      errCode: "INVALID_ACCOUNT",
-      errMsg: "아이디 또는 패스워드를 입력해주세요.",
+      errCode: "ACCOUNT_NOT_MATCH",
+      errMsg: "아이디 또는 비밀번호가 올바르지 않습니다.",
     });
 
     return;
@@ -83,11 +89,11 @@ authRouter.post("/login", (req, res, next) => {
       const jwtSecretKey = process.env.JWT_SECRET_KEY;
       const token = jwt.sign(
         {
-          userId,
+          userId, // "userId": userId
         },
         jwtSecretKey,
         {
-          expiresIn: "1m",
+          expiresIn: "5m",
           issuer: "imkdw",
         }
       );
@@ -101,10 +107,5 @@ authRouter.post("/login", (req, res, next) => {
     }
   });
 });
-
-/**
- * [GET] /auth/logout
- */
-authRouter.get("/logout", (req, res, next) => {});
 
 export default authRouter;

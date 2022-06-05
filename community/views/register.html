@@ -10,19 +10,16 @@
   <body>
     <form action="/auth/register" method="post" class="registerForm">
       <h3>회원가입</h3>
-      <input type="text" placeholder="아이디" id="userId" value="admin" />
-      <input
-        type="password"
-        placeholder="비밀번호"
-        id="password"
-        value="1234"
-      />
+      <input type="text" placeholder="아이디" id="userId" required />
+      <input type="password" placeholder="비밀번호" id="password" required />
       <input
         type="password"
         placeholder="비밀번호 확인"
         id="rePassword"
-        value="1234"
+        required
       />
+      <input type="text" placeholder="이름" required id="name" />
+      <input type="text" placeholder="이메일" required id="email" />
       <button type="submit">회원가입</button>
     </form>
     <script>
@@ -33,10 +30,12 @@
       const registerForm = document.querySelector(".registerForm");
       registerForm.addEventListener("submit", async (event) => {
         event.preventDefault();
-        const [userId, password, rePassword] = [
+        const [userId, password, rePassword, name, email] = [
           getInputValue("#userId"),
           getInputValue("#password"),
           getInputValue("#rePassword"),
+          getInputValue("#name"),
+          getInputValue("#email"),
         ];
 
         if (password !== rePassword) {
@@ -46,7 +45,7 @@
 
         const userData = {
           method: "POST",
-          body: JSON.stringify({ userId, password, rePassword }),
+          body: JSON.stringify({ userId, password, rePassword, name, email }),
           headers: {
             "Content-type": "application/json",
           },
@@ -54,7 +53,10 @@
 
         const response = await fetch(`/auth/register`, userData);
         if (response.status === 200) {
-          alert(`${userId}님 회원가입이 완료되었습니다.`);
+          alert(
+            `${userId}님 회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.`
+          );
+          location.href = "/login.html";
         } else {
           const { errCode, errMsg } = await response.json();
           alert(errMsg);

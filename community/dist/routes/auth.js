@@ -46,13 +46,18 @@ var db_1 = __importDefault(require("../db"));
 var dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1["default"].config();
 var authRouter = express_1["default"].Router();
+var errMsgs = {
+    PASSWORD_NOT_MATCH: "비밀번호가 동일하지 않습니다.",
+    ACCOUNT_NOT_MATCH: "아이디 또는 비밀번호가 올바르지 않습니다,",
+    EXIST_USER: "이미 존재하는 사용자 입니다."
+};
 /**
  * [POST] /auth/register
  */
 authRouter.post("/register", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, userId, password, rePassword;
+    var _a, userId, password, rePassword, name, email;
     return __generator(this, function (_b) {
-        _a = req.body, userId = _a.userId, password = _a.password, rePassword = _a.rePassword;
+        _a = req.body, userId = _a.userId, password = _a.password, rePassword = _a.rePassword, name = _a.name, email = _a.email;
         /** 패스워드 일치여부 검사 로직 */
         if (password !== rePassword) {
             res.status(401).send({
@@ -63,7 +68,7 @@ authRouter.post("/register", function (req, res, next) { return __awaiter(void 0
         }
         bcrypt_1["default"].genSalt(10, function (err, salt) {
             bcrypt_1["default"].hash(password, salt, function (err, hash) {
-                var registerQuery = "INSERT INTO users(userId, password) value ('".concat(userId, "', '").concat(hash, "')");
+                var registerQuery = "INSERT INTO users(userId, password, name, email) value ('".concat(userId, "', '").concat(hash, "', '").concat(name, "', '").concat(email, "')");
                 db_1["default"].query(registerQuery, function (err, results) {
                     if (err) {
                         /** 이미 존재하는 사용자 검증 */
@@ -91,8 +96,8 @@ authRouter.post("/login", function (req, res, next) {
     /** 공백 입력 검증 */
     if (userId.length === 0 || password.length === 0) {
         res.status(401).send({
-            errCode: "INVALID_ACCOUNT",
-            errMsg: "아이디 또는 패스워드를 입력해주세요."
+            errCode: "ACCOUNT_NOT_MATCH",
+            errMsg: "아이디 또는 비밀번호가 올바르지 않습니다."
         });
         return;
     }
@@ -115,7 +120,7 @@ authRouter.post("/login", function (req, res, next) {
             var token = jsonwebtoken_1["default"].sign({
                 userId: userId
             }, jwtSecretKey, {
-                expiresIn: "1m",
+                expiresIn: "5m",
                 issuer: "imkdw"
             });
             res.status(200).send({ accessToken: token });
@@ -128,9 +133,5 @@ authRouter.post("/login", function (req, res, next) {
         }
     });
 });
-/**
- * [GET] /auth/logout
- */
-authRouter.get("/logout", function (req, res, next) { });
 exports["default"] = authRouter;
 //# sourceMappingURL=auth.js.map

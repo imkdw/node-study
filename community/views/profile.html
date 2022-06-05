@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../styles/css/profile.css" />
+    <title>Profile</title>
+  </head>
+  <body>
+    <h1>User Info Page</h1>
+    <div class="info">
+      <div class="userId-wrapper">
+        <label for="userId">아이디</label>
+        <input type="text" id="userId" readonly />
+      </div>
+      <div class="name-wrapper">
+        <label for="name">이름</label>
+        <input type="text" id="name" readonly />
+      </div>
+      <div class="email-wrapper">
+        <label for="email">이메일</label>
+        <input type="text" id="email" readonly />
+      </div>
+      <div class="button-wrapper">
+        <button id="modify">수정</button>
+        <button id="delete">회원탈퇴</button>
+      </div>
+    </div>
+    <script>
+      async function loadInfo() {
+        const accessToken = localStorage.getItem("accessToken");
+
+        /** 로그인 여부 검증 */
+        if (accessToken === "") {
+          alert("로그인이 필요한 기능입니다.");
+          location.href = "/login.html";
+          return;
+        }
+
+        const data = {
+          method: "POST",
+          body: accessToken,
+          headers: {
+            "Content-type": "application/json",
+          },
+        };
+
+        const response = await fetch("/user/info", data);
+        if (response.status === 200) {
+          const { userId, name, email } = await response.json();
+          const [userIdElem, nameElem, emailElem] = [
+            document.getElementById("userId"),
+            document.getElementById("name"),
+            document.getElementById("email"),
+          ];
+
+          userIdElem.value = userId;
+          nameElem.value = name;
+          emailElem.value = email;
+        } else {
+          const { errMsg } = await response.json();
+          console.log(errMsg);
+        }
+      }
+
+      function modifyButton() {
+        const modifyBtn = document.getElementById("modify");
+
+        /** 수정 -> 저장 버튼으로 변경하는 로직 */
+        const changeToSaveBtn = () => {
+          const delBtn = document.getElementById("delete");
+          /** 1. 버튼 텍스트 변경 */
+          modifyBtn.innerText = "저장";
+
+          /** 2. 인풋 요소들 readOnly 해제 */
+          const inputs = document.getElementsByTagName("input");
+          [...inputs].forEach((input) => {
+            input.readOnly = false;
+          });
+
+          /** 3. 탈퇴버튼 비활성화 */
+          delBtn.classList.add("disabled");
+
+          /** 4. 해당 이벤트리스너 삭제 */
+          modifyBtn.removeEventListener("click", changeToSaveBtn);
+
+          /** 5. 저장 이벤트리스너 등록 */
+          modifyBtn.addEventListener("click", saveUserProfile);
+        };
+
+        /** 변경된 유저 정보를 저장하는 로직*/
+        const saveUserProfile = async () => {
+          /** 빈칸 있는지 검증 */
+          const inputs = document.getElementsByTagName("input");
+          [...inputs].forEach((input) => {
+            if (input.value === "") {
+              alert("빈 칸 없이 입력해주세요.");
+              return;
+            }
+          });
+        };
+
+        modifyBtn.addEventListener("click", changeToSaveBtn);
+      }
+
+      loadInfo();
+      modifyButton();
+    </script>
+  </body>
+</html>
