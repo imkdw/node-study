@@ -2,6 +2,7 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import db from "../db";
+import { createToken, decodedToken } from "../modules/jwt";
 
 dotenv.config();
 
@@ -11,6 +12,7 @@ const userRouter = express.Router();
  * [POST] /user/info
  */
 userRouter.post("/info", async (req, res, next) => {
+  console.log(`[POST] /info 호출`);
   const { accessToken } = req.body;
 
   /** 로그인 여부 검증 */
@@ -23,7 +25,8 @@ userRouter.post("/info", async (req, res, next) => {
   }
 
   try {
-    const decoded = await jwt.verify(accessToken, process.env.JWT_SECRET_KEY);
+    const decoded = await decodedToken(accessToken);
+
     db.query(
       `SELECT * from users where userId="${decoded.userId}"`,
       (err: any, results) => {
@@ -51,6 +54,39 @@ userRouter.post("/info", async (req, res, next) => {
       });
     }
   }
+});
+
+userRouter.put("/info", async (req, res) => {
+  console.log(`[PUT] /info 호출`);
+  const { userId } = await decodedToken(
+    JSON.parse(req.body.accessToken).accessToken
+  );
+  const { name, email } = req.body;
+  const updateQuery = `UPDATE users SET name="${name}", email="${email}" where userId="${userId}"`;
+  console.log(updateQuery);
+
+  db.query(updateQuery, (err: any, results) => {
+    if (err) {
+      throw err;
+    }
+
+    res.status(200).send();
+  });
+});
+
+userRouter.delete("/", async (req, res) => {
+  console.log("[DELETE] /user 호출");
+  const { userId } = await decodedToken(
+    JSON.parse(req.body.accessToken).accessToken
+  );
+  const deleteQuery = `DELETE FROM users where userId="${userId}"`;
+  db.query(deleteQuery, (err: any) => {
+    if (err) {
+      throw err;
+    }
+
+    res.status(200).send();
+  });
 });
 
 export default userRouter;

@@ -40,9 +40,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 exports.__esModule = true;
 var express_1 = __importDefault(require("express"));
-var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var dotenv_1 = __importDefault(require("dotenv"));
 var db_1 = __importDefault(require("../db"));
+var jwt_1 = require("../modules/jwt");
 dotenv_1["default"].config();
 var userRouter = express_1["default"].Router();
 /**
@@ -53,6 +53,7 @@ userRouter.post("/info", function (req, res, next) { return __awaiter(void 0, vo
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
+                console.log("[POST] /info \uD638\uCD9C");
                 accessToken = req.body.accessToken;
                 /** 로그인 여부 검증 */
                 if (accessToken === "") {
@@ -64,7 +65,7 @@ userRouter.post("/info", function (req, res, next) { return __awaiter(void 0, vo
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, jsonwebtoken_1["default"].verify(accessToken, process.env.JWT_SECRET_KEY)];
+                return [4 /*yield*/, (0, jwt_1.decodedToken)(accessToken)];
             case 2:
                 decoded = _a.sent();
                 db_1["default"].query("SELECT * from users where userId=\"".concat(decoded.userId, "\""), function (err, results) {
@@ -95,6 +96,48 @@ userRouter.post("/info", function (req, res, next) { return __awaiter(void 0, vo
                 }
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
+        }
+    });
+}); });
+userRouter.put("/info", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var userId, _a, name, email, updateQuery;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                console.log("[PUT] /info \uD638\uCD9C");
+                return [4 /*yield*/, (0, jwt_1.decodedToken)(JSON.parse(req.body.accessToken).accessToken)];
+            case 1:
+                userId = (_b.sent()).userId;
+                _a = req.body, name = _a.name, email = _a.email;
+                updateQuery = "UPDATE users SET name=\"".concat(name, "\", email=\"").concat(email, "\" where userId=\"").concat(userId, "\"");
+                console.log(updateQuery);
+                db_1["default"].query(updateQuery, function (err, results) {
+                    if (err) {
+                        throw err;
+                    }
+                    res.status(200).send();
+                });
+                return [2 /*return*/];
+        }
+    });
+}); });
+userRouter["delete"]("/", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var userId, deleteQuery;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                console.log("[DELETE] /user 호출");
+                return [4 /*yield*/, (0, jwt_1.decodedToken)(JSON.parse(req.body.accessToken).accessToken)];
+            case 1:
+                userId = (_a.sent()).userId;
+                deleteQuery = "DELETE FROM users where userId=\"".concat(userId, "\"");
+                db_1["default"].query(deleteQuery, function (err) {
+                    if (err) {
+                        throw err;
+                    }
+                    res.status(200).send();
+                });
+                return [2 /*return*/];
         }
     });
 }); });

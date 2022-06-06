@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import db from "../db";
 import dotenv from "dotenv";
+import { createToken } from "../modules/jwt";
 
 dotenv.config();
 
@@ -69,7 +70,7 @@ authRouter.post("/login", (req, res, next) => {
   }
 
   const loginQuery = `SELECT * from users where userId="${userId}"`;
-  db.query(loginQuery, (err: any, results) => {
+  db.query(loginQuery, async (err: any, results) => {
     if (err) {
       throw err;
     }
@@ -85,18 +86,8 @@ authRouter.post("/login", (req, res, next) => {
     }
 
     const existPassword = results[0].password;
-    if (bcrypt.compare(password, existPassword)) {
-      const jwtSecretKey = process.env.JWT_SECRET_KEY;
-      const token = jwt.sign(
-        {
-          userId, // "userId": userId
-        },
-        jwtSecretKey,
-        {
-          expiresIn: "5m",
-          issuer: "imkdw",
-        }
-      );
+    if (await bcrypt.compare(password, existPassword)) {
+      const token = createToken(userId);
 
       res.status(200).send({ accessToken: token });
     } else {

@@ -40,10 +40,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 exports.__esModule = true;
 var express_1 = __importDefault(require("express"));
-var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var bcrypt_1 = __importDefault(require("bcrypt"));
 var db_1 = __importDefault(require("../db"));
 var dotenv_1 = __importDefault(require("dotenv"));
+var jwt_1 = require("../modules/jwt");
 dotenv_1["default"].config();
 var authRouter = express_1["default"].Router();
 var errMsgs = {
@@ -102,36 +102,39 @@ authRouter.post("/login", function (req, res, next) {
         return;
     }
     var loginQuery = "SELECT * from users where userId=\"".concat(userId, "\"");
-    db_1["default"].query(loginQuery, function (err, results) {
-        if (err) {
-            throw err;
-        }
-        /** 로그인한 유저가 존재하는지 검증 */
-        if (Object.keys(results).length === 0) {
-            res.status(401).send({
-                errCode: "ACCOUNT_NOT_MATCH",
-                errMsg: "아이디 또는 비밀번호가 올바르지 않습니다."
-            });
-            return;
-        }
-        var existPassword = results[0].password;
-        if (bcrypt_1["default"].compare(password, existPassword)) {
-            var jwtSecretKey = process.env.JWT_SECRET_KEY;
-            var token = jsonwebtoken_1["default"].sign({
-                userId: userId
-            }, jwtSecretKey, {
-                expiresIn: "5m",
-                issuer: "imkdw"
-            });
-            res.status(200).send({ accessToken: token });
-        }
-        else {
-            res.status(401).send({
-                errCode: "ACCOUNT_NOT_MATCH",
-                errMsg: "아이디 또는 비밀번호가 올바르지 않습니다."
-            });
-        }
-    });
+    db_1["default"].query(loginQuery, function (err, results) { return __awaiter(void 0, void 0, void 0, function () {
+        var existPassword, token;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    if (err) {
+                        throw err;
+                    }
+                    /** 로그인한 유저가 존재하는지 검증 */
+                    if (Object.keys(results).length === 0) {
+                        res.status(401).send({
+                            errCode: "ACCOUNT_NOT_MATCH",
+                            errMsg: "아이디 또는 비밀번호가 올바르지 않습니다."
+                        });
+                        return [2 /*return*/];
+                    }
+                    existPassword = results[0].password;
+                    return [4 /*yield*/, bcrypt_1["default"].compare(password, existPassword)];
+                case 1:
+                    if (_a.sent()) {
+                        token = (0, jwt_1.createToken)(userId);
+                        res.status(200).send({ accessToken: token });
+                    }
+                    else {
+                        res.status(401).send({
+                            errCode: "ACCOUNT_NOT_MATCH",
+                            errMsg: "아이디 또는 비밀번호가 올바르지 않습니다."
+                        });
+                    }
+                    return [2 /*return*/];
+            }
+        });
+    }); });
 });
 exports["default"] = authRouter;
 //# sourceMappingURL=auth.js.map

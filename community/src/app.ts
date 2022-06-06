@@ -3,6 +3,7 @@ import nunjucks from "nunjucks";
 import morgan from "morgan";
 import dotenv from "dotenv";
 import path from "path";
+import methodOverride from "method-override";
 
 /** 라우터 모듈 */
 import indexRouter from "./routes/index";
@@ -21,6 +22,7 @@ app.use(express.static(path.join(__dirname, "../views")));
 app.use(express.static(path.join(__dirname, "../public")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(methodOverride("_method"));
 
 /** 라우터 정의 */
 app.use("/", indexRouter);
