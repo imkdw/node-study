@@ -19,20 +19,12 @@ const errMsgs = {
  * [POST] /auth/register
  */
 authRouter.post("/register", async (req, res, next) => {
-  const { userId, password, rePassword, name, email } = req.body;
-
-  /** 패스워드 일치여부 검사 로직 */
-  if (password !== rePassword) {
-    res.status(401).send({
-      errCode: "PASSWORD_NOT_MATCH",
-      errMsg: "패스워드가 동일하지 않습니다.",
-    });
-    return;
-  }
+  const userDTO = req.body;
+  // const { userId, name, email } = await UserSerive.register(userDTO);
 
   bcrypt.genSalt(10, (err, salt) => {
-    bcrypt.hash(password, salt, (err, hash) => {
-      const registerQuery = `INSERT INTO users(userId, password, name, email) value ('${userId}', '${hash}', '${name}', '${email}')`;
+    bcrypt.hash(userDTO.password, salt, (err, hash) => {
+      const registerQuery = `INSERT INTO users(userId, password, name, email) value ('${userDTO.userId}', '${hash}', '${userDTO.name}', '${userDTO.email}')`;
       db.query(registerQuery, (err: any, results) => {
         if (err) {
           /** 이미 존재하는 사용자 검증 */
@@ -46,7 +38,7 @@ authRouter.post("/register", async (req, res, next) => {
           }
         }
 
-        console.log(`[회원가입] ${userId}님 회원가입 완료`);
+        console.log(`[회원가입] ${userDTO.userId}님 회원가입 완료`);
         res.status(200).send();
       });
     });

@@ -55,20 +55,13 @@ var errMsgs = {
  * [POST] /auth/register
  */
 authRouter.post("/register", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, userId, password, rePassword, name, email;
-    return __generator(this, function (_b) {
-        _a = req.body, userId = _a.userId, password = _a.password, rePassword = _a.rePassword, name = _a.name, email = _a.email;
-        /** 패스워드 일치여부 검사 로직 */
-        if (password !== rePassword) {
-            res.status(401).send({
-                errCode: "PASSWORD_NOT_MATCH",
-                errMsg: "패스워드가 동일하지 않습니다."
-            });
-            return [2 /*return*/];
-        }
+    var userDTO;
+    return __generator(this, function (_a) {
+        userDTO = req.body;
+        // const { userId, name, email } = await UserSerive.register(userDTO);
         bcrypt_1["default"].genSalt(10, function (err, salt) {
-            bcrypt_1["default"].hash(password, salt, function (err, hash) {
-                var registerQuery = "INSERT INTO users(userId, password, name, email) value ('".concat(userId, "', '").concat(hash, "', '").concat(name, "', '").concat(email, "')");
+            bcrypt_1["default"].hash(userDTO.password, salt, function (err, hash) {
+                var registerQuery = "INSERT INTO users(userId, password, name, email) value ('".concat(userDTO.userId, "', '").concat(hash, "', '").concat(userDTO.name, "', '").concat(userDTO.email, "')");
                 db_1["default"].query(registerQuery, function (err, results) {
                     if (err) {
                         /** 이미 존재하는 사용자 검증 */
@@ -80,7 +73,7 @@ authRouter.post("/register", function (req, res, next) { return __awaiter(void 0
                             return;
                         }
                     }
-                    console.log("[\uD68C\uC6D0\uAC00\uC785] ".concat(userId, "\uB2D8 \uD68C\uC6D0\uAC00\uC785 \uC644\uB8CC"));
+                    console.log("[\uD68C\uC6D0\uAC00\uC785] ".concat(userDTO.userId, "\uB2D8 \uD68C\uC6D0\uAC00\uC785 \uC644\uB8CC"));
                     res.status(200).send();
                 });
             });

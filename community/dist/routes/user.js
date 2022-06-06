@@ -53,7 +53,6 @@ userRouter.post("/info", function (req, res, next) { return __awaiter(void 0, vo
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                console.log("[POST] /info \uD638\uCD9C");
                 accessToken = req.body.accessToken;
                 /** 로그인 여부 검증 */
                 if (accessToken === "") {
@@ -83,13 +82,11 @@ userRouter.post("/info", function (req, res, next) { return __awaiter(void 0, vo
             case 3:
                 err_1 = _a.sent();
                 if (err_1.message === "jwt expired") {
-                    console.log("Expired Token");
                     res.status(401).send({
                         errMsg: "Expired Token"
                     });
                 }
                 else {
-                    console.log("Invalid Token");
                     res.status(401).send({
                         errMsg: "Invalid Token"
                     });
@@ -103,14 +100,11 @@ userRouter.put("/info", function (req, res) { return __awaiter(void 0, void 0, v
     var userId, _a, name, email, updateQuery;
     return __generator(this, function (_b) {
         switch (_b.label) {
-            case 0:
-                console.log("[PUT] /info \uD638\uCD9C");
-                return [4 /*yield*/, (0, jwt_1.decodedToken)(JSON.parse(req.body.accessToken).accessToken)];
+            case 0: return [4 /*yield*/, (0, jwt_1.decodedToken)(JSON.parse(req.body.accessToken).accessToken)];
             case 1:
                 userId = (_b.sent()).userId;
                 _a = req.body, name = _a.name, email = _a.email;
                 updateQuery = "UPDATE users SET name=\"".concat(name, "\", email=\"").concat(email, "\" where userId=\"").concat(userId, "\"");
-                console.log(updateQuery);
                 db_1["default"].query(updateQuery, function (err, results) {
                     if (err) {
                         throw err;
@@ -125,9 +119,7 @@ userRouter["delete"]("/", function (req, res) { return __awaiter(void 0, void 0,
     var userId, deleteQuery;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0:
-                console.log("[DELETE] /user 호출");
-                return [4 /*yield*/, (0, jwt_1.decodedToken)(JSON.parse(req.body.accessToken).accessToken)];
+            case 0: return [4 /*yield*/, (0, jwt_1.decodedToken)(JSON.parse(req.body.accessToken).accessToken)];
             case 1:
                 userId = (_a.sent()).userId;
                 deleteQuery = "DELETE FROM users where userId=\"".concat(userId, "\"");
