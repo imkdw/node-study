@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import db from "../db";
 import dotenv from "dotenv";
 import { createToken } from "../modules/jwt";
+import { UserSerive } from "../services/UserService";
 
 dotenv.config();
 
@@ -20,29 +21,7 @@ const errMsgs = {
  */
 authRouter.post("/register", async (req, res, next) => {
   const userDTO = req.body;
-  // const { userId, name, email } = await UserSerive.register(userDTO);
-
-  bcrypt.genSalt(10, (err, salt) => {
-    bcrypt.hash(userDTO.password, salt, (err, hash) => {
-      const registerQuery = `INSERT INTO users(userId, password, name, email) value ('${userDTO.userId}', '${hash}', '${userDTO.name}', '${userDTO.email}')`;
-      db.query(registerQuery, (err: any, results) => {
-        if (err) {
-          /** 이미 존재하는 사용자 검증 */
-          if (err.code === "ER_DUP_ENTRY") {
-            res.status(401).send({
-              errCode: "EXIST_USER",
-              errMsg: "이미 존재하는 사용자 입니다.",
-            });
-
-            return;
-          }
-        }
-
-        console.log(`[회원가입] ${userDTO.userId}님 회원가입 완료`);
-        res.status(200).send();
-      });
-    });
-  });
+  const { userId, name, email } = await UserSerive.register(userDTO);
 });
 
 /**

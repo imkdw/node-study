@@ -1,12 +1,13 @@
 import { Secure } from "../modules/secure";
-import { registerParams } from "./types/service.interface";
+import { registerParams } from "../types/auth.interface";
+import { UserModel } from "../models/UserModel";
 
 const errCodes = {
   PASSWORD_NOT_MATCH: "PASSWORD_NOT_MATCH", // 회원가입시 패스워드 불일치
 };
 
 export class UserSerive {
-  async register(userDTO: registerParams) {
+  static async register(userDTO: registerParams) {
     const { userId, password, rePassword, name, email } = userDTO;
 
     /** 비밀번호 일치여부 검사 */
@@ -22,5 +23,6 @@ export class UserSerive {
     const hashPassword = await Secure.hash(password, salt);
 
     /** DB에 INSERT 요청 */
+    const UserRecord = await UserModel.insertUser();
   }
 }
