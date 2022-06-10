@@ -23,6 +23,7 @@ export class UserSerive {
     const hashPassword = await Secure.hash(password, salt);
 
     /** DB에 INSERT 요청 */
-    const UserRecord = await UserModel.insertUser();
+    userDTO.password = hashPassword;
+    const UserRecord = await UserModel.insertUser(userDTO);
   }
 }
