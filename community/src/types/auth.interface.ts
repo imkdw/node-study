@@ -12,7 +12,16 @@ export type registerReturns = {
   email: string;
 };
 
-export type registerError = {
+export type loginParams = {
+  userId: string;
+  password: string;
+};
+
+export type loginReturns = {
+  userId: string;
+};
+
+export type errorTypes = {
   status: number;
-  errCode: string;
+  msg: string;
 };

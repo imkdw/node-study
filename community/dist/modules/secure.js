@@ -63,6 +63,14 @@ var Secure = /** @class */ (function () {
             }
         });
     }); };
+    Secure.comparePassword = function (plainPassword, hashedPassword) { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(_a, function (_b) {
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, bcrypt_1["default"].compare];
+                case 1: return [2 /*return*/, _b.sent()];
+            }
+        });
+    }); };
     return Secure;
 }());
 exports.Secure = Secure;

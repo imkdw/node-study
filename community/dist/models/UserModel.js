@@ -60,6 +60,21 @@ var UserModel = /** @class */ (function () {
             });
         });
     };
+    UserModel.getPassword = function (userId) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, new Promise(function (resolve, reject) {
+                        var sql = "SELECT * FROM users where userId=?";
+                        var query = db_1["default"].query(sql, [userId], function (err, results) {
+                            if (err) {
+                                reject(err);
+                            }
+                            resolve(results[0].password);
+                        });
+                    })];
+            });
+        });
+    };
     return UserModel;
 }());
 exports.UserModel = UserModel;

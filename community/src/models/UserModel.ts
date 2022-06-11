@@ -19,4 +19,17 @@ export class UserModel {
 
     return { userId, name, email };
   }
+
+  static async getPassword(userId: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const sql = `SELECT * FROM users where userId=?`;
+      const query = db.query(sql, [userId], (err: any, results) => {
+        if (err) {
+          reject(err);
+        }
+
+        resolve(results[0].password);
+      });
+    });
+  }
 }

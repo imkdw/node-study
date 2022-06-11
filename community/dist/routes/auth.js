@@ -40,10 +40,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 exports.__esModule = true;
 var express_1 = __importDefault(require("express"));
-var bcrypt_1 = __importDefault(require("bcrypt"));
-var db_1 = __importDefault(require("../db"));
 var dotenv_1 = __importDefault(require("dotenv"));
-var jwt_1 = require("../modules/jwt");
 var UserService_1 = require("../services/UserService");
 dotenv_1["default"].config();
 var authRouter = express_1["default"].Router();
@@ -72,50 +69,24 @@ authRouter.post("/register", function (req, res, next) { return __awaiter(void 0
 /**
  * [GET] /auth/login
  */
-authRouter.post("/login", function (req, res, next) {
-    var _a = req.body, userId = _a.userId, password = _a.password;
-    /** 공백 입력 검증 */
-    if (userId.length === 0 || password.length === 0) {
-        res.status(401).send({
-            errCode: "ACCOUNT_NOT_MATCH",
-            errMsg: "아이디 또는 비밀번호가 올바르지 않습니다."
-        });
-        return;
-    }
-    var loginQuery = "SELECT * from users where userId=\"".concat(userId, "\"");
-    db_1["default"].query(loginQuery, function (err, results) { return __awaiter(void 0, void 0, void 0, function () {
-        var existPassword, token;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    if (err) {
-                        throw err;
-                    }
-                    /** 로그인한 유저가 존재하는지 검증 */
-                    if (Object.keys(results).length === 0) {
-                        res.status(401).send({
-                            errCode: "ACCOUNT_NOT_MATCH",
-                            errMsg: "아이디 또는 비밀번호가 올바르지 않습니다."
-                        });
-                        return [2 /*return*/];
-                    }
-                    existPassword = results[0].password;
-                    return [4 /*yield*/, bcrypt_1["default"].compare(password, existPassword)];
-                case 1:
-                    if (_a.sent()) {
-                        token = (0, jwt_1.createToken)(userId);
-                        res.status(200).send({ accessToken: token });
-                    }
-                    else {
-                        res.status(401).send({
-                            errCode: "ACCOUNT_NOT_MATCH",
-                            errMsg: "아이디 또는 비밀번호가 올바르지 않습니다."
-                        });
-                    }
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-});
+authRouter.post("/login", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var userDTO, userRecord;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                userDTO = req.body;
+                return [4 /*yield*/, UserService_1.UserSerive.login(userDTO)];
+            case 1:
+                userRecord = _a.sent();
+                if (userRecord.status === 200) {
+                    res.status(userRecord.status).send(JSON.stringify(userRecord.accessToken));
+                }
+                else {
+                    res.status(userRecord.status).send(JSON.stringify(userRecord.msg));
+                }
+                return [2 /*return*/];
+        }
+    });
+}); });
 exports["default"] = authRouter;
 //# sourceMappingURL=auth.js.map

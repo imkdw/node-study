@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import db from "../db";
 import dotenv from "dotenv";
-import { createToken } from "../modules/jwt";
 import { UserSerive } from "../services/UserService";
 
 dotenv.config();
@@ -28,47 +27,14 @@ authRouter.post("/register", async (req, res, next) => {
 /**
  * [GET] /auth/login
  */
-authRouter.post("/login", (req, res, next) => {
-  const { userId, password } = req.body;
-
-  /** 공백 입력 검증 */
-  if (userId.length === 0 || password.length === 0) {
-    res.status(401).send({
-      errCode: "ACCOUNT_NOT_MATCH",
-      errMsg: "아이디 또는 비밀번호가 올바르지 않습니다.",
-    });
-
-    return;
+authRouter.post("/login", async (req, res, next) => {
+  const userDTO = req.body;
+  const userRecord = await UserSerive.login(userDTO);
+  if (userRecord.status === 200) {
+    res.status(userRecord.status).send(JSON.stringify(userRecord.accessToken));
+  } else {
+    res.status(userRecord.status).send(JSON.stringify(userRecord.msg));
   }
-
-  const loginQuery = `SELECT * from users where userId="${userId}"`;
-  db.query(loginQuery, async (err: any, results) => {
-    if (err) {
-      throw err;
-    }
-
-    /** 로그인한 유저가 존재하는지 검증 */
-    if (Object.keys(results).length === 0) {
-      res.status(401).send({
-        errCode: "ACCOUNT_NOT_MATCH",
-        errMsg: "아이디 또는 비밀번호가 올바르지 않습니다.",
-      });
-
-      return;
-    }
-
-    const existPassword = results[0].password;
-    if (await bcrypt.compare(password, existPassword)) {
-      const token = createToken(userId);
-
-      res.status(200).send({ accessToken: token });
-    } else {
-      res.status(401).send({
-        errCode: "ACCOUNT_NOT_MATCH",
-        errMsg: "아이디 또는 비밀번호가 올바르지 않습니다.",
-      });
-    }
-  });
 });
 
 export default authRouter;

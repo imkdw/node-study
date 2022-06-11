@@ -12,4 +12,8 @@ export class Secure {
   ): Promise<string> => {
     return await bcrypt.hashSync(plainPassword, salt);
   };
+
+  static comparePassword = async (plainPassword, hashedPassword: string) => {
+    return await bcrypt.compare;
+  };
 }

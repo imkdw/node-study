@@ -5,19 +5,29 @@ dotenv.config();
 
 const SECRET_KEY = process.env.JWT_SECRET_KEY;
 
-export const createToken = (userId: string): string => {
-  return jwt.sign(
-    {
-      userId,
-    },
-    SECRET_KEY,
-    {
-      expiresIn: "1h",
-      issuer: "imkdw",
+export class Jwt {
+  static create(userId: string) {
+    try {
+      return jwt.sign(
+        {
+          userId,
+        },
+        SECRET_KEY,
+        {
+          expiresIn: "1h",
+          issuer: "imkdw",
+        }
+      );
+    } catch (error: any) {
+      console.error(error);
     }
-  );
-};
+  }
 
-export const decodedToken = async (accessToken) => {
-  return await jwt.verify(accessToken, SECRET_KEY);
-};
+  static decoded(accessToken: string) {
+    try {
+      return jwt.verify(accessToken, SECRET_KEY);
+    } catch (error: any) {
+      console.error(error);
+    }
+  }
+}

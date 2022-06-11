@@ -8,7 +8,7 @@ import methodOverride from "method-override";
 /** 라우터 모듈 */
 import indexRouter from "./routes/index";
 import authRouter from "./routes/auth";
-import userRouter from "./routes/user";
+// import userRouter from "./routes/user";
 
 /** .env 파일 활성화 */
 dotenv.config();
@@ -27,7 +27,7 @@ app.use(methodOverride("_method"));
 /** 라우터 정의 */
 app.use("/", indexRouter);
 app.use("/auth", authRouter);
-app.use("/user", userRouter);
+// app.use("/user", userRouter);
 
 /** 템플릿 엔진 설정 */
 app.set("view engine", "html");
