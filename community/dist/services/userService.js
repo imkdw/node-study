@@ -38,19 +38,20 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 exports.UserSerive = void 0;
 var secure_1 = require("../modules/secure");
+var UserModel_1 = require("../models/UserModel");
 var errCodes = {
     PASSWORD_NOT_MATCH: "PASSWORD_NOT_MATCH"
 };
 var UserSerive = /** @class */ (function () {
     function UserSerive() {
     }
-    UserSerive.prototype.register = function (userDTO) {
+    UserSerive.register = function (userDTO) {
         return __awaiter(this, void 0, void 0, function () {
-            var userId, password, rePassword, name, email, salt, hashPassword;
+            var password, rePassword, salt, hashPassword, userRecord;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        userId = userDTO.userId, password = userDTO.password, rePassword = userDTO.rePassword, name = userDTO.name, email = userDTO.email;
+                        password = userDTO.password, rePassword = userDTO.rePassword;
                         /** 비밀번호 일치여부 검사 */
                         if (password !== rePassword) {
                             return [2 /*return*/, {
@@ -64,7 +65,12 @@ var UserSerive = /** @class */ (function () {
                         return [4 /*yield*/, secure_1.Secure.hash(password, salt)];
                     case 2:
                         hashPassword = _a.sent();
-                        return [2 /*return*/];
+                        /** DB에 INSERT 요청 */
+                        userDTO.password = hashPassword;
+                        return [4 /*yield*/, UserModel_1.UserModel.insertUser(userDTO)];
+                    case 3:
+                        userRecord = _a.sent();
+                        return [2 /*return*/, userRecord];
                 }
             });
         });

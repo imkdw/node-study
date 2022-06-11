@@ -21,7 +21,8 @@ const errMsgs = {
  */
 authRouter.post("/register", async (req, res, next) => {
   const userDTO = req.body;
-  const { userId, name, email } = await UserSerive.register(userDTO);
+  const userRecord = await UserSerive.register(userDTO);
+  res.status(200).send(JSON.stringify(userRecord));
 });
 
 /**

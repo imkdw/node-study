@@ -53,12 +53,11 @@
 
         const response = await fetch(`/auth/register`, userData);
         if (response.status === 200) {
-          alert(
-            `${userId}님 회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.`
-          );
-          location.href = "/login.html";
+          const userDTO = await response.json();
+          alert(`${userDTO.userId}님 회원가입이 완료되었습니다.`);
+          // location.href = "/login.html";
         } else {
-          const { errCode, errMsg } = await response.json();
+          const { errMsg } = await response.json();
           alert(errMsg);
           return;
         }

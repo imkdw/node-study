@@ -44,6 +44,7 @@ var bcrypt_1 = __importDefault(require("bcrypt"));
 var db_1 = __importDefault(require("../db"));
 var dotenv_1 = __importDefault(require("dotenv"));
 var jwt_1 = require("../modules/jwt");
+var UserService_1 = require("../services/UserService");
 dotenv_1["default"].config();
 var authRouter = express_1["default"].Router();
 var errMsgs = {
@@ -55,30 +56,17 @@ var errMsgs = {
  * [POST] /auth/register
  */
 authRouter.post("/register", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var userDTO;
+    var userDTO, userRecord;
     return __generator(this, function (_a) {
-        userDTO = req.body;
-        // const { userId, name, email } = await UserSerive.register(userDTO);
-        bcrypt_1["default"].genSalt(10, function (err, salt) {
-            bcrypt_1["default"].hash(userDTO.password, salt, function (err, hash) {
-                var registerQuery = "INSERT INTO users(userId, password, name, email) value ('".concat(userDTO.userId, "', '").concat(hash, "', '").concat(userDTO.name, "', '").concat(userDTO.email, "')");
-                db_1["default"].query(registerQuery, function (err, results) {
-                    if (err) {
-                        /** 이미 존재하는 사용자 검증 */
-                        if (err.code === "ER_DUP_ENTRY") {
-                            res.status(401).send({
-                                errCode: "EXIST_USER",
-                                errMsg: "이미 존재하는 사용자 입니다."
-                            });
-                            return;
-                        }
-                    }
-                    console.log("[\uD68C\uC6D0\uAC00\uC785] ".concat(userDTO.userId, "\uB2D8 \uD68C\uC6D0\uAC00\uC785 \uC644\uB8CC"));
-                    res.status(200).send();
-                });
-            });
-        });
-        return [2 /*return*/];
+        switch (_a.label) {
+            case 0:
+                userDTO = req.body;
+                return [4 /*yield*/, UserService_1.UserSerive.register(userDTO)];
+            case 1:
+                userRecord = _a.sent();
+                res.status(200).send(JSON.stringify(userRecord));
+                return [2 /*return*/];
+        }
     });
 }); });
 /**

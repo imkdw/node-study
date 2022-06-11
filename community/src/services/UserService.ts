@@ -1,14 +1,20 @@
 import { Secure } from "../modules/secure";
-import { registerParams } from "../types/auth.interface";
+import {
+  registerError,
+  registerParams,
+  registerReturns,
+} from "../types/auth.interface";
 import { UserModel } from "../models/UserModel";
 
 const errCodes = {
-  PASSWORD_NOT_MATCH: "PASSWORD_NOT_MATCH", // 회원가입시 패스워드 불일치
+  PASSWORD_NOT_MATCH: "PASSWORD_NOT_MATCH", // 400, 회원가입시 패스워드 불일치
 };
 
 export class UserSerive {
-  static async register(userDTO: registerParams) {
-    const { userId, password, rePassword, name, email } = userDTO;
+  static async register(
+    userDTO: registerParams
+  ): Promise<registerReturns | registerError> {
+    const { password, rePassword } = userDTO;
 
     /** 비밀번호 일치여부 검사 */
     if (password !== rePassword) {
@@ -24,6 +30,8 @@ export class UserSerive {
 
     /** DB에 INSERT 요청 */
     userDTO.password = hashPassword;
-    const UserRecord = await UserModel.insertUser(userDTO);
+    const userRecord = await UserModel.insertUser(userDTO);
+
+    return userRecord;
   }
 }

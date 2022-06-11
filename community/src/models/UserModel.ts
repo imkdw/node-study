@@ -1,12 +1,22 @@
-import { registerParams } from "../types/auth.interface";
+import { registerParams, registerReturns } from "../types/auth.interface";
 import db from "../db";
 
 export class UserModel {
-  static async insertUser(userDTO: registerParams) {
+  static async insertUser(userDTO: registerParams): Promise<registerReturns> {
     const { userId, password, name, email } = userDTO;
-    const insertQuery = `INSERT INTO users("userId", "password", "name", "email") VALUE("${userId}", "${password}", "${name}", "${email}")`;
-    db.query(insertQuery, (err: any, results) => {
-      console.log(results);
-    });
+    const insertQuery = `INSERT INTO users(userId, password, name, email) VALUES(?, ?, ?, ?)`;
+    db.query(
+      insertQuery,
+      [userId, password, name, email],
+      (err: any, results) => {
+        if (err) {
+          throw err;
+        }
+
+        console.log(`[회원가입] ${userId}님 회원가입 성공`);
+      }
+    );
+
+    return { userId, name, email };
   }
 }
