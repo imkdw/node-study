@@ -6,10 +6,9 @@ export type registerParams = {
   email: string;
 };
 
-export type registerReturns = {
+export type registerReturn = {
+  status: number;
   userId: string;
-  name: string;
-  email: string;
 };
 
 export type loginParams = {
@@ -22,6 +21,5 @@ export type loginReturns = {
 };
 
 export type errorTypes = {
-  status: number;
   msg: string;
 };

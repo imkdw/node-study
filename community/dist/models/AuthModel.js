@@ -39,27 +39,43 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-exports.UserModel = void 0;
+exports.AuthModel = void 0;
 var db_1 = __importDefault(require("../db"));
-var UserModel = /** @class */ (function () {
-    function UserModel() {
+var AuthModel = /** @class */ (function () {
+    function AuthModel() {
     }
-    UserModel.searchUser = function (userId) {
+    AuthModel.insertUser = function (userDTO) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 return [2 /*return*/, new Promise(function (resolve, reject) {
-                        var sql = "SELECT * FROM users where userId=\"?\"";
-                        db_1["default"].query(sql, [userId], function (err, results) {
+                        var userId = userDTO.userId, password = userDTO.password, name = userDTO.name, email = userDTO.email;
+                        var sql = "INSERT INTO users(userId, password, name, email) VALUES(?, ?, ?, ?)";
+                        db_1["default"].query(sql, [userId, password, name, email], function (err, results) {
                             if (err) {
                                 throw err;
                             }
-                            resolve(results[0]);
+                            resolve(userId);
                         });
                     })];
             });
         });
     };
-    return UserModel;
+    AuthModel.getPassword = function (userId) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, new Promise(function (resolve, reject) {
+                        var sql = "SELECT * FROM users where userId=?";
+                        var query = db_1["default"].query(sql, [userId], function (err, results) {
+                            if (err) {
+                                reject(err);
+                            }
+                            resolve(results[0].password);
+                        });
+                    })];
+            });
+        });
+    };
+    return AuthModel;
 }());
-exports.UserModel = UserModel;
-//# sourceMappingURL=UserModel.js.map
+exports.AuthModel = AuthModel;
+//# sourceMappingURL=AuthModel.js.map

@@ -41,7 +41,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 exports.__esModule = true;
 var express_1 = __importDefault(require("express"));
 var dotenv_1 = __importDefault(require("dotenv"));
-var UserService_1 = require("../services/UserService");
+var AuthService_1 = require("../services/AuthService");
 dotenv_1["default"].config();
 var authRouter = express_1["default"].Router();
 var errMsgs = {
@@ -58,7 +58,7 @@ authRouter.post("/register", function (req, res, next) { return __awaiter(void 0
         switch (_a.label) {
             case 0:
                 userDTO = req.body;
-                return [4 /*yield*/, UserService_1.UserSerive.register(userDTO)];
+                return [4 /*yield*/, AuthService_1.AuthSerive.register(userDTO)];
             case 1:
                 userRecord = _a.sent();
                 res.status(200).send(JSON.stringify(userRecord));
@@ -75,7 +75,7 @@ authRouter.post("/login", function (req, res, next) { return __awaiter(void 0, v
         switch (_a.label) {
             case 0:
                 userDTO = req.body;
-                return [4 /*yield*/, UserService_1.UserSerive.login(userDTO)];
+                return [4 /*yield*/, AuthService_1.AuthSerive.login(userDTO)];
             case 1:
                 userRecord = _a.sent();
                 if (userRecord.status === 200) {

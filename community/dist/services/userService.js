@@ -37,88 +37,25 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.UserSerive = void 0;
-var secure_1 = require("../modules/secure");
-var UserModel_1 = require("../models/UserModel");
 var jwt_1 = require("../modules/jwt");
-var errCodes = {
-    PASSWORD_NOT_MATCH: {
-        // 400, 회원가입시 패스워드 불일치
-        status: 400,
-        msg: "PASSWORD_NOT_MATCH"
-    },
-    ACCOUNT_LENGTH_ZERO: {
-        // 400, 로그인시 아이디, 비밀번호 미입력시
-        status: 400,
-        msg: "ACCOUNT_LENGTH_ZERO"
-    },
-    ACCOUNT_NOT_MATCH: {
-        // 400, 로그인시 아이디가 존재하지 않거나 패스워드가 틀린경우
-        status: 400,
-        msg: "ACCOUT_NOT_MATCH"
-    }
-};
+var error_1 = require("../error/error");
 var UserSerive = /** @class */ (function () {
     function UserSerive() {
     }
-    UserSerive.register = function (userDTO) {
+    UserSerive.getInfo = function (userDTO) {
         return __awaiter(this, void 0, void 0, function () {
-            var password, rePassword, salt, hashPassword, userRecord;
+            var accessToken, decodedToken;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        password = userDTO.password, rePassword = userDTO.rePassword;
-                        /** 비밀번호 일치여부 검사 */
-                        if (password !== rePassword) {
-                            return [2 /*return*/, {
-                                    status: errCodes.PASSWORD_NOT_MATCH.status,
-                                    msg: errCodes.PASSWORD_NOT_MATCH.msg
-                                }];
-                        }
-                        return [4 /*yield*/, secure_1.Secure.getSalt()];
-                    case 1:
-                        salt = _a.sent();
-                        return [4 /*yield*/, secure_1.Secure.hash(password, salt)];
-                    case 2:
-                        hashPassword = _a.sent();
-                        /** DB에 INSERT 요청 */
-                        userDTO.password = hashPassword;
-                        return [4 /*yield*/, UserModel_1.UserModel.insertUser(userDTO)];
-                    case 3:
-                        userRecord = _a.sent();
-                        return [2 /*return*/, userRecord];
+                accessToken = userDTO.accessToken;
+                /** accessToken 유효여부 검증 */
+                if (accessToken.length === 0) {
+                    return [2 /*return*/, {
+                            msg: error_1.UserError.INVALID_TOKEN.msg
+                        }];
                 }
-            });
-        });
-    };
-    UserSerive.login = function (userDTO) {
-        return __awaiter(this, void 0, void 0, function () {
-            var userId, password, hashedPassword, accessToken;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        userId = userDTO.userId, password = userDTO.password;
-                        /** 공백 입력 검증 */
-                        if (userId.length === 0 || password.length === 0) {
-                            return [2 /*return*/, {
-                                    status: errCodes.PASSWORD_NOT_MATCH.status,
-                                    msg: errCodes.PASSWORD_NOT_MATCH.msg
-                                }];
-                        }
-                        return [4 /*yield*/, UserModel_1.UserModel.getPassword(userId)];
-                    case 1:
-                        hashedPassword = _a.sent();
-                        if (!secure_1.Secure.comparePassword(password, hashedPassword)) {
-                            return [2 /*return*/, {
-                                    status: errCodes.PASSWORD_NOT_MATCH.status,
-                                    msg: errCodes.PASSWORD_NOT_MATCH.msg
-                                }];
-                        }
-                        accessToken = jwt_1.Jwt.create(userId);
-                        return [2 /*return*/, {
-                                status: 200,
-                                accessToken: accessToken
-                            }];
-                }
+                decodedToken = jwt_1.Jwt.decoded(accessToken);
+                console.log(decodedToken);
+                return [2 /*return*/];
             });
         });
     };

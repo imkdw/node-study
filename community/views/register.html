@@ -55,7 +55,7 @@
         if (response.status === 200) {
           const userDTO = await response.json();
           alert(`${userDTO.userId}님 회원가입이 완료되었습니다.`);
-          // location.href = "/login.html";
+          location.href = "/login.html";
         } else {
           const { errMsg } = await response.json();
           alert(errMsg);

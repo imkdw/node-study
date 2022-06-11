@@ -12,7 +12,7 @@ var method_override_1 = __importDefault(require("method-override"));
 /** 라우터 모듈 */
 var index_1 = __importDefault(require("./routes/index"));
 var auth_1 = __importDefault(require("./routes/auth"));
-// import userRouter from "./routes/user";
+var user_1 = __importDefault(require("./routes/user"));
 /** .env 파일 활성화 */
 dotenv_1["default"].config();
 var app = (0, express_1["default"])();
@@ -27,7 +27,7 @@ app.use((0, method_override_1["default"])("_method"));
 /** 라우터 정의 */
 app.use("/", index_1["default"]);
 app.use("/auth", auth_1["default"]);
-// app.use("/user", userRouter);
+app.use("/user", user_1["default"]);
 /** 템플릿 엔진 설정 */
 app.set("view engine", "html");
 nunjucks_1["default"].configure({

@@ -1,57 +1,22 @@
-// import express from "express";
-// import jwt from "jsonwebtoken";
-// import dotenv from "dotenv";
-// import db from "../db";
-// import { createToken, decodedToken } from "../modules/jwt";
+import express from "express";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+import db from "../db";
+import { UserSerive } from "../services/UserService";
 
-// dotenv.config();
+dotenv.config();
 
-// const userRouter = express.Router();
+const userRouter = express.Router();
 
-// /**
-//  * [POST] /user/info
-//  */
-// userRouter.post("/info", async (req, res, next) => {
-//   const { accessToken } = req.body;
-
-//   /** 로그인 여부 검증 */
-//   if (accessToken === "") {
-//     res.status(401).send({
-//       errMsg: "로그인이 필요한 기능입니다.",
-//     });
-
-//     return;
-//   }
-
-//   try {
-//     const decoded = await decodedToken(accessToken);
-
-//     db.query(
-//       `SELECT * from users where userId="${decoded.userId}"`,
-//       (err: any, results) => {
-//         if (err) {
-//           throw err;
-//         }
-//         const { userId, name, email } = results[0];
-//         res.status(200).send({
-//           userId,
-//           name,
-//           email,
-//         });
-//       }
-//     );
-//   } catch (err: any) {
-//     if (err.message === "jwt expired") {
-//       res.status(401).send({
-//         errMsg: "Expired Token",
-//       });
-//     } else {
-//       res.status(401).send({
-//         errMsg: "Invalid Token",
-//       });
-//     }
-//   }
-// });
+/**
+ * [POST] /user/info
+ */
+userRouter.post("/info", async (req, res, next) => {
+  const userDTO = req.body;
+  console.log(userDTO);
+  const userRecord = await UserSerive.getInfo(userDTO);
+  res.status(200).send(":");
+});
 
 // userRouter.put("/info", async (req, res) => {
 //   const { userId } = await decodedToken(
@@ -83,4 +48,4 @@
 //   });
 // });
 
-// export default userRouter;
+export default userRouter;

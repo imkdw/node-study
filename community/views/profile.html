@@ -31,6 +31,7 @@
     <script>
       async function loadInfo() {
         const accessToken = localStorage.getItem("accessToken");
+        console.log(accessToken);
 
         /** 로그인 여부 검증 */
         if (accessToken === "") {
@@ -41,7 +42,7 @@
 
         const data = {
           method: "POST",
-          body: accessToken,
+          body: JSON.stringify(accessToken),
           headers: {
             "Content-type": "application/json",
           },
