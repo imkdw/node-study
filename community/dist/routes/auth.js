@@ -44,11 +44,9 @@ var dotenv_1 = __importDefault(require("dotenv"));
 var AuthService_1 = require("../services/AuthService");
 dotenv_1["default"].config();
 var authRouter = express_1["default"].Router();
-var errMsgs = {
-    PASSWORD_NOT_MATCH: "비밀번호가 동일하지 않습니다.",
-    ACCOUNT_NOT_MATCH: "아이디 또는 비밀번호가 올바르지 않습니다,",
-    EXIST_USER: "이미 존재하는 사용자 입니다."
-};
+function responseError(status, msg, res) {
+    res.status(status).send(JSON.stringify({ msg: msg }));
+}
 /**
  * [POST] /auth/register
  */
@@ -61,6 +59,11 @@ authRouter.post("/register", function (req, res, next) { return __awaiter(void 0
                 return [4 /*yield*/, AuthService_1.AuthSerive.register(userDTO)];
             case 1:
                 userRecord = _a.sent();
+                /** 에러처리 */
+                if (userRecord.msg) {
+                    responseError(userRecord.status, userRecord.msg, res);
+                    return [2 /*return*/];
+                }
                 res.status(200).send(JSON.stringify(userRecord));
                 return [2 /*return*/];
         }
@@ -78,12 +81,12 @@ authRouter.post("/login", function (req, res, next) { return __awaiter(void 0, v
                 return [4 /*yield*/, AuthService_1.AuthSerive.login(userDTO)];
             case 1:
                 userRecord = _a.sent();
-                if (userRecord.status === 200) {
-                    res.status(userRecord.status).send(JSON.stringify(userRecord.accessToken));
+                /** 에러처리 */
+                if (userRecord.msg) {
+                    responseError(userRecord.status, userRecord.msg, res);
+                    return [2 /*return*/];
                 }
-                else {
-                    res.status(userRecord.status).send(JSON.stringify(userRecord.msg));
-                }
+                res.status(200).send(userRecord.accessToken);
                 return [2 /*return*/];
         }
     });

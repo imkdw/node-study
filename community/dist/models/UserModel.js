@@ -48,12 +48,12 @@ var UserModel = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 return [2 /*return*/, new Promise(function (resolve, reject) {
-                        var sql = "SELECT * FROM users where userId=\"?\"";
+                        var sql = "SELECT * FROM users where userId=?";
                         db_1["default"].query(sql, [userId], function (err, results) {
                             if (err) {
-                                throw err;
+                                reject(err);
                             }
-                            resolve(results[0]);
+                            resolve(results);
                         });
                     })];
             });

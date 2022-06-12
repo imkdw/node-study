@@ -23,3 +23,11 @@ export type loginReturns = {
 export type errorTypes = {
   msg: string;
 };
+
+export type getPasswordReturn = {
+  id: string;
+  userId: string;
+  password: string;
+  name: string;
+  email: string;
+};

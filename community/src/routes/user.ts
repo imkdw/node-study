@@ -14,8 +14,12 @@ const userRouter = express.Router();
 userRouter.post("/info", async (req, res, next) => {
   const userDTO = req.body;
   console.log(userDTO);
-  const userRecord = await UserSerive.getInfo(userDTO);
-  res.status(200).send(":");
+
+  // const userRecord = await UserSerive.userInfo(userDTO);
+
+  // if (userRecord.msg) {
+  //   res.status(userRecord.status).send(JSON.stringify(userRecord.msg));
+  // }
 });
 
 // userRouter.put("/info", async (req, res) => {

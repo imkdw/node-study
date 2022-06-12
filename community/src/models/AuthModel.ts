@@ -1,5 +1,6 @@
-import { registerParams } from "../types/auth.interface";
+import { getPasswordReturn, registerParams } from "../types/auth.interface";
 import db from "../db";
+import { OkPacket, RowDataPacket } from "mysql2";
 
 export class AuthModel {
   static async insertUser(userDTO: registerParams): Promise<string> {
@@ -16,7 +17,7 @@ export class AuthModel {
     });
   }
 
-  static async getPassword(userId: string): Promise<string> {
+  static async getPassword(userId: string): Promise<getPasswordReturn | any> {
     return new Promise((resolve, reject) => {
       const sql = `SELECT * FROM users where userId=?`;
       const query = db.query(sql, [userId], (err: any, results) => {
@@ -24,7 +25,7 @@ export class AuthModel {
           reject(err);
         }
 
-        resolve(results[0].password);
+        resolve(results);
       });
     });
   }

@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Response } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import db from "../db";
@@ -9,7 +9,9 @@ dotenv.config();
 
 const authRouter = express.Router();
 
-function getStatusCode() {}
+function responseError(status: number, msg: string, res: Response) {
+  res.status(status).send(JSON.stringify({ msg: msg }));
+}
 
 /**
  * [POST] /auth/register
@@ -17,6 +19,13 @@ function getStatusCode() {}
 authRouter.post("/register", async (req, res, next) => {
   const userDTO = req.body;
   const userRecord = await AuthSerive.register(userDTO);
+
+  /** 에러처리 */
+  if (userRecord.msg) {
+    responseError(userRecord.status, userRecord.msg, res);
+    return;
+  }
+
   res.status(200).send(JSON.stringify(userRecord));
 });
 
@@ -26,8 +35,14 @@ authRouter.post("/register", async (req, res, next) => {
 authRouter.post("/login", async (req, res, next) => {
   const userDTO = req.body;
   const userRecord = await AuthSerive.login(userDTO);
+
+  /** 에러처리 */
   if (userRecord.msg) {
+    responseError(userRecord.status, userRecord.msg, res);
+    return;
   }
+
+  res.status(200).send(userRecord.accessToken);
 });
 
 export default authRouter;

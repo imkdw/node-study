@@ -39,23 +39,31 @@ exports.__esModule = true;
 exports.UserSerive = void 0;
 var jwt_1 = require("../modules/jwt");
 var error_1 = require("../error/error");
+var UserModel_1 = require("../models/UserModel");
 var UserSerive = /** @class */ (function () {
     function UserSerive() {
     }
-    UserSerive.getInfo = function (userDTO) {
+    UserSerive.userInfo = function (userDTO) {
         return __awaiter(this, void 0, void 0, function () {
-            var accessToken, decodedToken;
-            return __generator(this, function (_a) {
-                accessToken = userDTO.accessToken;
-                /** accessToken 유효여부 검증 */
-                if (accessToken.length === 0) {
-                    return [2 /*return*/, {
-                            msg: error_1.UserError.INVALID_TOKEN.msg
-                        }];
+            var accessToken, decodedToken, userInfo, _a, userId, name, email;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        accessToken = userDTO.accessToken;
+                        /** accessToken 유효여부 검증 */
+                        if (accessToken.length === 0) {
+                            return [2 /*return*/, {
+                                    status: error_1.UserError.INVALID_TOKEN.status,
+                                    msg: error_1.UserError.INVALID_TOKEN.msg
+                                }];
+                        }
+                        decodedToken = jwt_1.Jwt.decoded(accessToken);
+                        return [4 /*yield*/, UserModel_1.UserModel.searchUser(decodedToken.userId)];
+                    case 1:
+                        userInfo = _b.sent();
+                        _a = userInfo[0], userId = _a.userId, name = _a.name, email = _a.email;
+                        return [2 /*return*/, { userId: userId, name: name, email: email }];
                 }
-                decodedToken = jwt_1.Jwt.decoded(accessToken);
-                console.log(decodedToken);
-                return [2 /*return*/];
             });
         });
     };

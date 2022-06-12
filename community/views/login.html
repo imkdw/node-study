@@ -46,17 +46,16 @@
           },
         };
 
-        console.log(userData);
-
         const response = await fetch(`/auth/login`, userData);
         if (response.status === 200) {
+          console.log("200");
           const accessToken = await response.json();
-          localStorage.setItem("accessToken", JSON.stringify(accessToken));
+          localStorage.setItem("accessToken", accessToken);
           alert("로그인 성공");
           location.href = "/";
         } else {
-          const { errCode, errMsg } = await response.json();
-          alert(errMsg);
+          const { msg } = await response.json();
+          alert(msg);
         }
       });
     </script>

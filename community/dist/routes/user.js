@@ -41,25 +41,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 exports.__esModule = true;
 var express_1 = __importDefault(require("express"));
 var dotenv_1 = __importDefault(require("dotenv"));
-var UserService_1 = require("../services/UserService");
 dotenv_1["default"].config();
 var userRouter = express_1["default"].Router();
 /**
  * [POST] /user/info
  */
 userRouter.post("/info", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var userDTO, userRecord;
+    var userDTO;
     return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                userDTO = req.body;
-                console.log(userDTO);
-                return [4 /*yield*/, UserService_1.UserSerive.getInfo(userDTO)];
-            case 1:
-                userRecord = _a.sent();
-                res.status(200).send(":");
-                return [2 /*return*/];
-        }
+        userDTO = req.body;
+        console.log(userDTO);
+        return [2 /*return*/];
     });
 }); });
 // userRouter.put("/info", async (req, res) => {

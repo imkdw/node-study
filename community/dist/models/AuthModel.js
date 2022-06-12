@@ -69,7 +69,7 @@ var AuthModel = /** @class */ (function () {
                             if (err) {
                                 reject(err);
                             }
-                            resolve(results[0].password);
+                            resolve(results);
                         });
                     })];
             });

@@ -54,6 +54,7 @@ var AuthSerive = /** @class */ (function () {
                         /** 비밀번호 일치여부 검사 */
                         if (password !== rePassword) {
                             return [2 /*return*/, {
+                                    status: error_1.AuthError.PASSWORD_NOT_MATCH.status,
                                     msg: error_1.AuthError.PASSWORD_NOT_MATCH.msg
                                 }];
                         }
@@ -69,7 +70,6 @@ var AuthSerive = /** @class */ (function () {
                     case 3:
                         userId = _a.sent();
                         return [2 /*return*/, {
-                                status: 200,
                                 userId: userId
                             }];
                 }
@@ -86,20 +86,27 @@ var AuthSerive = /** @class */ (function () {
                         /** 공백 입력 검증 */
                         if (userId.length === 0 || password.length === 0) {
                             return [2 /*return*/, {
+                                    status: error_1.AuthError.PASSWORD_NOT_MATCH.status,
                                     msg: error_1.AuthError.PASSWORD_NOT_MATCH.msg
                                 }];
                         }
                         return [4 /*yield*/, AuthModel_1.AuthModel.getPassword(userId)];
                     case 1:
                         hashedPassword = _a.sent();
+                        if (hashedPassword.length === 0) {
+                            return [2 /*return*/, {
+                                    status: error_1.AuthError.ACCOUNT_NOT_MATCH.status,
+                                    msg: error_1.AuthError.ACCOUNT_NOT_MATCH.msg
+                                }];
+                        }
                         if (!secure_1.Secure.comparePassword(password, hashedPassword)) {
                             return [2 /*return*/, {
+                                    status: error_1.AuthError.PASSWORD_NOT_MATCH.status,
                                     msg: error_1.AuthError.PASSWORD_NOT_MATCH.msg
                                 }];
                         }
                         accessToken = jwt_1.Jwt.create(userId);
                         return [2 /*return*/, {
-                                status: 200,
                                 accessToken: accessToken
                             }];
                 }
