@@ -13,7 +13,6 @@ const userRouter = express.Router();
  */
 userRouter.post("/info", async (req, res, next) => {
   const userDTO = req.body;
-  console.log(userDTO);
 
   // const userRecord = await UserSerive.userInfo(userDTO);
 
