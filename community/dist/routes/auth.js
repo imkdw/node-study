@@ -70,14 +70,14 @@ authRouter.post("/register", function (req, res, next) { return __awaiter(void 0
     });
 }); });
 /**
- * [GET] /auth/login
+ * [POST] /auth/login
  */
 authRouter.post("/login", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var userDTO, userRecord;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                userDTO = req.body;
+                userDTO = req.body.data;
                 return [4 /*yield*/, AuthService_1.AuthSerive.login(userDTO)];
             case 1:
                 userRecord = _a.sent();

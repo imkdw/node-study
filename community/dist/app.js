@@ -9,6 +9,7 @@ var morgan_1 = __importDefault(require("morgan"));
 var dotenv_1 = __importDefault(require("dotenv"));
 var path_1 = __importDefault(require("path"));
 var method_override_1 = __importDefault(require("method-override"));
+var cors_1 = __importDefault(require("cors"));
 /** 라우터 모듈 */
 var index_1 = __importDefault(require("./routes/index"));
 var auth_1 = __importDefault(require("./routes/auth"));
@@ -24,6 +25,7 @@ app.use(express_1["default"].static(path_1["default"].join(__dirname, "../public
 app.use(express_1["default"].json());
 app.use(express_1["default"].urlencoded({ extended: false }));
 app.use((0, method_override_1["default"])("_method"));
+app.use((0, cors_1["default"])());
 /** 라우터 정의 */
 app.use("/", index_1["default"]);
 app.use("/auth", auth_1["default"]);

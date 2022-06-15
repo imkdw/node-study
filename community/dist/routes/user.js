@@ -50,7 +50,6 @@ userRouter.post("/info", function (req, res, next) { return __awaiter(void 0, vo
     var userDTO;
     return __generator(this, function (_a) {
         userDTO = req.body;
-        console.log(userDTO);
         return [2 /*return*/];
     });
 }); });

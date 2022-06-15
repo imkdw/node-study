@@ -30,10 +30,10 @@ authRouter.post("/register", async (req, res, next) => {
 });
 
 /**
- * [GET] /auth/login
+ * [POST] /auth/login
  */
 authRouter.post("/login", async (req, res, next) => {
-  const userDTO = req.body;
+  const userDTO = req.body.data;
   const userRecord = await AuthSerive.login(userDTO);
 
   /** 에러처리 */

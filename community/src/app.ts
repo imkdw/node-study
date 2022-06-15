@@ -4,6 +4,7 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import path from "path";
 import methodOverride from "method-override";
+import cors from "cors";
 
 /** 라우터 모듈 */
 import indexRouter from "./routes/index";
@@ -23,6 +24,7 @@ app.use(express.static(path.join(__dirname, "../public")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(methodOverride("_method"));
+app.use(cors());
 
 /** 라우터 정의 */
 app.use("/", indexRouter);
