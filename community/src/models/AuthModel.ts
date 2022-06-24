@@ -5,15 +5,19 @@ import { OkPacket, RowDataPacket } from "mysql2";
 export class AuthModel {
   static async insertUser(userDTO: registerParams): Promise<string> {
     return new Promise((resolve, reject) => {
-      const { userId, password, name, email } = userDTO;
-      const sql = `INSERT INTO users(userId, password, name, email) VALUES(?, ?, ?, ?)`;
-      db.query(sql, [userId, password, name, email], (err: any, results) => {
-        if (err) {
-          throw err;
-        }
+      const { userId, password, nickname, email } = userDTO;
+      const sql = `INSERT INTO users(userId, password, nickname, email) VALUES(?, ?, ?, ?)`;
+      db.query(
+        sql,
+        [userId, password, nickname, email],
+        (err: any, results) => {
+          if (err) {
+            throw err;
+          }
 
-        resolve(userId);
-      });
+          resolve(userId);
+        }
+      );
     });
   }
 

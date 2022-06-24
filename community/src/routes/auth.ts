@@ -17,12 +17,13 @@ function responseError(status: number, msg: string, res: Response) {
  * [POST] /auth/register
  */
 authRouter.post("/register", async (req, res, next) => {
-  const userDTO = req.body;
+  const userDTO = req.body.data;
   const userRecord = await AuthSerive.register(userDTO);
 
   /** 에러처리 */
   if (userRecord.msg) {
     responseError(userRecord.status, userRecord.msg, res);
+    console.error(userRecord);
     return;
   }
 
@@ -39,10 +40,11 @@ authRouter.post("/login", async (req, res, next) => {
   /** 에러처리 */
   if (userRecord.msg) {
     responseError(userRecord.status, userRecord.msg, res);
+    console.error(userRecord);
     return;
   }
 
-  res.status(200).send(userRecord.accessToken);
+  res.status(200).send(JSON.stringify({ accessToken: userRecord.accessToken }));
 });
 
 export default authRouter;

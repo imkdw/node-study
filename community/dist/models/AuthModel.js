@@ -48,9 +48,9 @@ var AuthModel = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 return [2 /*return*/, new Promise(function (resolve, reject) {
-                        var userId = userDTO.userId, password = userDTO.password, name = userDTO.name, email = userDTO.email;
-                        var sql = "INSERT INTO users(userId, password, name, email) VALUES(?, ?, ?, ?)";
-                        db_1["default"].query(sql, [userId, password, name, email], function (err, results) {
+                        var userId = userDTO.userId, password = userDTO.password, nickname = userDTO.nickname, email = userDTO.email;
+                        var sql = "INSERT INTO users(userId, password, nickname, email) VALUES(?, ?, ?, ?)";
+                        db_1["default"].query(sql, [userId, password, nickname, email], function (err, results) {
                             if (err) {
                                 throw err;
                             }

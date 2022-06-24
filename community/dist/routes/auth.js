@@ -55,13 +55,14 @@ authRouter.post("/register", function (req, res, next) { return __awaiter(void 0
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                userDTO = req.body;
+                userDTO = req.body.data;
                 return [4 /*yield*/, AuthService_1.AuthSerive.register(userDTO)];
             case 1:
                 userRecord = _a.sent();
                 /** 에러처리 */
                 if (userRecord.msg) {
                     responseError(userRecord.status, userRecord.msg, res);
+                    console.error(userRecord);
                     return [2 /*return*/];
                 }
                 res.status(200).send(JSON.stringify(userRecord));
@@ -84,9 +85,10 @@ authRouter.post("/login", function (req, res, next) { return __awaiter(void 0, v
                 /** 에러처리 */
                 if (userRecord.msg) {
                     responseError(userRecord.status, userRecord.msg, res);
+                    console.error(userRecord);
                     return [2 /*return*/];
                 }
-                res.status(200).send(userRecord.accessToken);
+                res.status(200).send(JSON.stringify({ accessToken: userRecord.accessToken }));
                 return [2 /*return*/];
         }
     });
