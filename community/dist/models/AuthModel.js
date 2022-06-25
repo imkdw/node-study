@@ -52,9 +52,9 @@ var AuthModel = /** @class */ (function () {
                         var sql = "INSERT INTO users(userId, password, nickname, email) VALUES(?, ?, ?, ?)";
                         db_1["default"].query(sql, [userId, password, nickname, email], function (err, results) {
                             if (err) {
-                                throw err;
+                                reject(err);
                             }
-                            resolve(userId);
+                            resolve({ userId: userId, nickname: nickname, email: email });
                         });
                     })];
             });

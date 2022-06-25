@@ -14,6 +14,11 @@ export const AuthError = {
     status: 400,
     msg: "ACCOUT_NOT_MATCH",
   },
+  DUP_ACCOUNT: {
+    // 400, 회원가입시 중복된 계정일경우
+    status: 400,
+    msg: "DUP_ACCOUNT",
+  },
 };
 
 export const UserError = {

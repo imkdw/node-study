@@ -18,7 +18,7 @@ function responseError(status: number, msg: string, res: Response) {
  */
 authRouter.post("/register", async (req, res, next) => {
   const userDTO = req.body.data;
-  const userRecord = await AuthSerive.register(userDTO);
+  const userRecord: any = await AuthSerive.register(userDTO);
 
   /** 에러처리 */
   if (userRecord.msg) {
@@ -35,7 +35,7 @@ authRouter.post("/register", async (req, res, next) => {
  */
 authRouter.post("/login", async (req, res, next) => {
   const userDTO = req.body.data;
-  const userRecord = await AuthSerive.login(userDTO);
+  const userRecord: any = await AuthSerive.login(userDTO);
 
   /** 에러처리 */
   if (userRecord.msg) {

@@ -41,22 +41,22 @@ var secure_1 = require("../modules/secure");
 var AuthModel_1 = require("../models/AuthModel");
 var jwt_1 = require("../modules/jwt");
 var error_1 = require("../error/error");
+function returnError(status, msg) {
+    return { status: status, msg: msg };
+}
 var AuthSerive = /** @class */ (function () {
     function AuthSerive() {
     }
     AuthSerive.register = function (userDTO) {
         return __awaiter(this, void 0, void 0, function () {
-            var password, rePassword, salt, hashPassword, userId;
+            var password, rePassword, salt, hashPassword, userRecord, errorCode;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         password = userDTO.password, rePassword = userDTO.rePassword;
                         /** 비밀번호 일치여부 검사 */
                         if (password !== rePassword) {
-                            return [2 /*return*/, {
-                                    status: error_1.AuthError.PASSWORD_NOT_MATCH.status,
-                                    msg: error_1.AuthError.PASSWORD_NOT_MATCH.msg
-                                }];
+                            return [2 /*return*/, returnError(error_1.AuthError.PASSWORD_NOT_MATCH.status, error_1.AuthError.PASSWORD_NOT_MATCH.msg)];
                         }
                         return [4 /*yield*/, secure_1.Secure.getSalt()];
                     case 1:
@@ -68,10 +68,16 @@ var AuthSerive = /** @class */ (function () {
                         userDTO.password = hashPassword;
                         return [4 /*yield*/, AuthModel_1.AuthModel.insertUser(userDTO)];
                     case 3:
-                        userId = _a.sent();
-                        return [2 /*return*/, {
-                                userId: userId
-                            }];
+                        userRecord = _a.sent();
+                        /** Model Layer로 부터 에러가 있을경우 */
+                        if (userRecord.code) {
+                            errorCode = userRecord.code;
+                            console.log(errorCode);
+                            if (errorCode === "ER_DUP_ENTRY") {
+                                return [2 /*return*/, returnError(error_1.AuthError.DUP_ACCOUNT.status, error_1.AuthError.DUP_ACCOUNT.msg)];
+                            }
+                        }
+                        return [2 /*return*/, { userRecord: userRecord }];
                 }
             });
         });
@@ -85,25 +91,16 @@ var AuthSerive = /** @class */ (function () {
                         userId = userDTO.userId, password = userDTO.password;
                         /** 공백 입력 검증 */
                         if (userId.length === 0 || password.length === 0) {
-                            return [2 /*return*/, {
-                                    status: error_1.AuthError.PASSWORD_NOT_MATCH.status,
-                                    msg: error_1.AuthError.PASSWORD_NOT_MATCH.msg
-                                }];
+                            return [2 /*return*/, returnError(error_1.AuthError.PASSWORD_NOT_MATCH.status, error_1.AuthError.PASSWORD_NOT_MATCH.msg)];
                         }
                         return [4 /*yield*/, AuthModel_1.AuthModel.getPassword(userId)];
                     case 1:
                         hashedPassword = _a.sent();
                         if (hashedPassword.length === 0) {
-                            return [2 /*return*/, {
-                                    status: error_1.AuthError.ACCOUNT_NOT_MATCH.status,
-                                    msg: error_1.AuthError.ACCOUNT_NOT_MATCH.msg
-                                }];
+                            return [2 /*return*/, returnError(error_1.AuthError.ACCOUNT_NOT_MATCH.status, error_1.AuthError.ACCOUNT_NOT_MATCH.msg)];
                         }
                         if (!secure_1.Secure.comparePassword(password, hashedPassword)) {
-                            return [2 /*return*/, {
-                                    status: error_1.AuthError.PASSWORD_NOT_MATCH.status,
-                                    msg: error_1.AuthError.PASSWORD_NOT_MATCH.msg
-                                }];
+                            return [2 /*return*/, returnError(error_1.AuthError.PASSWORD_NOT_MATCH.status, error_1.AuthError.PASSWORD_NOT_MATCH.msg)];
                         }
                         accessToken = jwt_1.Jwt.create(userId);
                         return [2 /*return*/, {

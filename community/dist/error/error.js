@@ -16,6 +16,11 @@ exports.AuthError = {
         // 400, 로그인시 아이디가 존재하지 않거나 패스워드가 틀린경우
         status: 400,
         msg: "ACCOUT_NOT_MATCH"
+    },
+    DUP_ACCOUNT: {
+        // 400, 회원가입시 중복된 계정일경우
+        status: 400,
+        msg: "DUP_ACCOUNT"
     }
 };
 exports.UserError = {
