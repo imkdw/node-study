@@ -22,7 +22,6 @@ app.use(cors());
 /** 라우터 정의 */
 
 /** 템플릿 엔진 설정 */
-
 app.listen(app.get("port"), () => {
   console.log(`Server Port : ${app.get("port")}`);
 });
