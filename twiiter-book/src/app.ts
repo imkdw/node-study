@@ -32,7 +32,7 @@ app.get("/tweets", (req, res) => {
 
 app.post("/sign-up", (req, res) => {
   const newUser = req.body;
-  newUser["id"] = app.locals.idCount;
+
   newUser["follow"] = [];
   app.locals.users[app.locals.idCount] = newUser;
   app.locals.idCount += 1;

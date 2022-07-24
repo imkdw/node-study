@@ -7,4 +7,14 @@ const connection = mysql.createConnection({
   database: "twitter_book",
 });
 
-export default connection;
+type insertUserParams = {
+  newUser: {
+    name: string;
+    email: string;
+    password: string;
+    profile: string;
+  };
+};
+async function insertUser(newUser: insertUserParams) {
+  const query = `INSERT INTO users(name, email, profile, password) VALUES `;
+}
