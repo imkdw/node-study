@@ -6,6 +6,8 @@ exports.__esModule = true;
 var express_1 = __importDefault(require("express"));
 var dotenv_1 = __importDefault(require("dotenv"));
 var morgan_1 = __importDefault(require("morgan"));
+var authRouter_1 = __importDefault(require("./route/authRouter"));
+var tweetRouter_1 = __importDefault(require("./route/tweetRouter"));
 dotenv_1["default"].config();
 var app = (0, express_1["default"])();
 app.set("port", process.env.PORT || 5000);
@@ -13,9 +15,13 @@ app.set("port", process.env.PORT || 5000);
 app.use((0, morgan_1["default"])("dev"));
 app.use(express_1["default"].json());
 app.use(express_1["default"].urlencoded({ extended: true }));
+/** 전역변수 정의 */
 app.locals.idCount = 1;
 app.locals.users = {};
 app.locals.tweets = {};
+/** 라우터 정의 */
+app.use("/auth", authRouter_1["default"]);
+app.use("/tweet", tweetRouter_1["default"]);
 app.get("/users", function (req, res) {
     var users = app.locals.users;
     res.send(users);
@@ -25,33 +31,6 @@ app.get("/tweets", function (req, res) {
     var tweets = app.locals.tweets;
     res.send(tweets);
     return;
-});
-app.post("/sign-up", function (req, res) {
-    var newUser = req.body;
-    newUser["id"] = app.locals.idCount;
-    newUser["follow"] = [];
-    app.locals.users[app.locals.idCount] = newUser;
-    app.locals.idCount += 1;
-    app.locals.tweets[newUser["id"]] = [];
-    res.send("".concat(newUser["id"], "\uBC88 \uD68C\uC6D0 ").concat(newUser["name"], "\uB2D8 \uACC4\uC815\uC0DD\uC131 \uC644\uB8CC"));
-});
-app.post("/tweet", function (req, res) {
-    var payload = req.body;
-    var userId = payload["id"];
-    var tweet = payload["tweet"];
-    if (!Object.keys(app.locals.users).includes(userId)) {
-        res.status(400).send("사용자가 존재하지 않습니다.");
-        return;
-    }
-    if (tweet.length > 300) {
-        res.status(400).send("300자를 초과했습니다.");
-        return;
-    }
-    app.locals.tweets[userId].push({
-        id: userId,
-        tweet: tweet
-    });
-    res.send("".concat(app.locals.users[userId].name, "\uB2D8 \uD2B8\uC717 \uC791\uC131\uC644\uB8CC"));
 });
 app.post("/follow", function (req, res) {
     var payload = req.body;

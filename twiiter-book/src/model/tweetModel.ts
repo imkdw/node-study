@@ -1,0 +1,21 @@
+import connection from "../db";
+import { tweetParams } from "../types/tweet.interface";
+
+class TweetModel {
+  static newTweet = async (payload: tweetParams) => {
+    return new Promise((resolve, reject) => {
+      const { id, tweet } = payload;
+      const query = "INSERT INTO tweets(user_id, tweet) VALUES(?, ?)";
+
+      connection.query(query, [id, tweet], (err, result) => {
+        if (err) {
+          reject(err);
+        }
+
+        resolve(result);
+      });
+    });
+  };
+}
+
+export default TweetModel;

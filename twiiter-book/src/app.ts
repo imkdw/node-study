@@ -1,7 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
 import morgan from "morgan";
-import connection from "./db";
+import authRouter from "./route/authRouter";
+import tweetRouter from "./route/tweetRouter";
 
 dotenv.config();
 
@@ -13,10 +14,14 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+/** 전역변수 정의 */
 app.locals.idCount = 1;
 app.locals.users = {};
 app.locals.tweets = {};
-app.locals.database = connection;
+
+/** 라우터 정의 */
+app.use("/auth", authRouter);
+app.use("/tweet", tweetRouter);
 
 app.get("/users", (req, res) => {
   const users = app.locals.users;
@@ -28,39 +33,6 @@ app.get("/tweets", (req, res) => {
   const tweets = app.locals.tweets;
   res.send(tweets);
   return;
-});
-
-app.post("/sign-up", (req, res) => {
-  const newUser = req.body;
-
-  newUser["follow"] = [];
-  app.locals.users[app.locals.idCount] = newUser;
-  app.locals.idCount += 1;
-  app.locals.tweets[newUser["id"]] = [];
-  res.send(`${newUser["id"]}번 회원 ${newUser["name"]}님 계정생성 완료`);
-});
-
-app.post("/tweet", (req, res) => {
-  const payload = req.body;
-  const userId = payload["id"];
-  const tweet = payload["tweet"];
-
-  if (!Object.keys(app.locals.users).includes(userId)) {
-    res.status(400).send("사용자가 존재하지 않습니다.");
-    return;
-  }
-
-  if (tweet.length > 300) {
-    res.status(400).send("300자를 초과했습니다.");
-    return;
-  }
-
-  app.locals.tweets[userId].push({
-    id: userId,
-    tweet: tweet,
-  });
-
-  res.send(`${app.locals.users[userId].name}님 트윗 작성완료`);
 });
 
 app.post("/follow", (req, res) => {
