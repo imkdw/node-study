@@ -93,22 +93,6 @@ app.post("/unfollow", (req, res) => {
   );
 });
 
-app.get("/timeline/:userId", (req, res) => {
-  const userId = req.params.userId;
-  const follows = app.locals.users[userId].follow;
-  const timeline = [];
-  follows.forEach((follow) => {
-    if (Object.keys(app.locals.tweets).includes(follow)) {
-      const tweets = app.locals.tweets[follow];
-      tweets.forEach((tweet) => {
-        timeline.push(tweet);
-      });
-    }
-  });
-
-  res.send(timeline);
-});
-
 app.listen(app.get("port"), () => {
   console.log(`Server Running : PORT : ${app.get("port")}`);
 });

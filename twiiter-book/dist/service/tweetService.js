@@ -48,8 +48,34 @@ var TweetService = /** @class */ (function () {
     TweetService.newTweet = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
         var newTweetRecord;
         return __generator(_a, function (_b) {
-            newTweetRecord = tweetModel_1["default"].newTweet(payload);
-            return [2 /*return*/, newTweetRecord];
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, tweetModel_1["default"].newTweet(payload)];
+                case 1:
+                    newTweetRecord = _b.sent();
+                    return [2 /*return*/, newTweetRecord];
+            }
+        });
+    }); };
+    TweetService.searchTweet = function (lastRowId) { return __awaiter(void 0, void 0, void 0, function () {
+        var searchTweetRecord;
+        return __generator(_a, function (_b) {
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, tweetModel_1["default"].searchTweet(lastRowId)];
+                case 1:
+                    searchTweetRecord = _b.sent();
+                    return [2 /*return*/, searchTweetRecord];
+            }
+        });
+    }); };
+    TweetService.loadTimeline = function (userId) { return __awaiter(void 0, void 0, void 0, function () {
+        var timelineRecord;
+        return __generator(_a, function (_b) {
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, tweetModel_1["default"].loadTimeline(userId)];
+                case 1:
+                    timelineRecord = _b.sent();
+                    return [2 /*return*/, timelineRecord];
+            }
         });
     }); };
     return TweetService;

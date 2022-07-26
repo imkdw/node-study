@@ -59,6 +59,32 @@ var TweetModel = /** @class */ (function () {
                 })];
         });
     }); };
+    TweetModel.searchTweet = function (lastRowId) { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(_a, function (_b) {
+            return [2 /*return*/, new Promise(function (resolve, reject) {
+                    var query = "SELECT id, user_id, tweet FROM tweets WHERE  id=?";
+                    db_1["default"].query(query, [lastRowId], function (err, result) {
+                        if (err) {
+                            reject(err);
+                        }
+                        resolve(result);
+                    });
+                })];
+        });
+    }); };
+    TweetModel.loadTimeline = function (userId) { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(_a, function (_b) {
+            return [2 /*return*/, new Promise(function (resolve, reject) {
+                    var query = "SELECT * from tweets";
+                    db_1["default"].query(query, [userId], function (err, result) {
+                        if (err) {
+                            reject(err);
+                        }
+                        resolve(result);
+                    });
+                })];
+        });
+    }); };
     return TweetModel;
 }());
 exports["default"] = TweetModel;

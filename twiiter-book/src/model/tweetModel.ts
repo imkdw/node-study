@@ -16,6 +16,32 @@ class TweetModel {
       });
     });
   };
+
+  static searchTweet = async (lastRowId: number) => {
+    return new Promise((resolve, reject) => {
+      const query = "SELECT id, user_id, tweet FROM tweets WHERE  id=?";
+      connection.query(query, [lastRowId], (err, result) => {
+        if (err) {
+          reject(err);
+        }
+
+        resolve(result);
+      });
+    });
+  };
+
+  static loadTimeline = async (userId: string) => {
+    return new Promise((resolve, reject) => {
+      const query = "SELECT * from tweets";
+      connection.query(query, [userId], (err, result) => {
+        if (err) {
+          reject(err);
+        }
+
+        resolve(result);
+      });
+    });
+  };
 }
 
 export default TweetModel;

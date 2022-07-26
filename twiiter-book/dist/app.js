@@ -72,20 +72,6 @@ app.post("/unfollow", function (req, res) {
     app.locals.users[userId].follow = userFollowList.filter(function (userId) { return userId !== userIdToUnfollow; });
     res.send("".concat(user.name, "\uB2D8 \uACC4\uC815\uC5D0\uC11C ").concat(app.locals.users[userIdToUnfollow].name, "\uB2D8\uC774 \uC5B8\uD314\uB85C\uC6B0 \uB418\uC5C8\uC2B5\uB2C8\uB2E4."));
 });
-app.get("/timeline/:userId", function (req, res) {
-    var userId = req.params.userId;
-    var follows = app.locals.users[userId].follow;
-    var timeline = [];
-    follows.forEach(function (follow) {
-        if (Object.keys(app.locals.tweets).includes(follow)) {
-            var tweets = app.locals.tweets[follow];
-            tweets.forEach(function (tweet) {
-                timeline.push(tweet);
-            });
-        }
-    });
-    res.send(timeline);
-});
 app.listen(app.get("port"), function () {
     console.log("Server Running : PORT : ".concat(app.get("port")));
 });

@@ -43,7 +43,7 @@ var express_1 = __importDefault(require("express"));
 var tweetService_1 = __importDefault(require("../service/tweetService"));
 var tweetRouter = express_1["default"].Router();
 tweetRouter.post("/", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var payload, tweetRecord, err_1;
+    var payload, tweetRecord, lastRowId, searchTweetRecord, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -54,15 +54,42 @@ tweetRouter.post("/", function (req, res) { return __awaiter(void 0, void 0, voi
                 }
                 _a.label = 1;
             case 1:
-                _a.trys.push([1, 3, , 4]);
+                _a.trys.push([1, 4, , 5]);
                 return [4 /*yield*/, tweetService_1["default"].newTweet(payload)];
             case 2:
                 tweetRecord = _a.sent();
-                res.send("트윗 저장 성공");
-                return [3 /*break*/, 4];
+                lastRowId = tweetRecord.insertId;
+                return [4 /*yield*/, tweetService_1["default"].searchTweet(lastRowId)];
             case 3:
+                searchTweetRecord = _a.sent();
+                res.send(searchTweetRecord[0]);
+                return [3 /*break*/, 5];
+            case 4:
                 err_1 = _a.sent();
                 console.error(err_1);
+                res.status(400).send("DB Error");
+                return [3 /*break*/, 5];
+            case 5: return [2 /*return*/];
+        }
+    });
+}); });
+tweetRouter.get("/timeline/:user_id", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var userId, timelineRecord, err_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                userId = req.params.user_id;
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, tweetService_1["default"].loadTimeline(userId)];
+            case 2:
+                timelineRecord = _a.sent();
+                res.send(timelineRecord);
+                return [3 /*break*/, 4];
+            case 3:
+                err_2 = _a.sent();
+                console.error(err_2);
                 res.status(400).send("DB Error");
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];

@@ -13,8 +13,20 @@ tweetRouter.post("/", async (req, res) => {
 
   try {
     const tweetRecord: any = await TweetService.newTweet(payload);
+    const lastRowId = tweetRecord.insertId;
+    const searchTweetRecord = await TweetService.searchTweet(lastRowId);
+    res.send(searchTweetRecord[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(400).send("DB Error");
+  }
+});
 
-    res.send("트윗 저장 성공");
+tweetRouter.get("/timeline/:user_id", async (req, res) => {
+  const userId = req.params.user_id;
+  try {
+    const timelineRecord = await TweetService.loadTimeline(userId);
+    res.send(timelineRecord);
   } catch (err) {
     console.error(err);
     res.status(400).send("DB Error");
