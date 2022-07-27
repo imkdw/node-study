@@ -39,53 +39,32 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-var db_1 = __importDefault(require("../db"));
-var TweetModel = /** @class */ (function () {
-    function TweetModel() {
-    }
-    var _a;
-    _a = TweetModel;
-    TweetModel.newTweet = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(_a, function (_b) {
-            return [2 /*return*/, new Promise(function (resolve, reject) {
-                    var id = payload.id, tweet = payload.tweet;
-                    var query = "INSERT INTO tweets(user_id, tweet) VALUES(?, ?)";
-                    db_1["default"].query(query, [id, tweet], function (err, result) {
-                        if (err) {
-                            reject(err);
-                        }
-                        resolve(result);
-                    });
-                })];
-        });
-    }); };
-    TweetModel.searchTweet = function (lastRowId) { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(_a, function (_b) {
-            return [2 /*return*/, new Promise(function (resolve, reject) {
-                    var query = "SELECT id, user_id, tweet FROM tweets WHERE  id=?";
-                    db_1["default"].query(query, [lastRowId], function (err, result) {
-                        if (err) {
-                            reject(err);
-                        }
-                        resolve(result);
-                    });
-                })];
-        });
-    }); };
-    TweetModel.loadTimeline = function (userId) { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(_a, function (_b) {
-            return [2 /*return*/, new Promise(function (resolve, reject) {
-                    var query = "SELECT t.user_id, t.tweet FROM tweets t LEFT JOIN users_follow_list ufl on ufl.user_id = ? WHERE t.user_id = ? OR ufl.user_id = ?";
-                    db_1["default"].query(query, [userId, userId, userId], function (err, result) {
-                        if (err) {
-                            reject(err);
-                        }
-                        resolve(result);
-                    });
-                })];
-        });
-    }); };
-    return TweetModel;
-}());
-exports["default"] = TweetModel;
-//# sourceMappingURL=tweetModel.js.map
+var express_1 = __importDefault(require("express"));
+var userService_1 = __importDefault(require("../service/userService"));
+var userRouter = express_1["default"].Router();
+userRouter.post("/follow", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var payload, followRecord, err_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                payload = req.body;
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, userService_1["default"].addFollow(payload.id, payload.follow)];
+            case 2:
+                followRecord = _a.sent();
+                console.log(followRecord);
+                res.send("팔로우 성공");
+                return [3 /*break*/, 4];
+            case 3:
+                err_1 = _a.sent();
+                console.error(err_1);
+                res.status(400).send("DB Error");
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); });
+exports["default"] = userRouter;
+//# sourceMappingURL=userRouter.js.map
