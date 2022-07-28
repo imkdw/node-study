@@ -12,7 +12,7 @@ userRouter.post("/follow", async (req, res) => {
       payload.follow
     );
     console.log(followRecord);
-    res.send("팔로우 성공");
+    res.send("팔로우 성공!");
   } catch (err) {
     console.error(err);
     res.status(400).send("DB Error");
