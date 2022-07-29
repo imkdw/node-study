@@ -69,5 +69,18 @@ authRouter.post("/sign-up", function (req, res) { return __awaiter(void 0, void 
         }
     });
 }); });
+authRouter.post("/login", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, email, password, loginRecord;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _a = req.body, email = _a.email, password = _a.password;
+                return [4 /*yield*/, authService_1["default"]];
+            case 1:
+                loginRecord = _b.sent();
+                return [2 /*return*/];
+        }
+    });
+}); });
 exports["default"] = authRouter;
 //# sourceMappingURL=authRouter.js.map

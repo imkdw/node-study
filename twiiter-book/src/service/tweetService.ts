@@ -1,4 +1,4 @@
-import TweetModel from "../model/tweetModel";
+import TweetModel from "../models/tweetModel";
 import { tweetParams } from "../types/tweet.interface";
 
 class TweetService {

@@ -1,4 +1,4 @@
-import UserModel from "../model/userModel";
+import UserModel from "../models/userModel";
 
 class UserService {
   static addFollow = async (userId: number, followUserId: number) => {

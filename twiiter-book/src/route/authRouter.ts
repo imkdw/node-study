@@ -17,4 +17,9 @@ authRouter.post("/sign-up", async (req, res) => {
   }
 });
 
+authRouter.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  const loginRecord = await AuthService;
+});
+
 export default authRouter;

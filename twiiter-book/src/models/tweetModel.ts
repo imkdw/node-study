@@ -33,7 +33,7 @@ class TweetModel {
   static loadTimeline = async (userId: string) => {
     return new Promise((resolve, reject) => {
       const query =
-        "SELECT t.user_id, t.tweet FROM tweets t LEFT JOIN users_follow_list ufl on ufl.user_id = ? WHERE t.user_id = ? OR ufl.user_id = ?";
+        "SELECT t.user_id, t.tweet FROM tweets t LEFT JOIN users_follow_list ufl on ufl.user_id = ? WHERE t.user_id = ? OR t.user_id = ufl.follow_user_id";
       connection.query(query, [userId, userId, userId], (err, result) => {
         if (err) {
           reject(err);

@@ -39,19 +39,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-var authModel_1 = __importDefault(require("../model/authModel"));
+var authModel_1 = __importDefault(require("../models/authModel"));
+var secure_1 = __importDefault(require("../module/secure"));
 var AuthService = /** @class */ (function () {
     function AuthService() {
     }
     var _a;
     _a = AuthService;
     AuthService.signUp = function (newUser) { return __awaiter(void 0, void 0, void 0, function () {
-        var newUserRecord;
-        return __generator(_a, function (_b) {
-            switch (_b.label) {
-                case 0: return [4 /*yield*/, authModel_1["default"].signUp(newUser)];
+        var _b, newUserRecord;
+        return __generator(_a, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    _b = newUser;
+                    return [4 /*yield*/, secure_1["default"].hash(newUser.password)];
                 case 1:
-                    newUserRecord = _b.sent();
+                    _b.password = _c.sent();
+                    return [4 /*yield*/, authModel_1["default"].signUp(newUser)];
+                case 2:
+                    newUserRecord = _c.sent();
                     return [2 /*return*/, newUserRecord];
             }
         });
@@ -64,6 +70,24 @@ var AuthService = /** @class */ (function () {
                 case 1:
                     searchUserRecord = _b.sent();
                     return [2 /*return*/, searchUserRecord];
+            }
+        });
+    }); };
+    AuthService.signIn = function (email, password) { return __awaiter(void 0, void 0, void 0, function () {
+        var hashedPassword, err_1;
+        return __generator(_a, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _b.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, authModel_1["default"].getPassword(email)];
+                case 1:
+                    hashedPassword = _b.sent();
+                    return [3 /*break*/, 3];
+                case 2:
+                    err_1 = _b.sent();
+                    console.error(err_1);
+                    return [2 /*return*/, err_1];
+                case 3: return [2 /*return*/];
             }
         });
     }); };

@@ -36,6 +36,20 @@ class AuthModel {
       });
     });
   };
+
+  static signIn = async (email: string, password: string) => {};
+  static getPassword = async (email: string) => {
+    return new Promise((resolve, reject) => {
+      const query = "SELECT hased_password FROM users WHERE email=?";
+      connection.query(query, [email], (err, result) => {
+        if (err) {
+          reject(err);
+        }
+
+        resolve(result);
+      });
+    });
+  };
 }
 
 export default AuthModel;

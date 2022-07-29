@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-var userModel_1 = __importDefault(require("../model/userModel"));
+var userModel_1 = __importDefault(require("../models/userModel"));
 var UserService = /** @class */ (function () {
     function UserService() {
     }

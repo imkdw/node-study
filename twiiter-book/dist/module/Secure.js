@@ -39,32 +39,37 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-var express_1 = __importDefault(require("express"));
-var userService_1 = __importDefault(require("../service/userService"));
-var userRouter = express_1["default"].Router();
-userRouter.post("/follow", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var payload, followRecord, err_1;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                payload = req.body;
-                _a.label = 1;
-            case 1:
-                _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, userService_1["default"].addFollow(payload.id, payload.follow)];
-            case 2:
-                followRecord = _a.sent();
-                console.log(followRecord);
-                res.send("팔로우 성공!");
-                return [3 /*break*/, 4];
-            case 3:
-                err_1 = _a.sent();
-                console.error(err_1);
-                res.status(400).send("DB Error");
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
-        }
-    });
-}); });
-exports["default"] = userRouter;
-//# sourceMappingURL=userRouter.js.map
+var bcrypt_1 = __importDefault(require("bcrypt"));
+var config_1 = require("../config/config");
+var Secure = /** @class */ (function () {
+    function Secure() {
+    }
+    var _a;
+    _a = Secure;
+    Secure.hash = function (password) { return __awaiter(void 0, void 0, void 0, function () {
+        var hashedPassword;
+        return __generator(_a, function (_b) {
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, bcrypt_1["default"].hash(password, config_1.config.secure.saltCount)];
+                case 1:
+                    hashedPassword = _b.sent();
+                    return [2 /*return*/, hashedPassword];
+            }
+        });
+    }); };
+    Secure.comparePassword = function (plainPassword, hashedPassword) { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(_a, function (_b) {
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, bcrypt_1["default"].compare(plainPassword, hashedPassword)];
+                case 1:
+                    if (_b.sent()) {
+                        return [2 /*return*/, true];
+                    }
+                    return [2 /*return*/];
+            }
+        });
+    }); };
+    return Secure;
+}());
+exports["default"] = Secure;
+//# sourceMappingURL=secure.js.map

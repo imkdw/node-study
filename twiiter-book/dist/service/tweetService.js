@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-var tweetModel_1 = __importDefault(require("../model/tweetModel"));
+var tweetModel_1 = __importDefault(require("../models/tweetModel"));
 var TweetService = /** @class */ (function () {
     function TweetService() {
     }
