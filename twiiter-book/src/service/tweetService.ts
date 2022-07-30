@@ -1,11 +1,10 @@
 import TweetModel from "../models/tweetModel";
-import { tweetParams } from "../types/tweet.interface";
+import UserModel from "../models/userModel";
+import Jwt from "../module/jwt";
+import { serviceNewTweetParmas } from "../types/tweet.interface";
 
 class TweetService {
-  static newTweet = async (payload: tweetParams) => {
-    const newTweetRecord = await TweetModel.newTweet(payload);
-    return newTweetRecord;
-  };
+  static newTweet = async (payload: serviceNewTweetParmas) => {};
 
   static searchTweet = async (lastRowId: number) => {
     const searchTweetRecord = await TweetModel.searchTweet(lastRowId);

@@ -40,6 +40,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 exports.__esModule = true;
 var authModel_1 = __importDefault(require("../models/authModel"));
+var jwt_1 = __importDefault(require("../module/jwt"));
 var secure_1 = __importDefault(require("../module/secure"));
 var AuthService = /** @class */ (function () {
     function AuthService() {
@@ -74,20 +75,27 @@ var AuthService = /** @class */ (function () {
         });
     }); };
     AuthService.signIn = function (email, password) { return __awaiter(void 0, void 0, void 0, function () {
-        var hashedPassword, err_1;
+        var passwordRecord, hashedPassword, accessToken, err_1;
         return __generator(_a, function (_b) {
             switch (_b.label) {
                 case 0:
-                    _b.trys.push([0, 2, , 3]);
+                    _b.trys.push([0, 3, , 4]);
                     return [4 /*yield*/, authModel_1["default"].getPassword(email)];
                 case 1:
-                    hashedPassword = _b.sent();
-                    return [3 /*break*/, 3];
+                    passwordRecord = _b.sent();
+                    hashedPassword = passwordRecord[0].hashed_password;
+                    return [4 /*yield*/, secure_1["default"].comparePassword(password, hashedPassword)];
                 case 2:
+                    if (_b.sent()) {
+                        accessToken = jwt_1["default"].createToken(email);
+                        return [2 /*return*/, accessToken];
+                    }
+                    return [3 /*break*/, 4];
+                case 3:
                     err_1 = _b.sent();
                     console.error(err_1);
                     return [2 /*return*/, err_1];
-                case 3: return [2 /*return*/];
+                case 4: return [2 /*return*/];
             }
         });
     }); };

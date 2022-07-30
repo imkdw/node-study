@@ -1,6 +1,7 @@
 import { signUpParams } from "../types/auth.interface";
 import connection from "../db";
 import { MysqlError, OkPacket } from "mysql";
+import { resolve } from "path";
 
 class AuthModel {
   static signUp = async (newUser: signUpParams) => {
@@ -40,7 +41,7 @@ class AuthModel {
   static signIn = async (email: string, password: string) => {};
   static getPassword = async (email: string) => {
     return new Promise((resolve, reject) => {
-      const query = "SELECT hased_password FROM users WHERE email=?";
+      const query = "SELECT hashed_password FROM users WHERE email=?";
       connection.query(query, [email], (err, result) => {
         if (err) {
           reject(err);

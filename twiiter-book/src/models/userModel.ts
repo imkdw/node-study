@@ -14,6 +14,19 @@ class UserModel {
       });
     });
   };
+
+  static getUserId = async (email: string) => {
+    return new Promise((resolve, reject) => {
+      const query = "SELECT id FROM users WHERE email=?";
+      connection.query(query, [email], (err, result) => {
+        if (err) {
+          reject(err);
+        }
+
+        resolve(result);
+      });
+    });
+  };
 }
 
 export default UserModel;

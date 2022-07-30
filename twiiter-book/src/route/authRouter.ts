@@ -17,9 +17,15 @@ authRouter.post("/sign-up", async (req, res) => {
   }
 });
 
-authRouter.post("/login", async (req, res) => {
+authRouter.post("/sign-in", async (req, res) => {
   const { email, password } = req.body;
-  const loginRecord = await AuthService;
+  try {
+    const accessToken = await AuthService.signIn(email, password);
+    res.send(accessToken);
+  } catch (err) {
+    console.error(err);
+    res.status(400).send("DB Error");
+  }
 });
 
 export default authRouter;

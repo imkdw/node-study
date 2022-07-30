@@ -1,25 +1,18 @@
 import express from "express";
 import TweetService from "../service/tweetService";
+import { checkLogin } from "../middleware/checkLogin";
+import UserService from "../service/userService";
+import { services } from "../service";
 
 const tweetRouter = express.Router();
+const userService = services.UserService;
+const tweetService = services.TweetService;
 
-tweetRouter.post("/", async (req, res) => {
+tweetRouter.post("/", checkLogin, async (req, res) => {
+  // accessToken: ..., tweet: ...
   const payload = req.body;
 
-  if (payload.tweet.length > 300) {
-    res.status(400).send("300자를 초과했습니다.");
-    return;
-  }
-
-  try {
-    const tweetRecord: any = await TweetService.newTweet(payload);
-    const lastRowId = tweetRecord.insertId;
-    const searchTweetRecord = await TweetService.searchTweet(lastRowId);
-    res.send(searchTweetRecord[0]);
-  } catch (err) {
-    console.error(err);
-    res.status(400).send("DB Error");
-  }
+  const tweetRecord = await TweetService.newTweet(payload);
 });
 
 tweetRouter.get("/timeline/:user_id", async (req, res) => {

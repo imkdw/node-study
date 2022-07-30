@@ -69,16 +69,26 @@ authRouter.post("/sign-up", function (req, res) { return __awaiter(void 0, void 
         }
     });
 }); });
-authRouter.post("/login", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, email, password, loginRecord;
+authRouter.post("/sign-in", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, email, password, accessToken, err_2;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
                 _a = req.body, email = _a.email, password = _a.password;
-                return [4 /*yield*/, authService_1["default"]];
+                _b.label = 1;
             case 1:
-                loginRecord = _b.sent();
-                return [2 /*return*/];
+                _b.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, authService_1["default"].signIn(email, password)];
+            case 2:
+                accessToken = _b.sent();
+                res.send(accessToken);
+                return [3 /*break*/, 4];
+            case 3:
+                err_2 = _b.sent();
+                console.error(err_2);
+                res.status(400).send("DB Error");
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); });

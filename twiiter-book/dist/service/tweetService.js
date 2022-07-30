@@ -45,17 +45,9 @@ var TweetService = /** @class */ (function () {
     }
     var _a;
     _a = TweetService;
-    TweetService.newTweet = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
-        var newTweetRecord;
-        return __generator(_a, function (_b) {
-            switch (_b.label) {
-                case 0: return [4 /*yield*/, tweetModel_1["default"].newTweet(payload)];
-                case 1:
-                    newTweetRecord = _b.sent();
-                    return [2 /*return*/, newTweetRecord];
-            }
-        });
-    }); };
+    TweetService.newTweet = function (payload) { return __awaiter(void 0, void 0, void 0, function () { return __generator(_a, function (_b) {
+        return [2 /*return*/];
+    }); }); };
     TweetService.searchTweet = function (lastRowId) { return __awaiter(void 0, void 0, void 0, function () {
         var searchTweetRecord;
         return __generator(_a, function (_b) {

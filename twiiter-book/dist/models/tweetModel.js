@@ -48,9 +48,9 @@ var TweetModel = /** @class */ (function () {
     TweetModel.newTweet = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(_a, function (_b) {
             return [2 /*return*/, new Promise(function (resolve, reject) {
-                    var id = payload.id, tweet = payload.tweet;
+                    var userId = payload.userId, tweet = payload.tweet;
                     var query = "INSERT INTO tweets(user_id, tweet) VALUES(?, ?)";
-                    db_1["default"].query(query, [id, tweet], function (err, result) {
+                    db_1["default"].query(query, [userId, tweet], function (err, result) {
                         if (err) {
                             reject(err);
                         }

@@ -58,6 +58,19 @@ var UserModel = /** @class */ (function () {
                 })];
         });
     }); };
+    UserModel.getUserId = function (email) { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(_a, function (_b) {
+            return [2 /*return*/, new Promise(function (resolve, reject) {
+                    var query = "SELECT id FROM users WHERE email=?";
+                    db_1["default"].query(query, [email], function (err, result) {
+                        if (err) {
+                            reject(err);
+                        }
+                        resolve(result);
+                    });
+                })];
+        });
+    }); };
     return UserModel;
 }());
 exports["default"] = UserModel;

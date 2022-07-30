@@ -1,4 +1,5 @@
 import AuthModel from "../models/authModel";
+import Jwt from "../module/jwt";
 import Secure from "../module/secure";
 import { signUpParams } from "../types/auth.interface";
 
@@ -16,7 +17,12 @@ class AuthService {
 
   static signIn = async (email: string, password: string) => {
     try {
-      const hashedPassword = await AuthModel.getPassword(email);
+      const passwordRecord = await AuthModel.getPassword(email);
+      const hashedPassword = passwordRecord[0].hashed_password;
+      if (await Secure.comparePassword(password, hashedPassword)) {
+        const accessToken = Jwt.createToken(email);
+        return accessToken;
+      }
     } catch (err) {
       console.error(err);
       return err;
