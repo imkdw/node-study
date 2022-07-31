@@ -45,24 +45,38 @@ var secure_1 = __importDefault(require("../module/secure"));
 var AuthService = /** @class */ (function () {
     function AuthService() {
     }
+    AuthService.signUp = function (newUser) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _b, userId, userRecord, err_1;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        _b = newUser;
+                        return [4 /*yield*/, secure_1["default"].hash(newUser.password)];
+                    case 1:
+                        _b.password = _c.sent();
+                        _c.label = 2;
+                    case 2:
+                        _c.trys.push([2, 6, , 7]);
+                        return [4 /*yield*/, authModel_1["default"].signUp(newUser)];
+                    case 3:
+                        userId = _c.sent();
+                        if (!(typeof userId === 'number')) return [3 /*break*/, 5];
+                        return [4 /*yield*/, authModel_1["default"].searchUser(userId)];
+                    case 4:
+                        userRecord = _c.sent();
+                        return [2 /*return*/, userRecord];
+                    case 5: return [3 /*break*/, 7];
+                    case 6:
+                        err_1 = _c.sent();
+                        return [2 /*return*/, err_1];
+                    case 7: return [2 /*return*/];
+                }
+            });
+        });
+    };
     var _a;
     _a = AuthService;
-    AuthService.signUp = function (newUser) { return __awaiter(void 0, void 0, void 0, function () {
-        var _b, newUserRecord;
-        return __generator(_a, function (_c) {
-            switch (_c.label) {
-                case 0:
-                    _b = newUser;
-                    return [4 /*yield*/, secure_1["default"].hash(newUser.password)];
-                case 1:
-                    _b.password = _c.sent();
-                    return [4 /*yield*/, authModel_1["default"].signUp(newUser)];
-                case 2:
-                    newUserRecord = _c.sent();
-                    return [2 /*return*/, newUserRecord];
-            }
-        });
-    }); };
     AuthService.searchUser = function (lastRowId) { return __awaiter(void 0, void 0, void 0, function () {
         var searchUserRecord;
         return __generator(_a, function (_b) {
@@ -75,27 +89,39 @@ var AuthService = /** @class */ (function () {
         });
     }); };
     AuthService.signIn = function (email, password) { return __awaiter(void 0, void 0, void 0, function () {
-        var passwordRecord, hashedPassword, accessToken, err_1;
+        var hashedPassword, compare, accessToken, err_2;
         return __generator(_a, function (_b) {
             switch (_b.label) {
                 case 0:
-                    _b.trys.push([0, 3, , 4]);
+                    _b.trys.push([0, 4, , 5]);
                     return [4 /*yield*/, authModel_1["default"].getPassword(email)];
                 case 1:
-                    passwordRecord = _b.sent();
-                    hashedPassword = passwordRecord[0].hashed_password;
+                    hashedPassword = _b.sent();
+                    if (!(typeof hashedPassword === 'string')) return [3 /*break*/, 3];
                     return [4 /*yield*/, secure_1["default"].comparePassword(password, hashedPassword)];
                 case 2:
-                    if (_b.sent()) {
-                        accessToken = jwt_1["default"].createToken(email);
-                        return [2 /*return*/, accessToken];
+                    compare = _b.sent();
+                    if (!compare) {
+                        return [2 /*return*/];
                     }
-                    return [3 /*break*/, 4];
-                case 3:
-                    err_1 = _b.sent();
-                    console.error(err_1);
-                    return [2 /*return*/, err_1];
-                case 4: return [2 /*return*/];
+                    accessToken = jwt_1["default"].createToken(email);
+                    return [2 /*return*/, accessToken];
+                case 3: return [3 /*break*/, 5];
+                case 4:
+                    err_2 = _b.sent();
+                    return [2 /*return*/, err_2];
+                case 5: return [2 /*return*/];
+            }
+        });
+    }); };
+    AuthService.getUserId = function (email) { return __awaiter(void 0, void 0, void 0, function () {
+        var userIdRecord;
+        return __generator(_a, function (_b) {
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, authModel_1["default"].getUserId(email)];
+                case 1:
+                    userIdRecord = _b.sent();
+                    return [2 /*return*/, userIdRecord];
             }
         });
     }); };

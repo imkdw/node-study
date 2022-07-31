@@ -46,13 +46,19 @@ var UserService = /** @class */ (function () {
     var _a;
     _a = UserService;
     UserService.addFollow = function (userId, followUserId) { return __awaiter(void 0, void 0, void 0, function () {
-        var followRecord;
+        var followRecord, err_1;
         return __generator(_a, function (_b) {
             switch (_b.label) {
-                case 0: return [4 /*yield*/, userModel_1["default"].addFollow(userId, followUserId)];
+                case 0:
+                    _b.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, userModel_1["default"].addFollow(userId, followUserId)];
                 case 1:
                     followRecord = _b.sent();
                     return [2 /*return*/, followRecord];
+                case 2:
+                    err_1 = _b.sent();
+                    return [2 /*return*/, err_1];
+                case 3: return [2 /*return*/];
             }
         });
     }); };

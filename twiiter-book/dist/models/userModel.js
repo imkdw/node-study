@@ -48,12 +48,12 @@ var UserModel = /** @class */ (function () {
     UserModel.addFollow = function (userId, followUserId) { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(_a, function (_b) {
             return [2 /*return*/, new Promise(function (resolve, reject) {
-                    var query = "INSERT INTO users_follow_list(user_id, follow_user_id) VALUES (?, ?)";
+                    var query = 'INSERT INTO users_follow_list(user_id, follow_user_id) VALUES (?, ?)';
                     db_1["default"].query(query, [userId, followUserId], function (err, result) {
                         if (err) {
                             reject(err);
                         }
-                        resolve(result);
+                        resolve(result.insertId);
                     });
                 })];
         });
@@ -61,7 +61,7 @@ var UserModel = /** @class */ (function () {
     UserModel.getUserId = function (email) { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(_a, function (_b) {
             return [2 /*return*/, new Promise(function (resolve, reject) {
-                    var query = "SELECT id FROM users WHERE email=?";
+                    var query = 'SELECT id FROM users WHERE email=?';
                     db_1["default"].query(query, [email], function (err, result) {
                         if (err) {
                             reject(err);

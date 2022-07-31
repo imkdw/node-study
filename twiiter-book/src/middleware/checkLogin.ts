@@ -1,12 +1,27 @@
 import { NextFunction, Request, Response } from "express";
 import Jwt from "../module/jwt";
+import AuthService from "../service/authService";
 
-export const checkLogin = (req: Request, res: Response, next: NextFunction) => {
+export const checkLogin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const accessToken = req.body.accessToken;
-  if (Jwt.verifyToken(accessToken)) {
-    console.log("Valid Token");
-  } else {
-    res.send(401).send("인증되지 않은 유저입니다.");
+  try {
+    const verify = Jwt.verifyToken(accessToken);
+
+    // 비허가 유저일 경우
+    if (!verify) {
+      res.status(401).send("비정상적인 토큰입니다.");
+    }
+
+    const decodedToken: any = Jwt.decodeToken(accessToken);
+    const email = decodedToken.email;
+    const userId = await AuthService.getUserId(email);
+    res.locals.userId = userId;
+    next();
+  } catch (err) {
+    res.status(401).send("토큰 인증 오류입니다.");
   }
-  next();
 };

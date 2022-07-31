@@ -1,9 +1,4 @@
-export type serviceNewTweetParmas = {
-  accessToken: string;
-  tweet: string;
-};
-
-export type modelNewTweetParams = {
-  userId: string;
+export type selectTweetResult = {
+  userId: number;
   tweet: string;
 };

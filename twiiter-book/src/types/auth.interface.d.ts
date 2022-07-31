@@ -4,3 +4,9 @@ export type signUpParams = {
   password: string;
   profile: string;
 };
+
+export type selectUserResult = {
+  name: string;
+  email: string;
+  profile: string;
+};

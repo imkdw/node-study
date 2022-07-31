@@ -1,17 +1,17 @@
-import express from "express";
-import dotenv from "dotenv";
-import morgan from "morgan";
-import authRouter from "./route/authRouter";
-import tweetRouter from "./route/tweetRouter";
-import userRouter from "./route/userRouter";
+import express from 'express';
+import dotenv from 'dotenv';
+import morgan from 'morgan';
+import authRouter from './routes/authRouter';
+import tweetRouter from './routes/tweetRouter';
+import userRouter from './routes/userRouter';
 
 dotenv.config();
 
 const app = express();
-app.set("port", process.env.PORT || 5000);
+app.set('port', process.env.PORT || 5000);
 
 /** 미들웨어 정의 */
-app.use(morgan("dev"));
+app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -21,10 +21,10 @@ app.locals.users = {};
 app.locals.tweets = {};
 
 /** 라우터 정의 */
-app.use("/auth", authRouter);
-app.use("/tweet", tweetRouter);
-app.use("/user", userRouter);
+app.use('/auth', authRouter);
+app.use('/tweet', tweetRouter);
+app.use('/user', userRouter);
 
-app.listen(app.get("port"), () => {
-  console.log(`Server Running : PORT : ${app.get("port")}`);
+app.listen(app.get('port'), () => {
+  console.log(`Server Running : PORT : ${app.get('port')}`);
 });

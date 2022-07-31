@@ -49,41 +49,52 @@ var AuthModel = /** @class */ (function () {
         return __generator(_a, function (_b) {
             return [2 /*return*/, new Promise(function (resolve, reject) {
                     var name = newUser.name, email = newUser.email, password = newUser.password, profile = newUser.profile;
-                    var query = "INSERT INTO users(name, email, hashed_password, profile) VALUES(?, ?, ?, ?)";
+                    var query = 'INSERT INTO users(name, email, hashed_password, profile) VALUES(?, ?, ?, ?)';
                     db_1["default"].query(query, [name, email, password, profile], function (err, result) {
                         if (err) {
                             reject(err);
                         }
-                        resolve(result);
+                        resolve(result.insertId);
                     });
                 })];
         });
     }); };
-    AuthModel.searchUser = function (lastRowId) { return __awaiter(void 0, void 0, void 0, function () {
+    AuthModel.searchUser = function (userId) { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(_a, function (_b) {
             return [2 /*return*/, new Promise(function (resolve, reject) {
-                    var query = "SELECT id, name, email, profile FROM users WHERE id=?";
-                    db_1["default"].query(query, [lastRowId], function (err, result) {
+                    var query = 'SELECT id, name, email, profile FROM users WHERE id=?';
+                    db_1["default"].query(query, [userId], function (err, result) {
                         if (err) {
                             reject(err);
                         }
-                        resolve(result);
+                        var _b = result[0], name = _b.name, email = _b.email, profile = _b.profile;
+                        resolve({ name: name, email: email, profile: profile });
                     });
                 })];
         });
     }); };
-    AuthModel.signIn = function (email, password) { return __awaiter(void 0, void 0, void 0, function () { return __generator(_a, function (_b) {
-        return [2 /*return*/];
-    }); }); };
     AuthModel.getPassword = function (email) { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(_a, function (_b) {
             return [2 /*return*/, new Promise(function (resolve, reject) {
-                    var query = "SELECT hashed_password FROM users WHERE email=?";
+                    var query = 'SELECT hashed_password FROM users WHERE email=?';
                     db_1["default"].query(query, [email], function (err, result) {
                         if (err) {
                             reject(err);
                         }
-                        resolve(result);
+                        resolve(result[0].hashed_password);
+                    });
+                })];
+        });
+    }); };
+    AuthModel.getUserId = function (email) { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(_a, function (_b) {
+            return [2 /*return*/, new Promise(function (resolve, reject) {
+                    var query = 'SELECT id FROM users WHERE email=?';
+                    db_1["default"].query(query, [email], function (err, result) {
+                        if (err) {
+                            reject(err);
+                        }
+                        resolve(result[0].id);
                     });
                 })];
         });
