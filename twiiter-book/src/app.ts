@@ -7,7 +7,7 @@ import userRouter from './routes/userRouter';
 
 dotenv.config();
 
-const app = express();
+export const app = express();
 app.set('port', process.env.PORT || 5000);
 
 /** 미들웨어 정의 */
