@@ -13,7 +13,9 @@ class AuthModel {
           reject(err);
         }
 
-        resolve(result.insertId);
+        if (result) {
+          resolve(result.insertId);
+        }
       });
     });
   };

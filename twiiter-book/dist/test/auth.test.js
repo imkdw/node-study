@@ -39,53 +39,41 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-var db_1 = __importDefault(require("../db"));
-var TweetModel = /** @class */ (function () {
-    function TweetModel() {
-    }
-    var _a;
-    _a = TweetModel;
-    TweetModel.newTweet = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(_a, function (_b) {
-            return [2 /*return*/, new Promise(function (resolve, reject) {
-                    var id = payload.id, tweet = payload.tweet;
-                    var query = "INSERT INTO tweets(user_id, tweet) VALUES(?, ?)";
-                    db_1["default"].query(query, [id, tweet], function (err, result) {
-                        if (err) {
-                            reject(err);
-                        }
-                        resolve(result);
-                    });
-                })];
+var supertest_1 = __importDefault(require("supertest"));
+var app_1 = require("../app");
+describe('테스트 API 테스트', function () {
+    test('[GET] /test', function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, supertest_1["default"])(app_1.app).get('/test')];
+                case 1:
+                    response = _a.sent();
+                    expect(response.statusCode).toBe(200);
+                    return [2 /*return*/];
+            }
         });
-    }); };
-    TweetModel.searchTweet = function (lastRowId) { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(_a, function (_b) {
-            return [2 /*return*/, new Promise(function (resolve, reject) {
-                    var query = "SELECT id, user_id, tweet FROM tweets WHERE  id=?";
-                    db_1["default"].query(query, [lastRowId], function (err, result) {
-                        if (err) {
-                            reject(err);
-                        }
-                        resolve(result);
-                    });
-                })];
+    }); });
+});
+describe('Auth API 테스트', function () {
+    test('[POST] /auth/sign-up', function () { return __awaiter(void 0, void 0, void 0, function () {
+        var account, response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    account = {
+                        email: 'imkdw@kakao.com',
+                        password: 1234,
+                        name: '김동우',
+                        profile: "I'm Backend Developer"
+                    };
+                    return [4 /*yield*/, (0, supertest_1["default"])(app_1.app).post('/auth/sign-up').send(account)];
+                case 1:
+                    response = _a.sent();
+                    expect(response.statusCode).toBe(200);
+                    return [2 /*return*/];
+            }
         });
-    }); };
-    TweetModel.loadTimeline = function (userId) { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(_a, function (_b) {
-            return [2 /*return*/, new Promise(function (resolve, reject) {
-                    var query = "SELECT t.user_id, t.tweet FROM tweets t LEFT JOIN users_follow_list ufl on ufl.user_id = ? WHERE t.user_id = ? OR t.user_id = ufl.follow_user_id";
-                    db_1["default"].query(query, [userId, userId, userId], function (err, result) {
-                        if (err) {
-                            reject(err);
-                        }
-                        resolve(result);
-                    });
-                })];
-        });
-    }); };
-    return TweetModel;
-}());
-exports["default"] = TweetModel;
-//# sourceMappingURL=tweetModel.js.map
+    }); });
+});
+//# sourceMappingURL=auth.test.js.map

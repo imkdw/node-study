@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "tsc-watch --onSuccess \"node dist/app.js\"",
-    "test": "jest"
+    "test": "jest --detectOpenHandles"
   },
   "jest": {
     "preset": "ts-jest",
@@ -15,9 +15,11 @@
     },
     "transformIgnorePatterns": [
       "node_modules/(?!variables/.*)"
+    ],
+    "modulePathIgnorePatterns": [
+      "<rootDir>/dist/"
     ]
   },
-  "type": "module",
   "dependencies": {
     "@types/bcrypt": "^5.0.0",
     "@types/dotenv": "^8.2.0",

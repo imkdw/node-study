@@ -7,6 +7,20 @@ import userRouter from './routes/userRouter';
 
 dotenv.config();
 
+switch (process.env.NODE_MODE) {
+  case 'prod':
+    dotenv.config({ path: './env/.env.prod' });
+    break;
+
+  case 'test':
+    dotenv.config({ path: './env/env.test' });
+    break;
+
+  case 'dev':
+    dotenv.config({ path: './env/.env.dev' });
+    break;
+}
+
 export const app = express();
 app.set('port', process.env.PORT || 5000);
 
@@ -24,6 +38,12 @@ app.locals.tweets = {};
 app.use('/auth', authRouter);
 app.use('/tweet', tweetRouter);
 app.use('/user', userRouter);
+
+app.get('/test', (req, res) => {
+  res.send('success');
+});
+
+console.log(process.env.NODE_MODE);
 
 app.listen(app.get('port'), () => {
   console.log(`Server Running : PORT : ${app.get('port')}`);

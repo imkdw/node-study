@@ -54,7 +54,9 @@ var AuthModel = /** @class */ (function () {
                         if (err) {
                             reject(err);
                         }
-                        resolve(result.insertId);
+                        if (result) {
+                            resolve(result.insertId);
+                        }
                     });
                 })];
         });
