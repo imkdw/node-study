@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-export const config = {
+const config = {
   jwt: {
     secretKey: process.env.JWT_SECRET_KEY,
     expiresIn: '1h',
@@ -14,7 +14,8 @@ export const config = {
     username: process.env.DATABASE_USERNAME,
     password: process.env.DATABASE_PASSWORD,
     host: process.env.DATABASE_HOST,
-    port: process.env.DATABASE_PORT,
     database: process.env.DATABASE_DBNAME,
   },
 };
+
+export default config;

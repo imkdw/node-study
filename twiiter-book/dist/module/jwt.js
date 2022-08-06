@@ -4,22 +4,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 exports.__esModule = true;
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-var config_1 = require("../config/config");
+var config_1 = __importDefault(require("../config/config"));
 var Jwt = /** @class */ (function () {
     function Jwt() {
     }
     Jwt.createToken = function (email) {
         var payload = { email: email };
-        var secretKey = config_1.config.jwt.secretKey;
+        var secretKey = config_1["default"].jwt.secretKey;
         var options = {
-            expiresIn: config_1.config.jwt.expiresIn,
-            issuer: config_1.config.jwt.issuer
+            expiresIn: config_1["default"].jwt.expiresIn,
+            issuer: config_1["default"].jwt.issuer
         };
         var accessToken = jsonwebtoken_1["default"].sign(payload, secretKey, options);
         return accessToken;
     };
     Jwt.verifyToken = function (accessToken) {
-        if (jsonwebtoken_1["default"].verify(accessToken, config_1.config.jwt.secretKey)) {
+        if (jsonwebtoken_1["default"].verify(accessToken, config_1["default"].jwt.secretKey)) {
             return true;
         }
         return;

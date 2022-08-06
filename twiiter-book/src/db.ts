@@ -1,5 +1,5 @@
 import mysql from 'mysql';
-import { config } from './config/config';
+import config from './config/config';
 
 const connection = mysql.createConnection({
   host: config.db.host,

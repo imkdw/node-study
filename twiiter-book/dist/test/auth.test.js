@@ -41,6 +41,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 exports.__esModule = true;
 var supertest_1 = __importDefault(require("supertest"));
 var app_1 = require("../app");
+var db_1 = __importDefault(require("../db"));
+function truncateUsers() {
+    db_1["default"].query('SET FOREIGN_KEY_CHECKS=0', function (err, result) {
+        if (err) {
+            console.error(err);
+        }
+    });
+    db_1["default"].query('TRUNCATE users', function (err, result) {
+        if (err) {
+            console.error(err);
+        }
+    });
+    db_1["default"].query('SET FOREIGN_KEY_CHECKS=1', function (err, result) {
+        if (err) {
+            console.error(err);
+        }
+    });
+}
 describe('테스트 API 테스트', function () {
     test('[GET] /test', function () { return __awaiter(void 0, void 0, void 0, function () {
         var response;
@@ -56,6 +74,7 @@ describe('테스트 API 테스트', function () {
     }); });
 });
 describe('Auth API 테스트', function () {
+    afterAll(truncateUsers);
     test('[POST] /auth/sign-up', function () { return __awaiter(void 0, void 0, void 0, function () {
         var account, response;
         return __generator(this, function (_a) {
@@ -63,13 +82,14 @@ describe('Auth API 테스트', function () {
                 case 0:
                     account = {
                         email: 'imkdw@kakao.com',
-                        password: 1234,
+                        password: '1234',
                         name: '김동우',
                         profile: "I'm Backend Developer"
                     };
                     return [4 /*yield*/, (0, supertest_1["default"])(app_1.app).post('/auth/sign-up').send(account)];
                 case 1:
                     response = _a.sent();
+                    console.log(response.body, response.statusCode);
                     expect(response.statusCode).toBe(200);
                     return [2 /*return*/];
             }

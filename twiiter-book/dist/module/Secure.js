@@ -40,7 +40,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 exports.__esModule = true;
 var bcrypt_1 = __importDefault(require("bcrypt"));
-var config_1 = require("../config/config");
+var config_1 = __importDefault(require("../config/config"));
 var Secure = /** @class */ (function () {
     function Secure() {
     }
@@ -50,7 +50,7 @@ var Secure = /** @class */ (function () {
         var hashedPassword;
         return __generator(_a, function (_b) {
             switch (_b.label) {
-                case 0: return [4 /*yield*/, bcrypt_1["default"].hash(password, config_1.config.secure.saltCount)];
+                case 0: return [4 /*yield*/, bcrypt_1["default"].hash(password, config_1["default"].secure.saltCount)];
                 case 1:
                     hashedPassword = _b.sent();
                     return [2 /*return*/, hashedPassword];

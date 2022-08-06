@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "tsc-watch --onSuccess \"node dist/app.js\"",
-    "test": "jest --detectOpenHandles"
+    "test": "jest --forceExit --runInBand"
   },
   "jest": {
     "preset": "ts-jest",
