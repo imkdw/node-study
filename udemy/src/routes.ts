@@ -6,7 +6,7 @@ export const requestHandler = (req, res) => {
 
   if (url === "/") {
     res.write("<html>");
-    res.write("<head><title>Enter Message!</title></head>");
+    res.write("<head><title>Enter Message!SG</title></head>");
     res.write(
       "<body><form action='/message' method='post'><input type='text' name='message'><button type='submit'>Send</button></form></body>"
     );
@@ -35,7 +35,7 @@ export const requestHandler = (req, res) => {
 
   res.write("<html>");
   res.write("<head><title>Welcome</title></head>");
-  res.write("<body><h1>Welcome Node.js Server!</h1></body>");
+  res.write("<body><h1>Welcome Node.js Server!!</h1></body>");
   res.write("</html>");
   res.end();
 };
