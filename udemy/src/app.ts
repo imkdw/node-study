@@ -1,6 +1,9 @@
 import http from "http";
-import { requestHandler as routes } from "./routes";
 
-const server = http.createServer(routes);
+import express from "express";
+
+const app = express();
+
+const server = http.createServer(app);
 
 server.listen(3000);
