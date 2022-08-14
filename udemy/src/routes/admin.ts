@@ -1,25 +1,12 @@
 import express from "express";
+import ProductsController from "../controllers/admin";
 
 const adminRouter = express.Router();
 
-adminRouter.get("/add-product", (req, res, next) => {
-  const contexts = {
-    pageTitle: "Add product",
-    path: "/admin/add-product",
-    activeAddProduct: true,
-    productCSS: true,
-    formsCSS: true,
-  };
+adminRouter.get("/add-product", ProductsController.getAddProduct);
 
-  res.render("add-product", contexts);
-});
+adminRouter.post("/product", ProductsController.postAddProduct);
 
-export const products = [];
-
-adminRouter.post("/product", (req, res, next) => {
-  const title = JSON.parse(JSON.stringify(req.body));
-  products.push(title);
-  res.redirect("/");
-});
+adminRouter.get("/products", ProductsController.getProducts);
 
 export default adminRouter;

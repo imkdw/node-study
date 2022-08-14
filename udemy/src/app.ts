@@ -5,6 +5,7 @@ import ExpressHandlebars from "express-handlebars";
 
 import adminRouter from "./routes/admin";
 import shopRouter from "./routes/shop";
+import ErrorController from "./controllers/error";
 
 const app = express();
 
@@ -37,12 +38,6 @@ app.use(shopRouter);
 app.use("/admin", adminRouter);
 
 /** 404(Not Found) Error Handleing */
-app.use((req, res, next) => {
-  const contexts = {
-    pageTitle: "Page NotFound",
-  };
-
-  res.status(404).render("404", contexts);
-});
+app.use(ErrorController.get404);
 
 app.listen(3000);

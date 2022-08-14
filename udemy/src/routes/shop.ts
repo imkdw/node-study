@@ -1,17 +1,21 @@
 import express from "express";
-import { products } from "./admin";
+import ShopController from "../controllers/shop";
 
 const shopRouter = express.Router();
 
-shopRouter.get("/", (req, res, next) => {
-  const contexts = {
-    prods: products,
-    pageTitle: "Shop",
-    path: "/",
-    hasProducts: products.length > 0,
-    activeShop: true,
-  };
-  res.render("shop", contexts);
-});
+/** / => GET */
+shopRouter.get("/", ShopController.getIndex);
+
+/** /products => GET */
+shopRouter.get("/products", ShopController.getProducts);
+
+/** /cart => GET */
+shopRouter.get("/cart", ShopController.getCart);
+
+/** /checkout => GET */
+shopRouter.get("/checkout", ShopController.getCheckOut);
+
+/** /orders => GET */
+shopRouter.get("/orders", ShopController.getOrders);
 
 export default shopRouter;
