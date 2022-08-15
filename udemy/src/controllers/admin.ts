@@ -6,16 +6,43 @@ class ProductController {
     const contexts = {
       pageTitle: "Add product",
       path: "/admin/add-product",
-      activeAddProduct: true,
-      productCSS: true,
-      formsCSS: true,
+      editing: false,
     };
 
-    res.render("./admin/add-product", contexts);
+    res.render("./admin/edit-product", contexts);
   }
 
   static postAddProduct(req: Request, res: Response, next: NextFunction) {
     const userDTO = JSON.parse(JSON.stringify(req.body));
+    const product = new ProductModel(userDTO);
+    product.save();
+    res.redirect("/");
+  }
+
+  static getEditProduct(req: Request, res: Response, next: NextFunction) {
+    const editMode = req.query.edit;
+
+    if (!editMode) {
+      res.redirect("/");
+      return;
+    }
+
+    const prodId = req.params.productId;
+
+    ProductModel.findById(prodId, (product) => {
+      const contexts = {
+        product: product,
+        path: "/edit-product",
+        pageTitle: "Edit Title",
+        editing: editMode,
+      };
+
+      res.render("./admin/edit-product", contexts);
+    });
+  }
+
+  static postEditProduct(req: Request, res: Response, next: NextFunction) {
+    const userDTO = req.body;
     const product = new ProductModel(userDTO);
     product.save();
     res.redirect("/");
@@ -30,6 +57,13 @@ class ProductController {
       };
 
       res.render("./admin/products", contexts);
+    });
+  }
+
+  static deleteProdcut(req: Request, res: Response, next: NextFunction) {
+    const { productId } = req.body;
+    ProductModel.deleteById(productId, () => {
+      res.redirect("/");
     });
   }
 }

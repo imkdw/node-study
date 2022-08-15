@@ -11,14 +11,35 @@ var ProductController = /** @class */ (function () {
         var contexts = {
             pageTitle: "Add product",
             path: "/admin/add-product",
-            activeAddProduct: true,
-            productCSS: true,
-            formsCSS: true
+            editing: false
         };
-        res.render("./admin/add-product", contexts);
+        res.render("./admin/edit-product", contexts);
     };
     ProductController.postAddProduct = function (req, res, next) {
         var userDTO = JSON.parse(JSON.stringify(req.body));
+        var product = new product_1["default"](userDTO);
+        product.save();
+        res.redirect("/");
+    };
+    ProductController.getEditProduct = function (req, res, next) {
+        var editMode = req.query.edit;
+        if (!editMode) {
+            res.redirect("/");
+            return;
+        }
+        var prodId = req.params.productId;
+        product_1["default"].findById(prodId, function (product) {
+            var contexts = {
+                product: product,
+                path: "/edit-product",
+                pageTitle: "Edit Title",
+                editing: editMode
+            };
+            res.render("./admin/edit-product", contexts);
+        });
+    };
+    ProductController.postEditProduct = function (req, res, next) {
+        var userDTO = req.body;
         var product = new product_1["default"](userDTO);
         product.save();
         res.redirect("/");
@@ -31,6 +52,12 @@ var ProductController = /** @class */ (function () {
                 path: "/admin/products"
             };
             res.render("./admin/products", contexts);
+        });
+    };
+    ProductController.deleteProdcut = function (req, res, next) {
+        var productId = req.body.productId;
+        product_1["default"].deleteById(productId, function () {
+            res.redirect("/");
         });
     };
     return ProductController;

@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import CartModel from "../models/cart";
 import ProductModel from "../models/product";
 
 class ShopController {
@@ -29,12 +30,36 @@ class ShopController {
   };
 
   static getCart = (req: Request, res: Response, next: NextFunction) => {
-    const contexts = {
-      pageTitle: "Your Cart",
-      path: "/cart",
-    };
+    /**
+     * 1. 모든 장바구니 목록 가져오기 / CartModel.getCart(cb)
+     * 2. 모든 상품 목록 가져오기 / ProductModel.fetchAll(cb)
+     * 3.
+     */
+    CartModel.getCart((cart) => {
+      ProductModel.fetchAll((products) => {
+        const cartProducts = [];
+        for (const product of products) {
+          const cartProductData = cart.products.find(
+            (prod) => prod.id === product.id
+          );
 
-    res.render("./shop/cart", contexts);
+          if (cartProductData) {
+            cartProducts.push({
+              productData: { ...product },
+              qty: cartProductData.qty,
+            });
+          }
+        }
+
+        const contexts = {
+          pageTitle: "Your Cart",
+          path: "/cart",
+          products: cartProducts,
+        };
+
+        res.render("./shop/cart", contexts);
+      });
+    });
   };
 
   static getCheckOut = (req: Request, res: Response, next: NextFunction) => {
@@ -53,6 +78,39 @@ class ShopController {
     };
 
     res.render("./shop/orders", contexts);
+  };
+
+  static getProduct = (req: Request, res: Response, next: NextFunction) => {
+    const prodId = req.params.productId;
+    ProductModel.findById(prodId, (product) => {
+      const contexts = {
+        product: product,
+        pageTitle: "Product Details",
+        path: `/products`,
+      };
+
+      res.render("./shop/product-detail", contexts);
+    });
+  };
+
+  static postCart = (req: Request, res: Response, next: NextFunction) => {
+    const { productId, productPrice } = req.body;
+    ProductModel.findById(productId, (product) => {
+      CartModel.addProduct(productId, productPrice);
+    });
+    res.redirect("/");
+  };
+
+  static postCartDeleteItem = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { productId } = req.body;
+    ProductModel.findById(productId, (product) => {
+      CartModel.deleteProduct(productId, product.price);
+      res.redirect("/cart");
+    });
   };
 }
 
