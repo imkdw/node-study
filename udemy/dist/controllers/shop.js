@@ -20,18 +20,22 @@ var ShopController = /** @class */ (function () {
     function ShopController() {
     }
     ShopController.getIndex = function (req, res, next) {
-        var products = product_1["default"].fetchAll(function (product) {
+        product_1["default"].databaseFetchAll()
+            .then(function (result) {
+            var product = result[0];
             var contexts = {
                 prods: product,
                 pageTitle: "Shop",
                 path: "/",
                 hasProducts: product.length > 0
             };
-            res.render("./shop/product-list", contexts);
-        });
+            res.render("./shop/index", contexts);
+        })["catch"](function (err) { return console.error(err); });
     };
     ShopController.getProducts = function (req, res, next) {
-        var products = product_1["default"].fetchAll(function (product) {
+        product_1["default"].databaseFetchAll()
+            .then(function (result) {
+            var product = result[0];
             var contexts = {
                 prods: product,
                 pageTitle: "All Products",
@@ -39,7 +43,7 @@ var ShopController = /** @class */ (function () {
                 hasProducts: product.length > 0
             };
             res.render("./shop/product-list", contexts);
-        });
+        })["catch"](function (err) { return console.error(err); });
     };
     ShopController.getCart = function (req, res, next) {
         /**
@@ -88,14 +92,16 @@ var ShopController = /** @class */ (function () {
     };
     ShopController.getProduct = function (req, res, next) {
         var prodId = req.params.productId;
-        product_1["default"].findById(prodId, function (product) {
+        product_1["default"].dbFindById(prodId)
+            .then(function (result) {
+            var product = result[0];
             var contexts = {
-                product: product,
+                product: product[0],
                 pageTitle: "Product Details",
                 path: "/products"
             };
             res.render("./shop/product-detail", contexts);
-        });
+        })["catch"](function (err) { return console.error(err); });
     };
     ShopController.postCart = function (req, res, next) {
         var _a = req.body, productId = _a.productId, productPrice = _a.productPrice;

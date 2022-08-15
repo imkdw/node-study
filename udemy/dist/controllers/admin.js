@@ -18,8 +18,9 @@ var ProductController = /** @class */ (function () {
     ProductController.postAddProduct = function (req, res, next) {
         var userDTO = JSON.parse(JSON.stringify(req.body));
         var product = new product_1["default"](userDTO);
-        product.save();
-        res.redirect("/");
+        product
+            .save()
+            .then(function () { return res.redirect("/"); })["catch"](function (err) { return console.error(err); });
     };
     ProductController.getEditProduct = function (req, res, next) {
         var editMode = req.query.edit;

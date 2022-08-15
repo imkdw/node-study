@@ -15,8 +15,10 @@ class ProductController {
   static postAddProduct(req: Request, res: Response, next: NextFunction) {
     const userDTO = JSON.parse(JSON.stringify(req.body));
     const product = new ProductModel(userDTO);
-    product.save();
-    res.redirect("/");
+    product
+      .save()
+      .then(() => res.redirect("/"))
+      .catch((err) => console.error(err));
   }
 
   static getEditProduct(req: Request, res: Response, next: NextFunction) {

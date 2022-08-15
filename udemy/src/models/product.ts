@@ -1,6 +1,7 @@
 import path from "path";
 import fs from "fs";
 import { IProductData } from "../types/product.interface";
+import { promisePool as db } from "../util/database";
 
 const p = path.join(__dirname, "..", "..", "src", "data", "products.json");
 
@@ -34,42 +35,22 @@ class ProductModel {
   }
 
   save() {
-    getProductsFromFile((products) => {
-      if (this.id) {
-        /** 기존 상품 업데이트 */
-        const existProductIndex = products.findIndex(
-          (prod) => prod.id === this.id
-        );
-        const updateProduct = [...products];
-        updateProduct[existProductIndex] = this;
-        fs.writeFile(p, JSON.stringify(updateProduct), {}, (err) => {
-          if (err) {
-            console.error(err);
-          }
-        });
-      } else {
-        /** 신규 상품 추가 */
-        const productData = {
-          id: Math.random().toString(),
-          title: this.title,
-          imageUrl: this.imageUrl,
-          price: this.price,
-          description: this.description,
-        };
-
-        products.push(productData);
-
-        fs.writeFile(p, JSON.stringify(products), {}, (err) => {
-          if (err) {
-            console.error(err);
-          }
-        });
-      }
-    });
+    const query =
+      "INSERT INTO products(title, price, imageUrl, description) VALUES (?, ?, ?, ?)";
+    return db.execute(query, [
+      this.title,
+      this.price,
+      this.imageUrl,
+      this.description,
+    ]);
   }
 
   static fetchAll(callback) {
     getProductsFromFile(callback);
+  }
+
+  static databaseFetchAll(): Promise<any> {
+    return db.execute("SELECT * FROM products");
   }
 
   static findById(id: string, callback) {
@@ -79,6 +60,11 @@ class ProductModel {
     });
   }
 
+  static dbFindById(id: string): Promise<any> {
+    const query = "SELECT * FROM products WHERE id=?";
+    return db.execute(query, [id]);
+  }
+
   static deleteById(id: string, callback) {
     getProductsFromFile((products) => {
       const updatedProduct = products.filter((prod) => prod.id !== id);
@@ -86,8 +72,6 @@ class ProductModel {
         if (err) {
           console.error(err);
         }
-
-        callback();
       });
     });
   }

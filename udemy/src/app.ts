@@ -3,9 +3,12 @@ import bodyParser from "body-parser";
 import path from "path";
 import ExpressHandlebars from "express-handlebars";
 
+import { promisePool as db } from "./util/database";
+
 import adminRouter from "./routes/admin";
 import shopRouter from "./routes/shop";
 import ErrorController from "./controllers/error";
+import ProductModel from "./models/product";
 
 const app = express();
 

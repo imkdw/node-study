@@ -4,29 +4,35 @@ import ProductModel from "../models/product";
 
 class ShopController {
   static getIndex = (req: Request, res: Response, next: NextFunction) => {
-    const products = ProductModel.fetchAll((product) => {
-      const contexts = {
-        prods: product,
-        pageTitle: "Shop",
-        path: "/",
-        hasProducts: product.length > 0,
-      };
+    ProductModel.databaseFetchAll()
+      .then((result) => {
+        const product = result[0];
+        const contexts = {
+          prods: product,
+          pageTitle: "Shop",
+          path: "/",
+          hasProducts: product.length > 0,
+        };
 
-      res.render("./shop/product-list", contexts);
-    });
+        res.render("./shop/index", contexts);
+      })
+      .catch((err) => console.error(err));
   };
 
   static getProducts = (req: Request, res: Response, next: NextFunction) => {
-    const products = ProductModel.fetchAll((product) => {
-      const contexts = {
-        prods: product,
-        pageTitle: "All Products",
-        path: "/products",
-        hasProducts: product.length > 0,
-      };
+    ProductModel.databaseFetchAll()
+      .then((result) => {
+        const product = result[0];
+        const contexts = {
+          prods: product,
+          pageTitle: "All Products",
+          path: "/products",
+          hasProducts: product.length > 0,
+        };
 
-      res.render("./shop/product-list", contexts);
-    });
+        res.render("./shop/product-list", contexts);
+      })
+      .catch((err) => console.error(err));
   };
 
   static getCart = (req: Request, res: Response, next: NextFunction) => {
@@ -82,15 +88,18 @@ class ShopController {
 
   static getProduct = (req: Request, res: Response, next: NextFunction) => {
     const prodId = req.params.productId;
-    ProductModel.findById(prodId, (product) => {
-      const contexts = {
-        product: product,
-        pageTitle: "Product Details",
-        path: `/products`,
-      };
+    ProductModel.dbFindById(prodId)
+      .then((result) => {
+        const product = result[0];
+        const contexts = {
+          product: product[0],
+          pageTitle: "Product Details",
+          path: `/products`,
+        };
 
-      res.render("./shop/product-detail", contexts);
-    });
+        res.render("./shop/product-detail", contexts);
+      })
+      .catch((err) => console.error(err));
   };
 
   static postCart = (req: Request, res: Response, next: NextFunction) => {

@@ -52,28 +52,44 @@ class CartModel {
   static getCart(callback) {
     /** cart.json을 읽고 모든 카트 목록 반환 */
     fs.readFile(p, (err, fileContent) => {
-      const cart = JSON.parse(fileContent.toString());
-      if (err) {
-        callback(null);
-        return;
+      if (fileContent.toString() !== "") {
+        const cart = JSON.parse(fileContent.toString());
+        if (err) {
+          callback(null);
+          return;
+        } else {
+          callback(cart);
+        }
       } else {
-        callback(cart);
+        callback([]);
       }
     });
   }
 
   static deleteProduct(id: string, productPrice: string) {
-    fs.readFile(p, (err, fileContent) => {
-      const cart = JSON.parse(fileContent.toString());
-      if (err) {
-        console.error(err);
-        return;
-      }
+    console.log(id, productPrice);
 
-      const updatedProduct = cart.products.filter((prod) => prod.id !== id);
-      const updatedPrice = cart.totalPrice - Number(productPrice);
-      const updatedCart = { updatedProduct, updatedPrice };
-      console.log(updatedCart);
+    fs.readFile(p, (err, fileContent) => {
+      /** 데이터가 있을경우 */
+      if (fileContent.toString() !== "") {
+        const cart = JSON.parse(fileContent.toString());
+        if (err) {
+          console.error(err);
+          return;
+        }
+
+        const deleteItemQty = cart.products.find((prod) => prod.id === id).qty;
+        const updateProduct = cart.products.filter((prod) => prod.id !== id);
+        const updatePrice =
+          cart.totalPrice - Number(productPrice) * deleteItemQty;
+        const updateCart = { products: updateProduct, totalPrice: updatePrice };
+
+        fs.writeFile(p, JSON.stringify(updateCart), (err) => {
+          if (err) {
+            console.error(err);
+          }
+        });
+      }
     });
   }
 }
