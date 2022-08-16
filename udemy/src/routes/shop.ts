@@ -15,31 +15,31 @@ shopRouter.get("/", ShopController.getIndex);
  */
 shopRouter.get("/products", ShopController.getProducts);
 
-/**
- * * METHOD: GET /cart
- * DESC: 장바구니 목록 가져오기
- */
-shopRouter.get("/cart", ShopController.getCart);
+// /**
+//  * * METHOD: GET /cart
+//  * DESC: 장바구니 목록 가져오기
+//  */
+// shopRouter.get("/cart", ShopController.getCart);
 
-/**
- * * METHOD: POST /cart
- * DESC: 장바구니에 상품 추가
- */
-shopRouter.post("/cart", ShopController.postCart);
+// /**
+//  * * METHOD: POST /cart
+//  * DESC: 장바구니에 상품 추가
+//  */
+// shopRouter.post("/cart", ShopController.postCart);
 
-shopRouter.post("/cart-delete-item", ShopController.postCartDeleteItem);
+// shopRouter.post("/cart-delete-item", ShopController.postCartDeleteItem);
 
-/**
- * * METHOD: GET /checkout
- * DESC: 계산 페이지 가져오기
- */
-shopRouter.get("/checkout", ShopController.getCheckOut);
+// /**
+//  * * METHOD: GET /checkout
+//  * DESC: 계산 페이지 가져오기
+//  */
+// shopRouter.get("/checkout", ShopController.getCheckOut);
 
-/**
- * * METHOD: GET /orders
- * DESC: 주문목록 가져오기
- */
-shopRouter.get("/orders", ShopController.getOrders);
+// /**
+//  * * METHOD: GET /orders
+//  * DESC: 주문목록 가져오기
+//  */
+// shopRouter.get("/orders", ShopController.getOrders);
 
 /**
  * * METHOD: GET /products/:productId

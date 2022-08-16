@@ -1,9 +1,6 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 exports.__esModule = true;
-var product_1 = __importDefault(require("../models/product"));
+var product_1 = require("../models/product");
 var ProductController = /** @class */ (function () {
     function ProductController() {
     }
@@ -17,48 +14,45 @@ var ProductController = /** @class */ (function () {
     };
     ProductController.postAddProduct = function (req, res, next) {
         var userDTO = JSON.parse(JSON.stringify(req.body));
-        var product = new product_1["default"](userDTO);
-        product
-            .save()
-            .then(function () { return res.redirect("/"); })["catch"](function (err) { return console.error(err); });
+        product_1.Product.create({
+            title: userDTO.title,
+            price: userDTO.price,
+            imageUrl: userDTO.imageUrl,
+            description: userDTO.description
+        })
+            .then(function (result) { return console.log("[SUCCESS] INSERT ".concat(userDTO.title)); })["catch"](function (err) { return console.error(err); });
     };
-    ProductController.getEditProduct = function (req, res, next) {
-        var editMode = req.query.edit;
-        if (!editMode) {
-            res.redirect("/");
-            return;
-        }
-        var prodId = req.params.productId;
-        product_1["default"].findById(prodId, function (product) {
-            var contexts = {
-                product: product,
-                path: "/edit-product",
-                pageTitle: "Edit Title",
-                editing: editMode
-            };
-            res.render("./admin/edit-product", contexts);
-        });
-    };
-    ProductController.postEditProduct = function (req, res, next) {
-        var userDTO = req.body;
-        var product = new product_1["default"](userDTO);
-        product.save();
-        res.redirect("/");
-    };
+    // static getEditProduct(req: Request, res: Response, next: NextFunction) {
+    //   const editMode = req.query.edit;
+    //   if (!editMode) {
+    //     res.redirect("/");
+    //     return;
+    //   }
+    //   const prodId = req.params.productId;
+    //   ProductModel.findById(prodId, (product) => {
+    //     const contexts = {
+    //       product: product,
+    //       path: "/edit-product",
+    //       pageTitle: "Edit Title",
+    //       editing: editMode,
+    //     };
+    //     res.render("./admin/edit-product", contexts);
+    //   });
+    // }
+    // static postEditProduct(req: Request, res: Response, next: NextFunction) {
+    //   const userDTO = req.body;
+    //   const product = new ProductModel(userDTO);
+    //   product.save();
+    //   res.redirect("/");
+    // }
     ProductController.getProducts = function (req, res, next) {
-        product_1["default"].fetchAll(function (product) {
+        product_1.Product.findAll().then(function (result) {
             var contexts = {
                 pageTitle: "Admin Products",
-                prods: product,
+                prods: result,
                 path: "/admin/products"
             };
             res.render("./admin/products", contexts);
-        });
-    };
-    ProductController.deleteProdcut = function (req, res, next) {
-        var productId = req.body.productId;
-        product_1["default"].deleteById(productId, function () {
-            res.redirect("/");
         });
     };
     return ProductController;

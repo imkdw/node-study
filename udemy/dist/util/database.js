@@ -1,15 +1,9 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 exports.__esModule = true;
-exports.promisePool = void 0;
-var mysql2_1 = __importDefault(require("mysql2"));
-var pool = mysql2_1["default"].createPool({
-    host: "localhost",
-    user: "root",
-    database: "node_complete",
-    password: "1234"
+exports.sequelize = void 0;
+var sequelize_1 = require("sequelize");
+exports.sequelize = new sequelize_1.Sequelize("node_complete", "root", "1234", {
+    dialect: "mysql",
+    host: "localhost"
 });
-exports.promisePool = pool.promise();
 //# sourceMappingURL=database.js.map
