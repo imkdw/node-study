@@ -20,38 +20,48 @@ class ProductController {
       imageUrl: userDTO.imageUrl,
       description: userDTO.description,
     })
-      .then((result) => console.log(`[SUCCESS] INSERT ${userDTO.title}`))
+      .then((result) => res.redirect("/"))
       .catch((err) => console.error(err));
   }
 
-  // static getEditProduct(req: Request, res: Response, next: NextFunction) {
-  //   const editMode = req.query.edit;
+  static getEditProduct(req: Request, res: Response, next: NextFunction) {
+    const editMode = req.query.edit;
 
-  //   if (!editMode) {
-  //     res.redirect("/");
-  //     return;
-  //   }
+    if (!editMode) {
+      res.redirect("/");
+      return;
+    }
 
-  //   const prodId = req.params.productId;
+    const prodId = req.params.productId;
 
-  //   ProductModel.findById(prodId, (product) => {
-  //     const contexts = {
-  //       product: product,
-  //       path: "/edit-product",
-  //       pageTitle: "Edit Title",
-  //       editing: editMode,
-  //     };
+    Product.findByPk(prodId).then((result) => {
+      const contexts = {
+        product: result,
+        path: "/edit-product",
+        pageTitle: "Edit Title",
+        editing: editMode,
+      };
 
-  //     res.render("./admin/edit-product", contexts);
-  //   });
-  // }
+      res.render("./admin/edit-product", contexts);
+    });
+  }
 
-  // static postEditProduct(req: Request, res: Response, next: NextFunction) {
-  //   const userDTO = req.body;
-  //   const product = new ProductModel(userDTO);
-  //   product.save();
-  //   res.redirect("/");
-  // }
+  static postEditProduct(req: Request, res: Response, next: NextFunction) {
+    const userDTO = req.body;
+    Product.update(
+      {
+        title: userDTO.title,
+        price: userDTO.price,
+        imageUrl: userDTO.imageUrl,
+        description: userDTO.description,
+      },
+      {
+        where: { id: userDTO.productId },
+      }
+    )
+      .then((result) => res.redirect("/"))
+      .catch((err) => console.error(err));
+  }
 
   static getProducts(req: Request, res: Response, next: NextFunction) {
     Product.findAll().then((result) => {
@@ -65,12 +75,14 @@ class ProductController {
     });
   }
 
-  // static deleteProdcut(req: Request, res: Response, next: NextFunction) {
-  //   const { productId } = req.body;
-  //   ProductModel.deleteById(productId, () => {
-  //     res.redirect("/");
-  //   });
-  // }
+  static deleteProdcut(req: Request, res: Response, next: NextFunction) {
+    const { productId } = req.body;
+    Product.destroy({
+      where: { id: productId },
+    })
+      .then(() => res.redirect("/"))
+      .catch((err) => console.error(err));
+  }
 }
 
 export default ProductController;

@@ -9,10 +9,10 @@ adminRouter.post("/add-product", ProductsController.postAddProduct);
 
 adminRouter.get("/products", ProductsController.getProducts);
 
-// adminRouter.get("/edit-product/:productId", ProductsController.getEditProduct);
+adminRouter.get("/edit-product/:productId", ProductsController.getEditProduct);
 
-// adminRouter.post("/edit-product", ProductsController.postEditProduct);
+adminRouter.post("/edit-product", ProductsController.postEditProduct);
 
-// adminRouter.post("/delete-product", ProductsController.deleteProdcut);
+adminRouter.post("/delete-product", ProductsController.deleteProdcut);
 
 export default adminRouter;

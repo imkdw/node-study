@@ -9,8 +9,8 @@ var adminRouter = express_1["default"].Router();
 adminRouter.get("/add-product", admin_1["default"].getAddProduct);
 adminRouter.post("/add-product", admin_1["default"].postAddProduct);
 adminRouter.get("/products", admin_1["default"].getProducts);
-// adminRouter.get("/edit-product/:productId", ProductsController.getEditProduct);
-// adminRouter.post("/edit-product", ProductsController.postEditProduct);
-// adminRouter.post("/delete-product", ProductsController.deleteProdcut);
+adminRouter.get("/edit-product/:productId", admin_1["default"].getEditProduct);
+adminRouter.post("/edit-product", admin_1["default"].postEditProduct);
+adminRouter.post("/delete-product", admin_1["default"].deleteProdcut);
 exports["default"] = adminRouter;
 //# sourceMappingURL=admin.js.map

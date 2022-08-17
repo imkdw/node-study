@@ -29,6 +29,7 @@ class ShopController {
       res.render("./shop/product-list", contexts);
     });
   };
+
   // static getCart = (req: Request, res: Response, next: NextFunction) => {
   //   /**
   //    * 1. 모든 장바구니 목록 가져오기 / CartModel.getCart(cb)

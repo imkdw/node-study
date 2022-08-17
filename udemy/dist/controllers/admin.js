@@ -20,31 +20,37 @@ var ProductController = /** @class */ (function () {
             imageUrl: userDTO.imageUrl,
             description: userDTO.description
         })
-            .then(function (result) { return console.log("[SUCCESS] INSERT ".concat(userDTO.title)); })["catch"](function (err) { return console.error(err); });
+            .then(function (result) { return res.redirect("/"); })["catch"](function (err) { return console.error(err); });
     };
-    // static getEditProduct(req: Request, res: Response, next: NextFunction) {
-    //   const editMode = req.query.edit;
-    //   if (!editMode) {
-    //     res.redirect("/");
-    //     return;
-    //   }
-    //   const prodId = req.params.productId;
-    //   ProductModel.findById(prodId, (product) => {
-    //     const contexts = {
-    //       product: product,
-    //       path: "/edit-product",
-    //       pageTitle: "Edit Title",
-    //       editing: editMode,
-    //     };
-    //     res.render("./admin/edit-product", contexts);
-    //   });
-    // }
-    // static postEditProduct(req: Request, res: Response, next: NextFunction) {
-    //   const userDTO = req.body;
-    //   const product = new ProductModel(userDTO);
-    //   product.save();
-    //   res.redirect("/");
-    // }
+    ProductController.getEditProduct = function (req, res, next) {
+        var editMode = req.query.edit;
+        if (!editMode) {
+            res.redirect("/");
+            return;
+        }
+        var prodId = req.params.productId;
+        product_1.Product.findByPk(prodId).then(function (result) {
+            var contexts = {
+                product: result,
+                path: "/edit-product",
+                pageTitle: "Edit Title",
+                editing: editMode
+            };
+            res.render("./admin/edit-product", contexts);
+        });
+    };
+    ProductController.postEditProduct = function (req, res, next) {
+        var userDTO = req.body;
+        product_1.Product.update({
+            title: userDTO.title,
+            price: userDTO.price,
+            imageUrl: userDTO.imageUrl,
+            description: userDTO.description
+        }, {
+            where: { id: userDTO.productId }
+        })
+            .then(function (result) { return res.redirect("/"); })["catch"](function (err) { return console.error(err); });
+    };
     ProductController.getProducts = function (req, res, next) {
         product_1.Product.findAll().then(function (result) {
             var contexts = {
@@ -54,6 +60,13 @@ var ProductController = /** @class */ (function () {
             };
             res.render("./admin/products", contexts);
         });
+    };
+    ProductController.deleteProdcut = function (req, res, next) {
+        var productId = req.body.productId;
+        product_1.Product.destroy({
+            where: { id: productId }
+        })
+            .then(function () { return res.redirect("/"); })["catch"](function (err) { return console.error(err); });
     };
     return ProductController;
 }());
