@@ -19,11 +19,15 @@ exports.Product = database_1.sequelize.define("product", {
         allowNull: false
     },
     imageUrl: {
-        type: sequelize_1.DataTypes.STRING,
+        type: sequelize_1.DataTypes.TEXT,
         allowNull: false
     },
     description: {
         type: sequelize_1.DataTypes.TEXT,
+        allowNull: false
+    },
+    userId: {
+        type: sequelize_1.DataTypes.INTEGER,
         allowNull: false
     }
 });

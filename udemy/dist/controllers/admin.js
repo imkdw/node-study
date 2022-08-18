@@ -14,13 +14,16 @@ var ProductController = /** @class */ (function () {
     };
     ProductController.postAddProduct = function (req, res, next) {
         var userDTO = JSON.parse(JSON.stringify(req.body));
-        product_1.Product.create({
+        res.locals.user
+            .createProduct({
             title: userDTO.title,
             price: userDTO.price,
             imageUrl: userDTO.imageUrl,
             description: userDTO.description
         })
-            .then(function (result) { return res.redirect("/"); })["catch"](function (err) { return console.error(err); });
+            .then(function (result) {
+            res.redirect("/");
+        })["catch"](function (err) { return console.error(err); });
     };
     ProductController.getEditProduct = function (req, res, next) {
         var editMode = req.query.edit;

@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { Product } from "../models/product";
+import User from "../models/user";
 
 class ProductController {
   static getAddProduct(req: Request, res: Response, next: NextFunction) {
@@ -14,13 +15,16 @@ class ProductController {
 
   static postAddProduct(req: Request, res: Response, next: NextFunction) {
     const userDTO = JSON.parse(JSON.stringify(req.body));
-    Product.create({
-      title: userDTO.title,
-      price: userDTO.price,
-      imageUrl: userDTO.imageUrl,
-      description: userDTO.description,
-    })
-      .then((result) => res.redirect("/"))
+    res.locals.user
+      .createProduct({
+        title: userDTO.title,
+        price: userDTO.price,
+        imageUrl: userDTO.imageUrl,
+        description: userDTO.description,
+      })
+      .then((result) => {
+        res.redirect("/");
+      })
       .catch((err) => console.error(err));
   }
 

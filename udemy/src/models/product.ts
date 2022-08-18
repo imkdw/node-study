@@ -17,11 +17,15 @@ export const Product = sequelize.define("product", {
     allowNull: false,
   },
   imageUrl: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: false,
   },
   description: {
     type: DataTypes.TEXT,
+    allowNull: false,
+  },
+  userId: {
+    type: DataTypes.INTEGER,
     allowNull: false,
   },
 });

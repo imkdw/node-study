@@ -7,7 +7,6 @@ var ShopController = /** @class */ (function () {
     ShopController.getIndex = function (req, res, next) {
         product_1.Product.findAll()
             .then(function (result) {
-            console.log(result);
             var contexts = {
                 prods: result,
                 pageTitle: "Shop",
@@ -33,7 +32,6 @@ var ShopController = /** @class */ (function () {
     //    * 1. 모든 장바구니 목록 가져오기 / CartModel.getCart(cb)
     //    * 2. 모든 상품 목록 가져오기 / ProductModel.fetchAll(cb)
     //    * 3.
-    //    */
     //   // CartModel.getCart((cart) => {
     //   //   ProductModel.fetchAll((products) => {
     //   //     const cartProducts = [];
