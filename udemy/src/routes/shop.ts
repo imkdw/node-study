@@ -3,9 +3,9 @@ import ShopController from "../controllers/shop";
 
 const shopRouter = express.Router();
 
-// shopRouter.get("/", ShopController.getIndex);
+shopRouter.get("/", ShopController.getIndex);
 
-// shopRouter.get("/products", ShopController.getProducts);
+shopRouter.get("/products", ShopController.getProducts);
 
 // shopRouter.get("/cart", ShopController.getCart);
 
@@ -17,6 +17,6 @@ const shopRouter = express.Router();
 
 // shopRouter.get("/orders", ShopController.getOrders);
 
-// shopRouter.get("/products/:productId", ShopController.getProduct);
+shopRouter.get("/products/:productId", ShopController.getProduct);
 
 export default shopRouter;

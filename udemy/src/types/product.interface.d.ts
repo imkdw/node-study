@@ -4,4 +4,5 @@ export interface IProductData {
   imageUrl: string;
   description: string;
   price: string;
+  userId: string;
 }

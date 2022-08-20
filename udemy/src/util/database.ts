@@ -1,14 +1,24 @@
 import { MongoClient, ServerApiVersion } from "mongodb";
 
+let _db;
+
 export const mongoConnect = (callback) => {
   const uri =
-    "mongodb+srv://root:1234@cluster0.gtcw5zo.mongodb.net/?retryWrites=true&w=majority";
+    "mongodb+srv://root:zz11xx22@cluster0.gtcw5zo.mongodb.net/shop?retryWrites=true&w=majority";
   const client = new MongoClient(uri, { serverApi: ServerApiVersion.v1 });
   client
     .connect()
-    .then((result) => {
-      console.log(result);
-      callback(result);
+    .then((client) => {
+      _db = client.db();
+      callback(client);
     })
     .catch((err) => console.error(err));
+};
+
+export const getDb = () => {
+  if (_db) {
+    return _db;
+  }
+
+  throw "Cannot Found Database";
 };

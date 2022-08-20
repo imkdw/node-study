@@ -6,6 +6,7 @@ import adminRouter from "./routes/admin";
 import shopRouter from "./routes/shop";
 import ErrorController from "./controllers/error";
 import { mongoConnect } from "./util/database";
+import User from "./models/user";
 
 const app = express();
 
@@ -19,6 +20,15 @@ app.set("views", path.join(__dirname, "..", "src", "views"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "..", "src", "public")));
 
+app.use((req, res, next) => {
+  User.findById("6300829655dd72c4720ad37e")
+    .then((user) => {
+      res.locals.userId = user._id;
+      next();
+    })
+    .catch((err) => console.error(err));
+});
+
 /** Setting Routers */
 app.use(shopRouter);
 app.use("/admin", adminRouter);
@@ -27,6 +37,5 @@ app.use("/admin", adminRouter);
 app.use(ErrorController.get404);
 
 mongoConnect((client) => {
-  console.log(client);
   app.listen(3000, () => console.log("Port : 3000"));
 });

@@ -1,30 +1,32 @@
 import { Request, Response, NextFunction } from "express";
+import Product from "../models/product";
 
 class ShopController {
-  // static getIndex = (req: Request, res: Response, next: NextFunction) => {
-  //   Product.findAll()
-  //     .then((result) => {
-  //       const contexts = {
-  //         prods: result,
-  //         pageTitle: "Shop",
-  //         path: "/",
-  //         hasProducts: result.length > 0,
-  //       };
-  //       res.render("./shop/index", contexts);
-  //     })
-  //     .catch((err) => console.error(err));
-  // };
-  // static getProducts = (req: Request, res: Response, next: NextFunction) => {
-  //   Product.findAll().then((result) => {
-  //     const contexts = {
-  //       prods: result,
-  //       pageTitle: "All Products",
-  //       path: "/products",
-  //       hasProducts: result.length > 0,
-  //     };
-  //     res.render("./shop/product-list", contexts);
-  //   });
-  // };
+  static getIndex = (req: Request, res: Response, next: NextFunction) => {
+    Product.fetchAll().then((result) => {
+      const contexts = {
+        prods: result,
+        pageTitle: "Shop",
+        path: "/",
+        hasProducts: result.length > 0,
+      };
+
+      res.render("./shop/index", contexts);
+    });
+  };
+
+  static getProducts = (req: Request, res: Response, next: NextFunction) => {
+    Product.fetchAll().then((result) => {
+      const contexts = {
+        prods: result,
+        pageTitle: "All Products",
+        path: "/products",
+        hasProducts: result.length > 0,
+      };
+      res.render("./shop/product-list", contexts);
+    });
+  };
+
   // static getCart = (req: Request, res: Response, next: NextFunction) => {
   //   res.locals.user.getCart().then((cart) => {
   //     return cart
@@ -76,17 +78,23 @@ class ShopController {
   //   };
   //   res.render("./shop/orders", contexts);
   // };
-  // static getProduct = (req: Request, res: Response, next: NextFunction) => {
-  //   const prodId = req.params.productId;
-  //   /** findByPk 메서드를 통한 방식 */
-  //   Product.findByPk(prodId).then((result) => {
-  //     const contexts = {
-  //       product: result,
-  //       pageTitle: "Product Details",
-  //       path: `/products`,
-  //     };
-  //     res.render("./shop/product-detail", contexts);
-  //   });
+
+  static getProduct = (req: Request, res: Response, next: NextFunction) => {
+    const productId = req.params.productId;
+
+    Product.findById(productId)
+      .then((result) => {
+        const contexts = {
+          product: result,
+          pageTitle: "Product Details",
+          path: `/products`,
+        };
+
+        res.render("./shop/product-detail", contexts);
+      })
+      .catch((err) => console.error(err));
+  };
+
   //   /** findAll에 where 옵션을 통한 방식 */
   //   Product.findAll({ where: { id: prodId } })
   //     .then((result) => {
