@@ -26,7 +26,7 @@ app.use((req, res, next) => {
       res.locals.userId = user._id;
       next();
     })
-    .catch((err) => console.error(err));
+    .catch((err: any) => console.error(err));
 });
 
 /** Setting Routers */
