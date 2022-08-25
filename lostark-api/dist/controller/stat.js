@@ -35,59 +35,20 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 exports.__esModule = true;
-var selenium_webdriver_1 = require("selenium-webdriver");
-var chrome_1 = __importDefault(require("selenium-webdriver/chrome"));
-var path_1 = __importDefault(require("path"));
-var getTextFromDriver = function (driver, className) { return __awaiter(void 0, void 0, void 0, function () {
-    var text;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, driver.findElement(selenium_webdriver_1.By.className(className)).getText()];
-            case 1:
-                text = _a.sent();
-                return [2 /*return*/, text];
-        }
-    });
-}); };
 var StatController = /** @class */ (function () {
     function StatController() {
     }
     var _a;
     _a = StatController;
     StatController.postItemLevel = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var username, url, driverPath, service, driver, itemLevel, defaultStat, fightStat, response;
+        var username, url, statData;
         return __generator(_a, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    username = req.body.username;
-                    url = "https://lostark.game.onstove.com/Profile/Character/".concat(username);
-                    driverPath = path_1["default"].join(__dirname, "..", "..", "chromedriver.exe");
-                    service = new chrome_1["default"].ServiceBuilder(driverPath);
-                    driver = new selenium_webdriver_1.Builder().forBrowser("chrome").setChromeService(service).build();
-                    return [4 /*yield*/, driver.get(url)];
-                case 1:
-                    _b.sent();
-                    return [4 /*yield*/, getTextFromDriver(driver, "level-info2__expedition")];
-                case 2:
-                    itemLevel = _b.sent();
-                    return [4 /*yield*/, getTextFromDriver(driver, "profile-ability-basic")];
-                case 3:
-                    defaultStat = _b.sent();
-                    return [4 /*yield*/, getTextFromDriver(driver, "profile-ability-battle")];
-                case 4:
-                    fightStat = _b.sent();
-                    response = {
-                        itemLevel: itemLevel,
-                        defaultStat: defaultStat,
-                        fightStat: fightStat
-                    };
-                    res.json(response);
-                    return [2 /*return*/];
-            }
+            username = req.body.username;
+            url = "https://lostark.game.onstove.com/Profile/Character/".concat(username);
+            statData = {};
+            res.json(statData);
+            return [2 /*return*/];
         });
     }); };
     return StatController;
