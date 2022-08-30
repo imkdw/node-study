@@ -22,11 +22,11 @@ app.use(express.static(path.join(__dirname, "..", "src", "public")));
 
 app.use((req, res, next) => {
   User.findById("6300829655dd72c4720ad37e")
-    .then((user) => {
-      res.locals.userId = user._id;
+    .then((result) => {
+      res.locals.user = result;
       next();
     })
-    .catch((err: any) => console.error(err));
+    .catch((err) => console.error(err));
 });
 
 /** Setting Routers */

@@ -1,53 +1,48 @@
+import { ObjectId } from "mongodb";
 import { IProductData } from "../types/product.interface";
 import { getDb } from "../util/database";
-import { ObjectId } from "mongodb";
 
 class Product {
   title: string;
   price: string;
   description: string;
   imageUrl: string;
-  id: null | string;
+  productId: string | null;
   userId: string;
 
-  constructor(userDTO: IProductData) {
-    this.title = userDTO.title;
-    this.price = userDTO.price;
-    this.description = userDTO.description;
-    this.imageUrl = userDTO.imageUrl;
-    this.id = userDTO.productId;
-    this.userId = userDTO.userId;
+  constructor(productData: IProductData) {
+    this.title = productData.title;
+    this.price = productData.price;
+    this.description = productData.description;
+    this.imageUrl = productData.imageUrl;
+    this.productId = productData.productId ? productData.productId : null;
+    this.userId = productData.userId;
   }
 
   save() {
     const db = getDb();
-    let dbOperation;
+    let dbOp;
 
-    if (this.id) {
-      dbOperation = db
-        .collection("products")
-        .updateOne({ _id: new ObjectId(this.id) }, { $set: this })
-        .then()
-        .catch((err) => console.error(err));
+    if (this.productId) {
+      dbOp = db.collection("products").updateOne({ _id: new ObjectId(this.productId) }, { $set: this });
     } else {
-      dbOperation = db
-        .collection("products")
-        .insertOne(this)
-        .then()
-        .catch((err) => console.error(err));
+      dbOp = db.collection("products").insertOne(this);
     }
 
-    return dbOperation;
+    return dbOp.then().catch((err) => console.error(err));
   }
 
   static fetchAll() {
     const db = getDb();
+
     return db
       .collection("products")
       .find()
       .toArray()
       .then()
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error(err);
+      });
   }
 
   static findById(productId: string) {
@@ -55,7 +50,8 @@ class Product {
 
     return db
       .collection("products")
-      .findOne({ _id: new ObjectId(productId) })
+      .find({ _id: new ObjectId(productId) })
+      .toArray()
       .then()
       .catch((err) => console.error(err));
   }

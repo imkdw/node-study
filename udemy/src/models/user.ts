@@ -1,27 +1,34 @@
+import { ObjectId } from "mongodb";
 import { getDb } from "../util/database";
-import { MongoError, ObjectId } from "mongodb";
 
 class User {
-  userName: string;
+  username: string;
   email: string;
 
-  constructor(userName: string, email: string) {
-    this.userName = userName;
+  constructor(username, email) {
+    this.username = username;
     this.email = email;
   }
 
   save() {
     const db = getDb();
-    return db.collection("users").insertOne(this);
+    return db
+      .collection("users")
+      .insertOne(this)
+      .then()
+      .catch((err) => console.error(err));
   }
+
+  addToCart() {}
 
   static findById(userId: string) {
     const db = getDb();
     return db
       .collection("users")
-      .findOne({ _id: new ObjectId(userId) })
+      .find({ _id: new ObjectId(userId) })
+      .toArray()
       .then()
-      .catch((err: MongoError) => console.error(err));
+      .catch((err) => console.error(err));
   }
 }
 

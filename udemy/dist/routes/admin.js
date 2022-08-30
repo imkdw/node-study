@@ -11,6 +11,6 @@ adminRouter.post("/add-product", admin_1["default"].postAddProduct);
 adminRouter.get("/products", admin_1["default"].getProducts);
 adminRouter.get("/edit-product/:productId", admin_1["default"].getEditProduct);
 adminRouter.post("/edit-product", admin_1["default"].postEditProduct);
-adminRouter.post("/delete-product", admin_1["default"].deleteProdcut);
+adminRouter.post("/delete-product", admin_1["default"].deleteProduct);
 exports["default"] = adminRouter;
 //# sourceMappingURL=admin.js.map

@@ -21,8 +21,8 @@ app.use(body_parser_1["default"].urlencoded({ extended: false }));
 app.use(express_1["default"].static(path_1["default"].join(__dirname, "..", "src", "public")));
 app.use(function (req, res, next) {
     user_1["default"].findById("6300829655dd72c4720ad37e")
-        .then(function (user) {
-        res.locals.userId = user._id;
+        .then(function (result) {
+        res.locals.user = result;
         next();
     })["catch"](function (err) { return console.error(err); });
 });

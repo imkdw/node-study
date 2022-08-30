@@ -29,43 +29,14 @@ var ShopController = /** @class */ (function () {
             res.render("./shop/product-list", contexts);
         });
     };
-    // static getCart = (req: Request, res: Response, next: NextFunction) => {
-    //   res.locals.user.getCart().then((cart) => {
-    //     return cart
-    //       .getProducts()
-    //       .then((products) => {
-    //         const contexts = {
-    //           pageTitle: "Your Cart",
-    //           path: "/cart",
-    //           products: products,
-    //         };
-    //         res.render();
-    //       })
-    //       .catch((err) => console.error(err));
-    //   });
-    //   CartModel.getCart((cart) => {
-    //     ProductModel.fetchAll((products) => {
-    //       const cartProducts = [];
-    //       for (const product of products) {
-    //         const cartProductData = cart.products.find(
-    //           (prod) => prod.id === product.id
-    //         );
-    //         if (cartProductData) {
-    //           cartProducts.push({
-    //             productData: { ...product },
-    //             qty: cartProductData.qty,
-    //           });
-    //         }
-    //       }
-    //       const contexts = {
-    //         pageTitle: "Your Cart",
-    //         path: "/cart",
-    //         products: cartProducts,
-    //       };
-    //       res.render("./shop/cart", contexts);
-    //     });
-    //   });
-    // };
+    ShopController.getCart = function (req, res, next) {
+        // const contexts = {
+        //   pageTitle: "Your Cart",
+        //   path: "/cart",
+        //   products: cartProducts,
+        // };
+        // res.render("./shop/cart", contexts);
+    };
     // static getCheckOut = (req: Request, res: Response, next: NextFunction) => {
     //   const contexts = {
     //     pageTitle: "Checkout",
@@ -82,10 +53,11 @@ var ShopController = /** @class */ (function () {
     // };
     ShopController.getProduct = function (req, res, next) {
         var productId = req.params.productId;
+        console.log(productId);
         product_1["default"].findById(productId)
             .then(function (result) {
             var contexts = {
-                product: result,
+                product: result[0],
                 pageTitle: "Product Details",
                 path: "/products"
             };
