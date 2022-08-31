@@ -19,7 +19,9 @@ class User {
       .catch((err) => console.error(err));
   }
 
-  addToCart() {}
+  addToCart() {
+    // add cart logic
+  }
 
   static findById(userId: string) {
     const db = getDb();
