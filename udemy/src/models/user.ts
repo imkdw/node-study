@@ -4,10 +4,14 @@ import { getDb } from "../util/database";
 class User {
   username: string;
   email: string;
+  cart: any;
+  id: string;
 
-  constructor(username, email) {
+  constructor(username: string, email: string, cart: any, id: string) {
     this.username = username;
     this.email = email;
+    this.cart = cart;
+    this.id = id;
   }
 
   save() {
@@ -19,8 +23,10 @@ class User {
       .catch((err) => console.error(err));
   }
 
-  addToCart() {
-    // add cart logic
+  addToCart(product: any) {
+    const updatedCart = { items: [{ ...product, quantity: 1 }] };
+    const db = getDb();
+    return db.collection("users").updateOne({ _id: new ObjectId() }, { $set: { cart: updatedCart } });
   }
 
   static findById(userId: string) {

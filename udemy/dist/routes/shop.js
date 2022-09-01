@@ -9,7 +9,7 @@ var shopRouter = express_1["default"].Router();
 shopRouter.get("/", shop_1["default"].getIndex);
 shopRouter.get("/products", shop_1["default"].getProducts);
 // shopRouter.get("/cart", ShopController.getCart);
-// shopRouter.post("/cart", ShopController.postCart);
+shopRouter.post("/cart", shop_1["default"].postCart);
 // shopRouter.post("/cart-delete-item", ShopController.postCartDeleteItem);
 // shopRouter.get("/checkout", ShopController.getCheckOut);
 // shopRouter.get("/orders", ShopController.getOrders);

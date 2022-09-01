@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import Product from "../models/product";
+import User from "../models/user";
 
 class ShopController {
   static getIndex = (req: Request, res: Response, next: NextFunction) => {
@@ -26,14 +27,14 @@ class ShopController {
     });
   };
 
-  static getCart = (req: Request, res: Response, next: NextFunction) => {
-    // const contexts = {
-    //   pageTitle: "Your Cart",
-    //   path: "/cart",
-    //   products: cartProducts,
-    // };
-    // res.render("./shop/cart", contexts);
-  };
+  // static getCart = (req: Request, res: Response, next: NextFunction) => {
+  //   const contexts = {
+  //     pageTitle: "Your Cart",
+  //     path: "/cart",
+  //     products: cartProducts,
+  //   };
+  //   res.render("./shop/cart", contexts);
+  // };
 
   // static getCheckOut = (req: Request, res: Response, next: NextFunction) => {
   //   const contexts = {
@@ -65,24 +66,9 @@ class ShopController {
       .catch((err) => console.error(err));
   };
 
-  // static postCart = (req: Request, res: Response, next: NextFunction) => {
-  //   const { productId, productPrice } = req.body;
-  //   ProductModel.findById(productId, (product) => {
-  //     CartModel.addProduct(productId, productPrice);
-  //   });
-  //   res.redirect("/");
-  // };
-  // static postCartDeleteItem = (
-  //   req: Request,
-  //   res: Response,
-  //   next: NextFunction
-  // ) => {
-  //   const { productId } = req.body;
-  //   ProductModel.findById(productId, (product) => {
-  //     CartModel.deleteProduct(productId, product.price);
-  //     res.redirect("/cart");
-  //   });
-  // };
+  static postCart = (req: Request, res: Response, next: NextFunction) => {
+    const { productId, productPrice } = req.body;
+  };
 }
 
 export default ShopController;

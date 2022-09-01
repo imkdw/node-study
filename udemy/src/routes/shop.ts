@@ -9,7 +9,7 @@ shopRouter.get("/products", ShopController.getProducts);
 
 // shopRouter.get("/cart", ShopController.getCart);
 
-// shopRouter.post("/cart", ShopController.postCart);
+shopRouter.post("/cart", ShopController.postCart);
 
 // shopRouter.post("/cart-delete-item", ShopController.postCartDeleteItem);
 

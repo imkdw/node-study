@@ -29,14 +29,14 @@ var ShopController = /** @class */ (function () {
             res.render("./shop/product-list", contexts);
         });
     };
-    ShopController.getCart = function (req, res, next) {
-        // const contexts = {
-        //   pageTitle: "Your Cart",
-        //   path: "/cart",
-        //   products: cartProducts,
-        // };
-        // res.render("./shop/cart", contexts);
-    };
+    // static getCart = (req: Request, res: Response, next: NextFunction) => {
+    //   const contexts = {
+    //     pageTitle: "Your Cart",
+    //     path: "/cart",
+    //     products: cartProducts,
+    //   };
+    //   res.render("./shop/cart", contexts);
+    // };
     // static getCheckOut = (req: Request, res: Response, next: NextFunction) => {
     //   const contexts = {
     //     pageTitle: "Checkout",
@@ -63,6 +63,9 @@ var ShopController = /** @class */ (function () {
             };
             res.render("./shop/product-detail", contexts);
         })["catch"](function (err) { return console.error(err); });
+    };
+    ShopController.postCart = function (req, res, next) {
+        var _a = req.body, productId = _a.productId, productPrice = _a.productPrice;
     };
     return ShopController;
 }());
