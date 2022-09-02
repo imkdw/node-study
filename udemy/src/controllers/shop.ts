@@ -68,6 +68,19 @@ class ShopController {
 
   static postCart = (req: Request, res: Response, next: NextFunction) => {
     const { productId, productPrice } = req.body;
+    const { _id, name, email } = res.locals.user[0];
+
+    Product.findById(productId)
+      .then((product) => {
+        const user = new User(name, email, _id);
+        user
+          .addToCart(product[0])
+          .then((result) => {
+            res.redirect("/cart");
+          })
+          .catch((err) => console.error(err));
+      })
+      .catch((err) => console.error(err));
   };
 }
 

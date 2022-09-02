@@ -23,6 +23,7 @@ app.use(function (req, res, next) {
     user_1["default"].findById("6300829655dd72c4720ad37e")
         .then(function (result) {
         res.locals.user = result;
+        // console.log(res.locals.user);
         next();
     })["catch"](function (err) { return console.error(err); });
 });

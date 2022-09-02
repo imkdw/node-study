@@ -24,6 +24,7 @@ app.use((req, res, next) => {
   User.findById("6300829655dd72c4720ad37e")
     .then((result) => {
       res.locals.user = result;
+      // console.log(res.locals.user);
       next();
     })
     .catch((err) => console.error(err));

@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 exports.__esModule = true;
 var product_1 = __importDefault(require("../models/product"));
+var user_1 = __importDefault(require("../models/user"));
 var ShopController = /** @class */ (function () {
     function ShopController() {
     }
@@ -66,6 +67,16 @@ var ShopController = /** @class */ (function () {
     };
     ShopController.postCart = function (req, res, next) {
         var _a = req.body, productId = _a.productId, productPrice = _a.productPrice;
+        var _b = res.locals.user[0], _id = _b._id, name = _b.name, email = _b.email;
+        product_1["default"].findById(productId)
+            .then(function (product) {
+            var user = new user_1["default"](name, email, _id);
+            user
+                .addToCart(product[0])
+                .then(function (result) {
+                res.redirect("/cart");
+            })["catch"](function (err) { return console.error(err); });
+        })["catch"](function (err) { return console.error(err); });
     };
     return ShopController;
 }());
