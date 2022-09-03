@@ -7,7 +7,7 @@ shopRouter.get("/", ShopController.getIndex);
 
 shopRouter.get("/products", ShopController.getProducts);
 
-// shopRouter.get("/cart", ShopController.getCart);
+shopRouter.get("/cart", ShopController.getCart);
 
 shopRouter.post("/cart", ShopController.postCart);
 

@@ -23,6 +23,17 @@ class User {
       .catch((err) => console.error(err));
   }
 
+  static getCart(userId: string) {
+    const db = getDb();
+
+    return db
+      .collection("users")
+      .find({ _id: new ObjectId(userId) })
+      .toArray()
+      .then()
+      .catch((err) => console.error(err));
+  }
+
   async addToCart(product: any) {
     const db = getDb();
     const userData = await User.findById(this.id);

@@ -52,6 +52,14 @@ var User = /** @class */ (function () {
             .insertOne(this)
             .then()["catch"](function (err) { return console.error(err); });
     };
+    User.getCart = function (userId) {
+        var db = (0, database_1.getDb)();
+        return db
+            .collection("users")
+            .find({ _id: new mongodb_1.ObjectId(userId) })
+            .toArray()
+            .then()["catch"](function (err) { return console.error(err); });
+    };
     User.prototype.addToCart = function (product) {
         return __awaiter(this, void 0, void 0, function () {
             var db, userData, updatedCart, newQuantity, cartProductIndex, updatedCartItems, existCart, newCart;

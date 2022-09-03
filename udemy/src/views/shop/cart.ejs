@@ -9,18 +9,13 @@
     <title><%= pageTitle %></title>
   </head>
   <body>
-    <%- include('../includes/navigation.ejs') %> <% if (products.length > 0) {
-    %>
+    <%- include('../includes/navigation.ejs') %> <% if (products.length > 0) { %>
     <ul>
       <% products.forEach(function(product) { %>
       <li>
-        <h3><%= product.productData.title %> (<%= product.qty %>)</h3>
+        <h3><%= product.title %> (<%= product.quantity %>)</h3>
         <form action="/cart-delete-item" method="post">
-          <input
-            type="hidden"
-            value="<%= product.productData.id %>"
-            name="productId"
-          />
+          <input type="hidden" value="<%= product._id %>" name="productId" />
           <button type="submit" class="btn">Delete</button>
         </form>
       </li>

@@ -27,14 +27,32 @@ class ShopController {
     });
   };
 
-  // static getCart = (req: Request, res: Response, next: NextFunction) => {
-  //   const contexts = {
-  //     pageTitle: "Your Cart",
-  //     path: "/cart",
-  //     products: cartProducts,
-  //   };
-  //   res.render("./shop/cart", contexts);
-  // };
+  static getCart = async (req: Request, res: Response, next: NextFunction) => {
+    const { _id } = res.locals.user[0];
+    User.getCart(_id)
+      .then(async (result) => {
+        const cartProducts = result[0].cart.items;
+        const cartProductsId = cartProducts.map((cartProduct) => cartProduct.productId.toString());
+        const products = [];
+        let i = 0;
+
+        for (const cartProductId of cartProductsId) {
+          const product = await Product.findById(cartProductId);
+          product[0].quantity = cartProducts[i].quantity;
+          products.push(product[0]);
+          i++;
+        }
+
+        const contexts = {
+          pageTitle: "Your Cart",
+          path: "/cart",
+          products: products,
+        };
+
+        res.render("./shop/cart", contexts);
+      })
+      .catch((err) => console.error(err));
+  };
 
   // static getCheckOut = (req: Request, res: Response, next: NextFunction) => {
   //   const contexts = {
