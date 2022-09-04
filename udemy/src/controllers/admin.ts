@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ObjectId } from "mongodb";
-import Product from "../models/product";
+import { title } from "process";
+import { ProductModel } from "../models/product";
 
 class ProductController {
   static getAddProduct(req: Request, res: Response, next: NextFunction) {
@@ -13,33 +14,37 @@ class ProductController {
   }
 
   static postAddProduct(req: Request, res: Response, next: NextFunction) {
+    /** userDTO : title, price, imageUrl, description */
     const userDTO = JSON.parse(JSON.stringify(req.body));
-    userDTO.productId = null;
-    userDTO.userId = new ObjectId(res.locals.user[0]._id);
 
-    const product = new Product(userDTO);
+    /** Add Custom userDTO Values : productId, userId */
+    // userDTO.productId = null;
+    // userDTO.userId = new ObjectId(res.locals.user[0]._id);
+
+    const product = new ProductModel({
+      title: userDTO.title,
+      price: userDTO.price,
+      description: userDTO.description,
+      imageUrl: userDTO.imageUrl,
+      userId: res.locals.user._id,
+    });
 
     product
       .save()
       .then((result) => res.redirect("/"))
-      .catch((err) => {
-        console.error(err);
-      });
+      .catch((err) => console.error(err));
   }
-
   static getEditProduct(req: Request, res: Response, next: NextFunction) {
     const editMode = req.query.edit;
-
     if (!editMode) {
       res.redirect("/");
       return;
     }
-
     const prodId = req.params.productId;
-    Product.findById(prodId)
-      .then((result) => {
+    ProductModel.findById(prodId)
+      .then((product) => {
         const contexts = {
-          product: result[0],
+          product: product,
           path: "/edit-product",
           pageTitle: "Edit Title",
           editing: editMode,
@@ -50,21 +55,28 @@ class ProductController {
   }
 
   static postEditProduct(req: Request, res: Response, next: NextFunction) {
+    /** None Edit Mode userDTO : title, imageUrl, price, description */
+    /** Edit Mode userDTO : title, imageUrl, price, description, productId */
     const userDTO = req.body;
-    const product = new Product(userDTO);
 
-    product
-      .save()
-      .then(() => res.redirect("/"))
+    ProductModel.findById(userDTO.productId)
+      .then((product) => {
+        (product.title = userDTO.title),
+          (product.imageUrl = userDTO.imageUrl),
+          (product.price = userDTO.price),
+          (product.description = userDTO.description);
+        product.save();
+        res.redirect("/");
+      })
       .catch((err) => console.error(err));
   }
 
   static getProducts(req: Request, res: Response, next: NextFunction) {
-    Product.fetchAll()
-      .then((result) => {
+    ProductModel.find()
+      .then((products) => {
         const contexts = {
           pageTitle: "Admin Products",
-          prods: result,
+          prods: products,
           path: "/admin/products",
         };
         res.render("./admin/products", contexts);
@@ -74,7 +86,7 @@ class ProductController {
 
   static deleteProduct(req: Request, res: Response, next: NextFunction) {
     const { productId } = req.body;
-    Product.deleteById(productId)
+    ProductModel.findByIdAndRemove(productId)
       .then(() => res.redirect("/"))
       .catch((err) => console.error(err));
   }

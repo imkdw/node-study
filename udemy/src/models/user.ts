@@ -1,83 +1,135 @@
 import { ObjectId } from "mongodb";
-import { getDb } from "../util/database";
+import mongoose from "mongoose";
 
-class User {
-  username: string;
-  email: string;
-  // cart: any;
-  id: string;
+const Schema = mongoose.Schema;
 
-  constructor(username: string, email: string, id: string) {
-    this.username = username;
-    this.email = email;
-    // this.cart = cart;
-    this.id = id;
+const userSchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    cart: {
+      items: [
+        {
+          productId: {
+            type: Schema.Types.ObjectId,
+            ref: "Product",
+            required: true,
+          },
+          quantity: {
+            type: Number,
+            required: true,
+          },
+        },
+      ],
+    },
+  },
+  {
+    methods: {
+      addToCart(product: any) {
+        /** 기존에 존재하는 카트 아이템의 인덱스 */
+        const cartProductIndex = this.cart.items.findIndex((cp) => {
+          if (cp.productId.equals(product._id)) {
+            return cp;
+          }
+        });
+
+        /** 기존 카트에 존재하는 아이템 이라면 */
+        if (cartProductIndex !== -1) {
+          const existCart = this.cart.items[cartProductIndex];
+          existCart.quantity += 1;
+          this.cart.items[cartProductIndex] = existCart;
+        } else {
+          /** 기존 카트에 존재하지 않는 아이템 이라면 */
+          const newCart = { productId: product._id, quantity: 1 };
+          this.cart.items.push(newCart);
+        }
+
+        return this.save();
+      },
+      removeFromCart(productId: string) {
+        const updatedCartItems = this.cart.items.filter((item) => {
+          if (item.productId.equals(productId)) {
+            return item;
+          }
+        });
+
+        this.cart.items = updatedCartItems;
+        return this.save();
+      },
+    },
   }
+);
 
-  save() {
-    const db = getDb();
-    return db
-      .collection("users")
-      .insertOne(this)
-      .then()
-      .catch((err) => console.error(err));
-  }
+export const userModel = mongoose.model("User", userSchema);
 
-  static getCart(userId: string) {
-    const db = getDb();
+// class User {
+//   username: string;
+//   email: string;
+//   // cart: any;
+//   id: string;
 
-    return db
-      .collection("users")
-      .find({ _id: new ObjectId(userId) })
-      .toArray()
-      .then()
-      .catch((err) => console.error(err));
-  }
+//   constructor(username: string, email: string, id: string) {
+//     this.username = username;
+//     this.email = email;
+//     // this.cart = cart;
+//     this.id = id;
+//   }
 
-  async addToCart(product: any) {
-    const db = getDb();
-    const userData = await User.findById(this.id);
-    let updatedCart;
-    const newQuantity = 1;
+//   save() {
+//     const db = getDb();
+//     return db
+//       .collection("users")
+//       .insertOne(this)
+//       .then()
+//       .catch((err) => console.error(err));
+//   }
 
-    /**
-     * 1. 기존에 카트에 상품들이 존재하는지 체크
-     * 2-1. 상품이 있을경우 기존 추가된 상품이 있는지 확인하여 수량만 1개 추가
-     * 2-2. 상품이 없을경우 새로운 상품을 추가
-     */
-    if (userData[0].cart) {
-      const cartProductIndex = userData[0].cart.items.findIndex((cp) => cp.productId.toString() === new ObjectId(product._id).toString());
-      const updatedCartItems = userData[0].cart.items;
+//   static getCart(userId: string) {
+//     const db = getDb();
 
-      /** 2-1. 기존에 존재하는 상품일 경우 */
-      if (cartProductIndex !== -1) {
-        const existCart = updatedCartItems[cartProductIndex];
-        existCart.quantity += 1;
-        updatedCartItems[cartProductIndex] = existCart;
-        updatedCart = { items: updatedCartItems };
-      } else {
-        /** 2-2. 기존에 존재하지 않는 상품일 경우 */
-        const newCart = { productId: new ObjectId(product._id), quantity: newQuantity };
-        updatedCartItems.push(newCart);
-        updatedCart = { items: updatedCartItems };
-      }
-    } else {
-      /** 기존 카트에 상품들이 없는 상태로 새로운 제품을 추가함 */
-      updatedCart = { items: [{ productId: new ObjectId(product._id), quantity: newQuantity }] };
-    }
+//     return db
+//       .collection("users")
+//       .find({ _id: new ObjectId(userId) })
+//       .toArray()
+//       .then()
+//       .catch((err) => console.error(err));
+//   }
 
-    return db.collection("users").updateOne({ _id: new ObjectId(this.id) }, { $set: { cart: updatedCart } });
-  }
+//   async addToCart(product: any) {
+//     const db = getDb();
+//     const userData = await User.findById(this.id);
+//
+//   }
 
-  static findById(userId: string) {
-    const db = getDb();
-    return db
-      .collection("users")
-      .find({ _id: new ObjectId(userId) })
-      .toArray()
-      .then()
-      .catch((err) => console.error(err));
-  }
-}
+//   async deleteItemFromCart(productId: string) {
+//     const db = getDb();
+//     const userData = await User.findById(this.id);
+//     const cartItems = userData[0].cart.items;
+//     const updatedCartItems = cartItems.filter((cartItem) => cartItem.productId.toString() !== productId);
+//     const updatedCart = { items: updatedCartItems };
 
-export default User;
+//     return db
+//       .collection("users")
+//       .updateOne({ _id: new ObjectId(this.id) }, { $set: { cart: updatedCart } })
+//       .then()
+//       .catch((err) => console.error(err));
+//   }
+
+//   static findById(userId: string) {
+//     const db = getDb();
+//     return db
+//       .collection("users")
+//       .find({ _id: new ObjectId(userId) })
+//       .toArray()
+//       .then()
+//       .catch((err) => console.error(err));
+//   }
+// }
+
+// export default User;

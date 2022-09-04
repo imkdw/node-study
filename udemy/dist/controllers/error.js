@@ -8,7 +8,8 @@ var ErrorController = /** @class */ (function () {
             pageTitle: "Page NotFound",
             productCSS: false,
             formsCSS: false,
-            path: "/404"
+            path: "/404",
+            isAuthenticated: res.locals.isLoggedIn
         };
         res.status(404).render("./error/404", contexts);
     };

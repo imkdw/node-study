@@ -10,9 +10,9 @@ shopRouter.get("/", shop_1["default"].getIndex);
 shopRouter.get("/products", shop_1["default"].getProducts);
 shopRouter.get("/cart", shop_1["default"].getCart);
 shopRouter.post("/cart", shop_1["default"].postCart);
-// shopRouter.post("/cart-delete-item", ShopController.postCartDeleteItem);
+shopRouter.post("/cart-delete-item", shop_1["default"].postCartDeleteItem);
 // shopRouter.get("/checkout", ShopController.getCheckOut);
-// shopRouter.get("/orders", ShopController.getOrders);
+shopRouter.get("/orders", shop_1["default"].getOrders);
 shopRouter.get("/products/:productId", shop_1["default"].getProduct);
 exports["default"] = shopRouter;
 //# sourceMappingURL=shop.js.map

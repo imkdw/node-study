@@ -11,11 +11,11 @@ shopRouter.get("/cart", ShopController.getCart);
 
 shopRouter.post("/cart", ShopController.postCart);
 
-// shopRouter.post("/cart-delete-item", ShopController.postCartDeleteItem);
+shopRouter.post("/cart-delete-item", ShopController.postCartDeleteItem);
 
 // shopRouter.get("/checkout", ShopController.getCheckOut);
 
-// shopRouter.get("/orders", ShopController.getOrders);
+shopRouter.get("/orders", ShopController.getOrders);
 
 shopRouter.get("/products/:productId", ShopController.getProduct);
 

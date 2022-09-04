@@ -35,103 +35,71 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 exports.__esModule = true;
-var product_1 = __importDefault(require("../models/product"));
-var user_1 = __importDefault(require("../models/user"));
+var order_1 = require("../models/order");
+var product_1 = require("../models/product");
 var ShopController = /** @class */ (function () {
     function ShopController() {
     }
     var _a;
     _a = ShopController;
     ShopController.getIndex = function (req, res, next) {
-        product_1["default"].fetchAll().then(function (result) {
+        product_1.ProductModel.find().then(function (products) {
             var contexts = {
-                prods: result,
+                prods: products,
                 pageTitle: "Shop",
                 path: "/",
-                hasProducts: result.length > 0
+                hasProducts: products.length > 0
             };
             res.render("./shop/index", contexts);
         });
     };
     ShopController.getProducts = function (req, res, next) {
-        product_1["default"].fetchAll().then(function (result) {
+        product_1.ProductModel.find().then(function (products) {
             var contexts = {
-                prods: result,
+                prods: products,
                 pageTitle: "All Products",
                 path: "/products",
-                hasProducts: result.length > 0
+                hasProducts: products.length > 0
             };
             res.render("./shop/product-list", contexts);
         });
     };
     ShopController.getCart = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var _id;
         return __generator(_a, function (_b) {
-            _id = res.locals.user[0]._id;
-            user_1["default"].getCart(_id)
-                .then(function (result) { return __awaiter(void 0, void 0, void 0, function () {
-                var cartProducts, cartProductsId, products, i, _i, cartProductsId_1, cartProductId, product, contexts;
-                return __generator(this, function (_b) {
-                    switch (_b.label) {
-                        case 0:
-                            cartProducts = result[0].cart.items;
-                            cartProductsId = cartProducts.map(function (cartProduct) { return cartProduct.productId.toString(); });
-                            products = [];
-                            i = 0;
-                            _i = 0, cartProductsId_1 = cartProductsId;
-                            _b.label = 1;
-                        case 1:
-                            if (!(_i < cartProductsId_1.length)) return [3 /*break*/, 4];
-                            cartProductId = cartProductsId_1[_i];
-                            return [4 /*yield*/, product_1["default"].findById(cartProductId)];
-                        case 2:
-                            product = _b.sent();
-                            product[0].quantity = cartProducts[i].quantity;
-                            products.push(product[0]);
-                            i++;
-                            _b.label = 3;
-                        case 3:
-                            _i++;
-                            return [3 /*break*/, 1];
-                        case 4:
-                            contexts = {
-                                pageTitle: "Your Cart",
-                                path: "/cart",
-                                products: products
-                            };
-                            res.render("./shop/cart", contexts);
-                            return [2 /*return*/];
-                    }
-                });
-            }); })["catch"](function (err) { return console.error(err); });
+            res.locals.user
+                .populate("cart.items.productId")
+                .then(function (result) {
+                var contexts = {
+                    pageTitle: "Your Cart",
+                    path: "/cart",
+                    products: result.cart.items
+                };
+                res.render("./shop/cart", contexts);
+            })["catch"](function (err) { return console.error(err); });
             return [2 /*return*/];
         });
     }); };
-    // static getCheckOut = (req: Request, res: Response, next: NextFunction) => {
-    //   const contexts = {
-    //     pageTitle: "Checkout",
-    //     path: "/checkout",
-    //   };
-    //   res.render("./shop/checkout", contexts);
-    // };
-    // static getOrders = (req: Request, res: Response, next: NextFunction) => {
-    //   const contexts = {
-    //     pageTitle: "Orders",
-    //     path: "/orders",
-    //   };
-    //   res.render("./shop/orders", contexts);
-    // };
+    // // static getCheckOut = (req: Request, res: Response, next: NextFunction) => {
+    // //   const contexts = {
+    // //     pageTitle: "Checkout",
+    // //     path: "/checkout",
+    // //   };
+    // //   res.render("./shop/checkout", contexts);
+    // // };
+    ShopController.getOrders = function (req, res, next) {
+        var contexts = {
+            pageTitle: "Orders",
+            path: "/orders"
+        };
+        res.render("./shop/orders", contexts);
+    };
     ShopController.getProduct = function (req, res, next) {
         var productId = req.params.productId;
-        console.log(productId);
-        product_1["default"].findById(productId)
-            .then(function (result) {
+        product_1.ProductModel.findById(productId)
+            .then(function (product) {
             var contexts = {
-                product: result[0],
+                product: product,
                 pageTitle: "Product Details",
                 path: "/products"
             };
@@ -139,16 +107,38 @@ var ShopController = /** @class */ (function () {
         })["catch"](function (err) { return console.error(err); });
     };
     ShopController.postCart = function (req, res, next) {
-        var _b = req.body, productId = _b.productId, productPrice = _b.productPrice;
-        var _c = res.locals.user[0], _id = _c._id, name = _c.name, email = _c.email;
-        product_1["default"].findById(productId)
+        var productId = req.body.productId;
+        product_1.ProductModel.findById(productId)
             .then(function (product) {
-            var user = new user_1["default"](name, email, _id);
-            user
-                .addToCart(product[0])
-                .then(function (result) {
-                res.redirect("/cart");
-            })["catch"](function (err) { return console.error(err); });
+            res.locals.user
+                .addToCart(product)
+                .then(function (result) { return res.redirect("cart"); })["catch"](function (err) { return console.error(err); });
+        })["catch"](function (err) { return console.error(err); });
+    };
+    ShopController.postCartDeleteItem = function (req, res, next) {
+        var productId = req.body.productId;
+        res.locals.user
+            .removeFromCart(productId)
+            .then(function (result) { return res.redirect("cart"); })["catch"](function (err) { return console.error(err); });
+    };
+    ShopController.postOrder = function (req, res, next) {
+        res.locals.user
+            .populate("cart.items.productId")
+            .then(function (user) {
+            var products = user.cart.items.map(function (i) {
+                return { quantity: i.quantity, product: i.productId };
+            });
+            var order = new order_1.orderModel({
+                user: {
+                    name: res.locals.user.name,
+                    userId: res.locals
+                },
+                products: products
+            });
+            return order.save();
+        })
+            .then(function (result) {
+            res.redirect("/orders");
         })["catch"](function (err) { return console.error(err); });
     };
     return ShopController;
