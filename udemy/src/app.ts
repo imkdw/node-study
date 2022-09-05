@@ -2,6 +2,8 @@ import express from "express";
 import bodyParser from "body-parser";
 import path from "path";
 import mongoose from "mongoose";
+import session from "express-session";
+import MongoDBStore from "connect-mongodb-session";
 
 import adminRouter from "./routes/admin";
 import shopRouter from "./routes/shop";
@@ -11,6 +13,11 @@ import authRouter from "./routes/auth";
 
 const app = express();
 const mongoDbUrl = "mongodb+srv://root:zz11xx22@cluster0.gtcw5zo.mongodb.net/shop?retryWrites=true&w=majority";
+const MongoDBStore1 = MongoDBStore(session);
+const store = new MongoDBStore1({
+  uri: mongoDbUrl,
+  collection: "sessions",
+});
 
 /** Setting View Engine - EJS */
 app.set("view engine", "ejs");
@@ -21,6 +28,7 @@ app.set("views", path.join(__dirname, "..", "src", "views"));
 /** Setting Middleware */
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "..", "src", "public")));
+app.use(session({ secret: "i am imkdw", resave: false, saveUninitialized: false, store: store }));
 
 /** Temp Find User Middleware */
 app.use((req, res, next) => {

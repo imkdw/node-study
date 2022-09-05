@@ -4,18 +4,23 @@ var AuthController = /** @class */ (function () {
     function AuthController() {
     }
     AuthController.getLogin = function (req, res, next) {
-        var isLoggedIn = req.get("Cookie").split("=")[1];
+        console.log(req.session.isLoggedIn);
         var contexts = {
             path: "/auth/login",
             pageTitle: "Login",
-            isAuthenticated: isLoggedIn
+            isAuthenticated: false
         };
         res.render("auth/login", contexts);
     };
     AuthController.postLogin = function (req, res, next) {
-        // * outgoingMessage.setHeader('Set-Cookie', ['foo=bar', 'bar=baz']);
-        res.setHeader("Set-Cookie", ["loggedIn=true"]);
+        req.session.isLoggedIn = true;
         res.redirect("/");
+    };
+    AuthController.postLogout = function (req, res, next) {
+        req.session.destroy(function (err) {
+            console.log(err);
+            res.redirect("/");
+        });
     };
     return AuthController;
 }());

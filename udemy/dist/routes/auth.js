@@ -8,5 +8,6 @@ var auth_1 = __importDefault(require("../controllers/auth"));
 var authRouter = express_1["default"].Router();
 authRouter.get("/login", auth_1["default"].getLogin);
 authRouter.post("/login", auth_1["default"].postLogin);
+authRouter.post("/logout", auth_1["default"].postLogout);
 exports["default"] = authRouter;
 //# sourceMappingURL=auth.js.map

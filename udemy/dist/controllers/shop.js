@@ -49,7 +49,8 @@ var ShopController = /** @class */ (function () {
                 prods: products,
                 pageTitle: "Shop",
                 path: "/",
-                hasProducts: products.length > 0
+                hasProducts: products.length > 0,
+                isAuthenticated: req.session.isLoggedIn
             };
             res.render("./shop/index", contexts);
         });
@@ -60,7 +61,8 @@ var ShopController = /** @class */ (function () {
                 prods: products,
                 pageTitle: "All Products",
                 path: "/products",
-                hasProducts: products.length > 0
+                hasProducts: products.length > 0,
+                isAuthenticated: req.session.isLoggedIn
             };
             res.render("./shop/product-list", contexts);
         });
@@ -73,7 +75,8 @@ var ShopController = /** @class */ (function () {
                 var contexts = {
                     pageTitle: "Your Cart",
                     path: "/cart",
-                    products: result.cart.items
+                    products: result.cart.items,
+                    isAuthenticated: req.session.isLoggedIn
                 };
                 res.render("./shop/cart", contexts);
             })["catch"](function (err) { return console.error(err); });
@@ -90,7 +93,8 @@ var ShopController = /** @class */ (function () {
     ShopController.getOrders = function (req, res, next) {
         var contexts = {
             pageTitle: "Orders",
-            path: "/orders"
+            path: "/orders",
+            isAuthenticated: req.session.isLoggedIn
         };
         res.render("./shop/orders", contexts);
     };
@@ -101,7 +105,8 @@ var ShopController = /** @class */ (function () {
             var contexts = {
                 product: product,
                 pageTitle: "Product Details",
-                path: "/products"
+                path: "/products",
+                isAuthenticated: req.session.isLoggedIn
             };
             res.render("./shop/product-detail", contexts);
         })["catch"](function (err) { return console.error(err); });

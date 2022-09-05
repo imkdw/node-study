@@ -10,6 +10,7 @@ class ShopController {
         pageTitle: "Shop",
         path: "/",
         hasProducts: products.length > 0,
+        isAuthenticated: req.session.isLoggedIn,
       };
 
       res.render("./shop/index", contexts);
@@ -23,6 +24,7 @@ class ShopController {
         pageTitle: "All Products",
         path: "/products",
         hasProducts: products.length > 0,
+        isAuthenticated: req.session.isLoggedIn,
       };
 
       res.render("./shop/product-list", contexts);
@@ -37,6 +39,7 @@ class ShopController {
           pageTitle: "Your Cart",
           path: "/cart",
           products: result.cart.items,
+          isAuthenticated: req.session.isLoggedIn,
         };
         res.render("./shop/cart", contexts);
       })
@@ -55,6 +58,7 @@ class ShopController {
     const contexts = {
       pageTitle: "Orders",
       path: "/orders",
+      isAuthenticated: req.session.isLoggedIn,
     };
     res.render("./shop/orders", contexts);
   };
@@ -68,6 +72,7 @@ class ShopController {
           product: product,
           pageTitle: "Product Details",
           path: `/products`,
+          isAuthenticated: req.session.isLoggedIn,
         };
 
         res.render("./shop/product-detail", contexts);
