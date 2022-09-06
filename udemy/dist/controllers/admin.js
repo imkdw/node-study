@@ -15,9 +15,6 @@ var ProductController = /** @class */ (function () {
     ProductController.postAddProduct = function (req, res, next) {
         /** userDTO : title, price, imageUrl, description */
         var userDTO = JSON.parse(JSON.stringify(req.body));
-        /** Add Custom userDTO Values : productId, userId */
-        // userDTO.productId = null;
-        // userDTO.userId = new ObjectId(res.locals.user[0]._id);
         var product = new product_1.ProductModel({
             title: userDTO.title,
             price: userDTO.price,
@@ -48,8 +45,6 @@ var ProductController = /** @class */ (function () {
         })["catch"](function (err) { return console.error(err); });
     };
     ProductController.postEditProduct = function (req, res, next) {
-        /** None Edit Mode userDTO : title, imageUrl, price, description */
-        /** Edit Mode userDTO : title, imageUrl, price, description, productId */
         var userDTO = req.body;
         product_1.ProductModel.findById(userDTO.productId)
             .then(function (product) {

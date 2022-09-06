@@ -1,6 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import { ObjectId } from "mongodb";
-import { title } from "process";
 import { ProductModel } from "../models/product";
 
 class ProductController {
@@ -17,10 +15,6 @@ class ProductController {
     /** userDTO : title, price, imageUrl, description */
     const userDTO = JSON.parse(JSON.stringify(req.body));
 
-    /** Add Custom userDTO Values : productId, userId */
-    // userDTO.productId = null;
-    // userDTO.userId = new ObjectId(res.locals.user[0]._id);
-
     const product = new ProductModel({
       title: userDTO.title,
       price: userDTO.price,
@@ -34,6 +28,7 @@ class ProductController {
       .then((result) => res.redirect("/"))
       .catch((err) => console.error(err));
   }
+
   static getEditProduct(req: Request, res: Response, next: NextFunction) {
     const editMode = req.query.edit;
     if (!editMode) {
@@ -55,8 +50,6 @@ class ProductController {
   }
 
   static postEditProduct(req: Request, res: Response, next: NextFunction) {
-    /** None Edit Mode userDTO : title, imageUrl, price, description */
-    /** Edit Mode userDTO : title, imageUrl, price, description, productId */
     const userDTO = req.body;
 
     ProductModel.findById(userDTO.productId)
