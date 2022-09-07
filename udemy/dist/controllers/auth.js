@@ -35,18 +35,35 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 exports.__esModule = true;
 var user_1 = require("../models/user");
 var bcryptjs_1 = require("bcryptjs");
+var nodemailer_1 = __importDefault(require("nodemailer"));
+var sendgridTransport = require("nodemailer-sendgrid-transport");
+var transporter = nodemailer_1["default"].createTransport(sendgridTransport({
+    auth: {
+        api_key: "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"
+    }
+}));
 var AuthController = /** @class */ (function () {
     function AuthController() {
     }
     AuthController.getLogin = function (req, res, next) {
-        console.log(req.session.isLoggedIn);
+        var message = req.flash("error");
+        if (message.length > 0) {
+            message = message[0];
+        }
+        else {
+            message = null;
+        }
         var contexts = {
             path: "/auth/login",
             pageTitle: "Login",
-            isAuthenticated: false
+            isAuthenticated: false,
+            errorMessage: message
         };
         res.render("auth/login", contexts);
     };
@@ -55,7 +72,8 @@ var AuthController = /** @class */ (function () {
         user_1.userModel.findOne({ email: email }).then(function (user) {
             /** 유저가 없는경우 */
             if (!user) {
-                return res.redirect("/login");
+                req.flash("error", "Invalid email or password.");
+                return res.redirect("/auth/login");
             }
             (0, bcryptjs_1.compare)(password, user.password)
                 .then(function (doMatch) {
@@ -67,7 +85,10 @@ var AuthController = /** @class */ (function () {
                         res.redirect("/");
                     });
                 }
-                res.redirect("/auth/login");
+                else {
+                    req.flash("error", "Invalid email or password.");
+                    return res.redirect("/auth/login");
+                }
             })["catch"](function (err) { return console.error(err); });
         });
     };
@@ -78,10 +99,18 @@ var AuthController = /** @class */ (function () {
         });
     };
     AuthController.getSignup = function (req, res, next) {
+        var message = req.flash("error");
+        if (message.length > 0) {
+            message = message[0];
+        }
+        else {
+            message = null;
+        }
         var contexts = {
             path: "/auth/signup",
             pageTitle: "Signup",
-            isAuthenticated: false
+            isAuthenticated: false,
+            errorMessage: message
         };
         res.render("auth/signup", contexts);
     };
@@ -90,18 +119,24 @@ var AuthController = /** @class */ (function () {
             var _a, email, password, confirmPassword;
             return __generator(this, function (_b) {
                 _a = req.body, email = _a.email, password = _a.password, confirmPassword = _a.confirmPassword;
-                console.log(email, password, confirmPassword);
                 user_1.userModel
                     .findOne({ email: email })
                     .then(function (result) {
                     if (result) {
+                        req.flash("error", "E-mail exist already. Please pick a different one");
                         return res.redirect("/auth/signup");
                     }
                     (0, bcryptjs_1.hash)(password, 12)
                         .then(function (hashedPassword) {
                         var user = new user_1.userModel({ email: email, password: hashedPassword, cart: { items: [] } });
                         user.save();
-                        return res.redirect("/auth/login");
+                        res.redirect("/auth/login");
+                        return transporter.sendMail({
+                            to: email,
+                            from: "imkdw@kakao.com",
+                            subject: "Signup Succeeded",
+                            html: "<h1>Welcome!</h1>"
+                        });
                     })["catch"](function (err) { return console.error(err); });
                 })["catch"](function (err) { return console.error(err); });
                 return [2 /*return*/];

@@ -10,6 +10,8 @@ var mongoose_1 = __importDefault(require("mongoose"));
 var express_session_1 = __importDefault(require("express-session"));
 var connect_mongodb_session_1 = __importDefault(require("connect-mongodb-session"));
 var morgan_1 = __importDefault(require("morgan"));
+var csurf_1 = __importDefault(require("csurf"));
+var connect_flash_1 = __importDefault(require("connect-flash"));
 var admin_1 = __importDefault(require("./routes/admin"));
 var shop_1 = __importDefault(require("./routes/shop"));
 var error_1 = __importDefault(require("./controllers/error"));
@@ -23,6 +25,7 @@ var store = new MongoDBStore1({
     uri: mongoDbUrl,
     collection: "sessions"
 });
+var csrfProtection = (0, csurf_1["default"])();
 /** Setting View Engine - EJS */
 app.set("view engine", "ejs");
 /** Setting Views Directory - Default is /views */
@@ -32,15 +35,22 @@ app.use(body_parser_1["default"].urlencoded({ extended: false }));
 app.use(express_1["default"].static(path_1["default"].join(__dirname, "..", "src", "public")));
 app.use((0, express_session_1["default"])({ secret: "i am imkdw", resave: false, saveUninitialized: false, store: store }));
 app.use((0, morgan_1["default"])("dev"));
-/** Temp Find User Middleware */
+app.use(csrfProtection);
+app.use((0, connect_flash_1["default"])());
+/** Set User Middleware */
 app.use(function (req, res, next) {
     user_1.userModel
-        .findById("63145356efa53b689834564c")
+        .findById("63173271885c5034f5c0fd3d")
         .then(function (user) {
         res.locals.user = user;
-        // console.log(res.locals.user);
         next();
     })["catch"](function (err) { return console.error(err); });
+});
+/** Authenticate Middleware */
+app.use(function (req, res, next) {
+    res.locals.isAuthenticated = req.session.isLoggedIn;
+    res.locals.csrfToken = req.csrfToken();
+    next();
 });
 /** Setting Routers */
 app.use(shop_1["default"]);

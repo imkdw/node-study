@@ -2,14 +2,32 @@ import { NextFunction, Request, Response } from "express";
 import { userModel } from "../models/user";
 import { hash, compare } from "bcryptjs";
 
+import nodemailer from "nodemailer";
+const sendgridTransport = require("nodemailer-sendgrid-transport");
+
+const transporter = nodemailer.createTransport(
+  sendgridTransport({
+    auth: {
+      api_key: "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",
+    },
+  })
+);
+
 class AuthController {
   static getLogin(req: Request, res: Response, next: NextFunction) {
-    console.log(req.session.isLoggedIn);
+    let message: string[] | string | null = req.flash("error");
+
+    if (message.length > 0) {
+      message = message[0];
+    } else {
+      message = null;
+    }
 
     const contexts = {
       path: "/auth/login",
       pageTitle: "Login",
       isAuthenticated: false,
+      errorMessage: message,
     };
 
     res.render("auth/login", contexts);
@@ -21,7 +39,8 @@ class AuthController {
     userModel.findOne({ email }).then((user) => {
       /** 유저가 없는경우 */
       if (!user) {
-        return res.redirect("/login");
+        req.flash("error", "Invalid email or password.");
+        return res.redirect("/auth/login");
       }
 
       compare(password, user.password)
@@ -33,9 +52,10 @@ class AuthController {
               console.error(err);
               res.redirect("/");
             });
+          } else {
+            req.flash("error", "Invalid email or password.");
+            return res.redirect("/auth/login");
           }
-
-          res.redirect("/auth/login");
         })
         .catch((err) => console.error(err));
     });
@@ -49,10 +69,19 @@ class AuthController {
   }
 
   static getSignup(req: Request, res: Response, next: NextFunction) {
+    let message: string[] | string | null = req.flash("error");
+
+    if (message.length > 0) {
+      message = message[0];
+    } else {
+      message = null;
+    }
+
     const contexts = {
       path: "/auth/signup",
       pageTitle: "Signup",
       isAuthenticated: false,
+      errorMessage: message,
     };
 
     res.render("auth/signup", contexts);
@@ -60,12 +89,12 @@ class AuthController {
 
   static async postSignup(req: Request, res: Response, next: NextFunction) {
     const { email, password, confirmPassword } = req.body;
-    console.log(email, password, confirmPassword);
 
     userModel
       .findOne({ email })
       .then((result) => {
         if (result) {
+          req.flash("error", "E-mail exist already. Please pick a different one");
           return res.redirect("/auth/signup");
         }
 
@@ -73,7 +102,15 @@ class AuthController {
           .then((hashedPassword) => {
             const user = new userModel({ email, password: hashedPassword, cart: { items: [] } });
             user.save();
-            return res.redirect("/auth/login");
+
+            res.redirect("/auth/login");
+
+            return transporter.sendMail({
+              to: email,
+              from: "imkdw@kakao.com",
+              subject: "Signup Succeeded",
+              html: "<h1>Welcome!</h1>",
+            });
           })
           .catch((err) => console.error(err));
       })
