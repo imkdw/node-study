@@ -2,19 +2,25 @@ import { NextFunction, Request, Response } from "express";
 import { userModel } from "../models/user";
 import { hash, compare } from "bcryptjs";
 import dotenv from "dotenv";
+import Mailgun from "mailgun-js";
 
 dotenv.config();
 
-import nodemailer from "nodemailer";
-const sendgridTransport = require("nodemailer-sendgrid-transport");
+// import nodemailer from "nodemailer";
+// const sendgridTransport = require("nodemailer-sendgrid-transport");
 
-const transporter = nodemailer.createTransport(
-  sendgridTransport({
-    auth: {
-      api_key: process.env.SENDGRID_API_KEY, // SendGrid Api Key
-    },
-  })
-);
+// const transporter = nodemailer.createTransport(
+//   sendgridTransport({
+//     auth: {
+//       api_key: process.env.SENDGRID_API_KEY, // SendGrid Api Key
+//     },
+//   })
+// );
+
+const mailgun = new Mailgun({
+  apiKey: process.env.MAILGUN_API_KEY,
+  domain: process.env.MAILGUN_DOMAIN,
+});
 
 class AuthController {
   static getLogin(req: Request, res: Response, next: NextFunction) {
@@ -108,16 +114,50 @@ class AuthController {
 
             res.redirect("/auth/login");
 
-            return transporter.sendMail({
-              to: email,
-              from: "imkdw@kakao.com",
-              subject: "Signup Succeeded",
-              html: "<h1>Welcome!</h1>",
-            });
+            return mailgun.messages().send(
+              {
+                from: "Dongwoo Kim <imkdw@kakao.com>",
+                to: email,
+                subject: "Signup Succeeded",
+                text: "Welcome!",
+              },
+              (err, body) => {
+                if (err) {
+                  console.error(err);
+                }
+
+                console.log(body);
+              }
+            );
+
+            // return transporter.sendMail({
+            //   to: email,
+            //   from: "imkdw@kakao.com",
+            //   subject: "Signup Succeeded",
+            //   html: "<h1>Welcome!</h1>",
+            // });
           })
           .catch((err) => console.error(err));
       })
       .catch((err) => console.error(err));
+  }
+
+  static getReset(req: Request, res: Response, next: NextFunction) {
+    let message: string[] | string | null = req.flash("error");
+
+    if (message.length > 0) {
+      message = message[0];
+    } else {
+      message = null;
+    }
+
+    const contexts = {
+      path: "/auth/reset",
+      pageTitle: "Reset Password",
+      errorMessage: message,
+    };
+
+    res.render("auth/reset", contexts);
   }
 }
 

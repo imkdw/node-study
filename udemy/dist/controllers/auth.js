@@ -42,14 +42,21 @@ exports.__esModule = true;
 var user_1 = require("../models/user");
 var bcryptjs_1 = require("bcryptjs");
 var dotenv_1 = __importDefault(require("dotenv"));
+var mailgun_js_1 = __importDefault(require("mailgun-js"));
 dotenv_1["default"].config();
-var nodemailer_1 = __importDefault(require("nodemailer"));
-var sendgridTransport = require("nodemailer-sendgrid-transport");
-var transporter = nodemailer_1["default"].createTransport(sendgridTransport({
-    auth: {
-        api_key: process.env.SENDGRID_API_KEY
-    }
-}));
+// import nodemailer from "nodemailer";
+// const sendgridTransport = require("nodemailer-sendgrid-transport");
+// const transporter = nodemailer.createTransport(
+//   sendgridTransport({
+//     auth: {
+//       api_key: process.env.SENDGRID_API_KEY, // SendGrid Api Key
+//     },
+//   })
+// );
+var mailgun = new mailgun_js_1["default"]({
+    apiKey: process.env.MAILGUN_API_KEY,
+    domain: process.env.MAILGUN_DOMAIN
+});
 var AuthController = /** @class */ (function () {
     function AuthController() {
     }
@@ -133,17 +140,43 @@ var AuthController = /** @class */ (function () {
                         var user = new user_1.userModel({ email: email, password: hashedPassword, cart: { items: [] } });
                         user.save();
                         res.redirect("/auth/login");
-                        return transporter.sendMail({
+                        return mailgun.messages().send({
+                            from: "Dongwoo Kim <imkdw@kakao.com>",
                             to: email,
-                            from: "imkdw@kakao.com",
                             subject: "Signup Succeeded",
-                            html: "<h1>Welcome!</h1>"
+                            text: "Welcome!"
+                        }, function (err, body) {
+                            if (err) {
+                                console.error(err);
+                            }
+                            console.log(body);
                         });
+                        // return transporter.sendMail({
+                        //   to: email,
+                        //   from: "imkdw@kakao.com",
+                        //   subject: "Signup Succeeded",
+                        //   html: "<h1>Welcome!</h1>",
+                        // });
                     })["catch"](function (err) { return console.error(err); });
                 })["catch"](function (err) { return console.error(err); });
                 return [2 /*return*/];
             });
         });
+    };
+    AuthController.getReset = function (req, res, next) {
+        var message = req.flash("error");
+        if (message.length > 0) {
+            message = message[0];
+        }
+        else {
+            message = null;
+        }
+        var contexts = {
+            path: "/auth/reset",
+            pageTitle: "Reset Password",
+            errorMessage: message
+        };
+        res.render("auth/reset", contexts);
     };
     return AuthController;
 }());

@@ -11,5 +11,6 @@ authRouter.post("/login", auth_1["default"].postLogin);
 authRouter.get("/signup", auth_1["default"].getSignup);
 authRouter.post("/signup", auth_1["default"].postSignup);
 authRouter.post("/logout", auth_1["default"].postLogout);
+authRouter.get("/reset", auth_1["default"].getReset);
 exports["default"] = authRouter;
 //# sourceMappingURL=auth.js.map
