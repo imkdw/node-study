@@ -41,11 +41,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 exports.__esModule = true;
 var user_1 = require("../models/user");
 var bcryptjs_1 = require("bcryptjs");
+var dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1["default"].config();
 var nodemailer_1 = __importDefault(require("nodemailer"));
 var sendgridTransport = require("nodemailer-sendgrid-transport");
 var transporter = nodemailer_1["default"].createTransport(sendgridTransport({
     auth: {
-        api_key: "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"
+        api_key: process.env.SENDGRID_API_KEY
     }
 }));
 var AuthController = /** @class */ (function () {

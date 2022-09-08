@@ -1,6 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { userModel } from "../models/user";
 import { hash, compare } from "bcryptjs";
+import sgMail from "@sendgrid/mail";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 import nodemailer from "nodemailer";
 const sendgridTransport = require("nodemailer-sendgrid-transport");
@@ -8,7 +12,7 @@ const sendgridTransport = require("nodemailer-sendgrid-transport");
 const transporter = nodemailer.createTransport(
   sendgridTransport({
     auth: {
-      api_key: "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",
+      api_key: process.env.SENDGRID_API_KEY,
     },
   })
 );
