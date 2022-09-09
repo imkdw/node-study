@@ -40,22 +40,35 @@ app.use(morgan("dev"));
 app.use(csrfProtection);
 app.use(flash());
 
-/** Set User Middleware */
-app.use((req, res, next) => {
-  userModel
-    .findById("63173271885c5034f5c0fd3d")
-    .then((user) => {
-      res.locals.user = user;
-      next();
-    })
-    .catch((err) => console.error(err));
-});
+/** Test Log */
+// app.use((req, res, next) => {
+//   console.log("[TEST] Test Middleware");
+//   console.log(req.session);
+//   next();
+// });
 
 /** Authenticate Middleware */
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.session.isLoggedIn;
   res.locals.csrfToken = req.csrfToken();
   next();
+});
+
+/** Load User by Session */
+app.use((req, res, next) => {
+  if (!req.session.user) {
+    console.log("로그인된 유저 없음");
+    return next();
+  }
+
+  userModel
+    .findById(req.session.user._id)
+    .then((user) => {
+      console.log("로그인된 유저 있음 : ", user.email);
+      res.locals.user = user;
+      next();
+    })
+    .catch((err) => console.error(err));
 });
 
 /** Setting Routers */
@@ -65,21 +78,6 @@ app.use("/auth", authRouter);
 
 /** 404(Not Found) Error Handleing */
 app.use(ErrorController.get404);
-
-/** Load User by Session */
-app.use((req, res, next) => {
-  if (!req.session.user) {
-    next();
-  }
-
-  userModel
-    .findById(req.session.user._id)
-    .then((user) => {
-      res.locals.user = user;
-      next();
-    })
-    .catch((err) => console.error(err));
-});
 
 /** Connect Mongoose and Open Server */
 mongoose

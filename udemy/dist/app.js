@@ -37,20 +37,31 @@ app.use((0, express_session_1["default"])({ secret: "i am imkdw", resave: false,
 app.use((0, morgan_1["default"])("dev"));
 app.use(csrfProtection);
 app.use((0, connect_flash_1["default"])());
-/** Set User Middleware */
-app.use(function (req, res, next) {
-    user_1.userModel
-        .findById("63173271885c5034f5c0fd3d")
-        .then(function (user) {
-        res.locals.user = user;
-        next();
-    })["catch"](function (err) { return console.error(err); });
-});
+/** Test Log */
+// app.use((req, res, next) => {
+//   console.log("[TEST] Test Middleware");
+//   console.log(req.session);
+//   next();
+// });
 /** Authenticate Middleware */
 app.use(function (req, res, next) {
     res.locals.isAuthenticated = req.session.isLoggedIn;
     res.locals.csrfToken = req.csrfToken();
     next();
+});
+/** Load User by Session */
+app.use(function (req, res, next) {
+    if (!req.session.user) {
+        console.log("로그인된 유저 없음");
+        return next();
+    }
+    user_1.userModel
+        .findById(req.session.user._id)
+        .then(function (user) {
+        console.log("로그인된 유저 있음 : ", user.email);
+        res.locals.user = user;
+        next();
+    })["catch"](function (err) { return console.error(err); });
 });
 /** Setting Routers */
 app.use(shop_1["default"]);
@@ -58,18 +69,6 @@ app.use("/admin", admin_1["default"]);
 app.use("/auth", auth_1["default"]);
 /** 404(Not Found) Error Handleing */
 app.use(error_1["default"].get404);
-/** Load User by Session */
-app.use(function (req, res, next) {
-    if (!req.session.user) {
-        next();
-    }
-    user_1.userModel
-        .findById(req.session.user._id)
-        .then(function (user) {
-        res.locals.user = user;
-        next();
-    })["catch"](function (err) { return console.error(err); });
-});
 /** Connect Mongoose and Open Server */
 mongoose_1["default"]
     .connect(mongoDbUrl)
