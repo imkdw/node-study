@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { ObjectId } from "mongodb";
 import { ProductModel } from "../models/product";
 import { validationResult } from "express-validator";
+import path from "path";
 
 class ProductController {
   static getAddProduct(req: Request, res: Response, next: NextFunction) {
@@ -17,55 +18,80 @@ class ProductController {
         description: "",
         imageUrl: "",
       },
+      validationErrors: [],
     };
     res.render("./admin/edit-product", contexts);
   }
 
   static postAddProduct(req: Request, res: Response, next: NextFunction) {
     const userDTO = JSON.parse(JSON.stringify(req.body));
-    console.log(userDTO);
     const errors = validationResult(req);
+    const image = req.file;
 
+    /** 클라이언트에서 전달받은 파일이 이미지가 아닐경우 */
+    if (!image) {
+      const contexts = {
+        product: {
+          title: userDTO.title,
+          price: userDTO.price,
+          description: userDTO.description,
+        },
+        path: "/add-product",
+        pageTitle: "Add Product ",
+        editing: false,
+        hasError: true,
+        errorMessage: "Attached File is not an image",
+        validationErrors: [],
+      };
+
+      return res.status(422).render("admin/edit-product", contexts);
+    }
+
+    /** 유효성검증에 실패한 경우 */
     if (!errors.isEmpty()) {
       const contexts = {
         product: {
           title: userDTO.title,
           price: userDTO.price,
           description: userDTO.description,
-          imageUrl: userDTO.imageUrl,
         },
-        path: "/edit-product",
-        pageTitle: "Edit Title",
+        path: "/add-product",
+        pageTitle: "Add Product",
         editing: false,
         hasError: true,
         errorMessage: errors.array()[0].msg,
+        validationErrors: errors.array(),
       };
 
       return res.status(422).render("admin/edit-product", contexts);
     }
 
+    const imageUrl = image.path;
+
     const product = new ProductModel({
       title: userDTO.title,
       price: userDTO.price,
+      imageUrl,
       description: userDTO.description,
-      imageUrl: userDTO.imageUrl,
       userId: res.locals.user._id,
     });
-
-    console.log(product);
 
     product
       .save()
       .then((result) => res.redirect("/"))
-      .catch((err) => console.error(err));
+      .catch((err: any) => {
+        const error = err;
+        error.httpStatusCode = 500;
+        return next(error);
+      });
   }
 
   static getEditProduct(req: Request, res: Response, next: NextFunction) {
     const editMode = req.query.edit;
     if (!editMode) {
-      res.redirect("/");
-      return;
+      return res.redirect("/");
     }
+
     const prodId = req.params.productId;
     ProductModel.findById(prodId)
       .then((product) => {
@@ -76,6 +102,7 @@ class ProductController {
           editing: editMode,
           hasError: false,
           errorMessage: null,
+          validationErrors: [],
         };
         res.render("./admin/edit-product", contexts);
       })
@@ -84,6 +111,47 @@ class ProductController {
 
   static postEditProduct(req: Request, res: Response, next: NextFunction) {
     const userDTO = req.body;
+    const image = req.file;
+    const errors = validationResult(req);
+
+    /** 클라이언트에서 전달받은 파일이 이미지가 아닐경우 */
+    if (!image) {
+      const contexts = {
+        product: {
+          title: userDTO.title,
+          price: userDTO.price,
+          description: userDTO.description,
+        },
+        path: "/edit-product",
+        pageTitle: "Edit Product ",
+        editing: true,
+        hasError: true,
+        errorMessage: "Attached File is not an image",
+        validationErrors: [],
+      };
+
+      return res.status(422).render("admin/edit-product", contexts);
+    }
+
+    /** 유효성검증에 실패한 경우 */
+    if (!errors.isEmpty()) {
+      const contexts = {
+        product: {
+          title: userDTO.title,
+          price: userDTO.price,
+          description: userDTO.description,
+          _id: userDTO.productId,
+        },
+        path: "/edit-product",
+        pageTitle: "Edit Title",
+        editing: true,
+        hasError: true,
+        errorMessage: errors.array()[0].msg,
+        validationErrors: errors.array(),
+      };
+
+      return res.status(422).render("admin/edit-product", contexts);
+    }
 
     ProductModel.findById(userDTO.productId)
       .then((product) => {
@@ -91,10 +159,14 @@ class ProductController {
           return res.redirect("/");
         }
 
-        (product.title = userDTO.title),
-          (product.imageUrl = userDTO.imageUrl),
-          (product.price = userDTO.price),
-          (product.description = userDTO.description);
+        /** 새로운 파일 업로드가 있을경우만 수정 */
+        product.title = userDTO.title;
+        if (image) {
+          product.imageUrl = image.path;
+        }
+        product.price = userDTO.price;
+        product.description = userDTO.description;
+
         return product
           .save()
           .then((result) => res.redirect("/"))

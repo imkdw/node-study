@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request } from "express";
 import bodyParser from "body-parser";
 import path from "path";
 import mongoose from "mongoose";
@@ -7,6 +7,8 @@ import MongoDBStore from "connect-mongodb-session";
 import morgan from "morgan";
 import csurf from "csurf";
 import flash from "connect-flash";
+import multer from "multer";
+import { v4 as uuidv4 } from "uuid";
 
 import adminRouter from "./routes/admin";
 import shopRouter from "./routes/shop";
@@ -26,11 +28,31 @@ const store = new MongoDBStore1({
 
 const csrfProtection = csurf();
 
+const fileStorage = multer.diskStorage({
+  destination: (req: Request, file, cb) => {
+    cb(null, "images");
+  },
+  filename: (req: Request, file, cb) => {
+    cb(null, uuidv4() + "-" + file.originalname);
+  },
+});
+
+const fileFilter = (req: Request, file, cb) => {
+  const mimetype = file.mimetype;
+  if (mimetype === "image/png" || mimetype === "image/jpg" || mimetype === "image/jpeg") {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
 /** Setting View Engine - EJS */
 app.set("view engine", "ejs");
 
-/** Setting Views Directory - Default is /views */
+/** Setting Static Directory */
 app.set("views", path.join(__dirname, "..", "src", "views"));
+// app.use(express.static(path.join(__dirname, "..", "src", "views")))
+app.use("/images", express.static(path.join(__dirname, "..", "images")));
 
 /** Setting Middleware */
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -39,13 +61,7 @@ app.use(session({ secret: "i am imkdw", resave: false, saveUninitialized: false,
 app.use(morgan("dev"));
 app.use(csrfProtection);
 app.use(flash());
-
-/** Test Log */
-// app.use((req, res, next) => {
-//   console.log("[TEST] Test Middleware");
-//   console.log(req.session);
-//   next();
-// });
+app.use(multer({ storage: fileStorage, fileFilter }).single("image"));
 
 /** Authenticate Middleware */
 app.use((req, res, next) => {
@@ -57,27 +73,38 @@ app.use((req, res, next) => {
 /** Load User by Session */
 app.use((req, res, next) => {
   if (!req.session.user) {
-    console.log("로그인된 유저 없음");
     return next();
   }
 
   userModel
     .findById(req.session.user._id)
     .then((user) => {
-      console.log("로그인된 유저 있음 : ", user.email);
+      if (!user) {
+        return next();
+      }
+
       res.locals.user = user;
       next();
     })
-    .catch((err) => console.error(err));
+    .catch((err) => {
+      next(new Error(err));
+    });
 });
 
 /** Setting Routers */
 app.use(shopRouter);
 app.use("/admin", adminRouter);
 app.use("/auth", authRouter);
+app.get("/500", ErrorController.get500);
 
-/** 404(Not Found) Error Handleing */
+/**  Error Handleing */
 app.use(ErrorController.get404);
+
+/** Error Handling Middleware */
+app.use((error, req, res, next) => {
+  console.error(error);
+  res.redirect("/500");
+});
 
 /** Connect Mongoose and Open Server */
 mongoose

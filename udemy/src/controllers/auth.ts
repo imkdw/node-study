@@ -49,7 +49,6 @@ class AuthController {
       const contexts = {
         path: "/auth/login",
         pageTitle: "Login",
-        isAuthenticated: false,
         errorMessage: errors.array()[0].msg,
         oldInput: { email, password },
         validationErrors: errors.array(),
@@ -66,7 +65,6 @@ class AuthController {
         const contexts = {
           path: "/auth/login",
           pageTitle: "Login",
-          isAuthenticated: false,
           errorMessage: req.flash("error"),
           oldInput: { email, password },
           validationErrors: [],
@@ -88,7 +86,6 @@ class AuthController {
             const contexts = {
               path: "/auth/login",
               pageTitle: "Login",
-              isAuthenticated: false,
               errorMessage: "Invalid email or password",
               oldInput: { email, password },
               validationErrors: [],
@@ -120,7 +117,6 @@ class AuthController {
     const contexts = {
       path: "/auth/signup",
       pageTitle: "Signup",
-      isAuthenticated: false,
       errorMessage: message,
       oldInput: {
         email: "",
@@ -144,7 +140,6 @@ class AuthController {
       const contexts = {
         path: "/auth/signup",
         pageTitle: "Signup",
-        isAuthenticated: false,
         errorMessage: errors.array()[0].msg,
         oldInput: { email, password, confirmPassword },
         validationErrors: errors.array(),

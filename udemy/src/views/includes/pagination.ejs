@@ -1,0 +1,24 @@
+<section class="pagination">
+  <!-- 현재 페이지가 1이 아닌경우 1을 렌더링 -->
+  <% if (currentPage !== 1) { %>
+  <a href="?page=1">1</a>
+  <% } %>
+
+  <!-- 이전 페이지 렌더링 -->
+  <% if (hasPrevPage && prevPage !== 1) { %>
+  <a href="?page=<%= prevPage %>"><%= prevPage %></a>
+  <% } %>
+
+  <!-- 현재 페이지 렌더링 -->
+  <a href="?page=<%= currentPage %>" class="active"><%= currentPage %></a>
+
+  <!-- 다음 페이지 렌더링 -->
+  <% if (hasNextPage) { %>
+  <a href="?page=<%= nextPage %>" class="next-page"><%= nextPage %></a>
+  <% } %>
+
+  <!-- 마지막 페이지와 현재 페이지가 다를때 렌더링 -->
+  <% if (lastPage !== nextPage && currentPage !== lastPage) { %>
+  <a href="?page=<%= lastPage %>" class="last-page"><%= lastPage %></a>
+  <% } %>
+</section>

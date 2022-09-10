@@ -11,10 +11,12 @@
     <% if (errorMessage) { %>
     <div class="user-message user-message--error"><%= errorMessage %></div>
     <% } %>
+    <!-- enctype="multipart/form-data"를 추가함으로써 form에서 파일/텍스트 모두 분석이 가능해짐 -->
     <form
       class="product-form"
-      action="/admin/<% if (editing) { %>edit-product<% } else { %>add-product<% } %>"
+      action="/admin/<% if (editing) { %>edit-product<% } else { %>add-product<% } %>?_csrf=<%= csrfToken %>"
       method="POST"
+      enctype="multipart/form-data"
     >
       <div class="form-control">
         <label for="title">Title</label>
@@ -23,16 +25,12 @@
           name="title"
           id="title"
           value="<% if (editing || hasError) { %><%= product.title %><% } %>"
+          class="<%= validationErrors.find(e => e.param === 'title') ? 'invalid' : '' %>"
         />
       </div>
       <div class="form-control">
-        <label for="imageUrl">Image URL</label>
-        <input
-          type="text"
-          name="imageUrl"
-          id="imageUrl"
-          value="<% if (editing || hasError) { %><%= product.imageUrl %><% } %>"
-        />
+        <label for="image">Image</label>
+        <input type="file" name="image" id="image" />
       </div>
       <div class="form-control">
         <label for="price">Price</label>
@@ -42,15 +40,21 @@
           id="price"
           step="0.01"
           value="<% if (editing || hasError) { %><%= product.price %><% } %>"
+          class="<%= validationErrors.find(e => e.param === 'price') ? 'invalid' : '' %>"
         />
       </div>
       <div class="form-control">
         <label for="description">Description</label>
-        <textarea name="description" id="description" rows="5">
+        <textarea
+          name="description"
+          id="description"
+          rows="5"
+          class="<%= validationErrors.find(e => e.param === 'description') ? 'invalid' : '' %>"
+        >
 <% if (editing || hasError) { %><%= product.description %><% } %></textarea
         >
       </div>
-      <% if (editing || hasError) { %>
+      <% if (editing) { %>
       <input type="hidden" value="<%= product._id %>" name="productId" />
       <% } %>
 

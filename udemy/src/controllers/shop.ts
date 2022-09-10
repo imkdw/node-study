@@ -2,33 +2,76 @@ import { Request, Response, NextFunction } from "express";
 import { orderModel } from "../models/order";
 import { ProductModel } from "../models/product";
 
+/** 페이지네이션 구성시 페이지당 표시할 항목 개수 */
+const ITEMS_PER_PAGE = 3;
+
 class ShopController {
   static getIndex = (req: Request, res: Response, next: NextFunction) => {
-    ProductModel.find().then((products) => {
-      const contexts = {
-        prods: products,
-        pageTitle: "Shop",
-        path: "/",
-        hasProducts: products.length > 0,
-        isAuthenticated: req.session.isLoggedIn,
-      };
+    const page: number = Number(req.query.page);
+    let totalItems;
 
-      res.render("./shop/index", contexts);
-    });
+    ProductModel.find()
+      .countDocuments()
+      .then((numProducts) => {
+        totalItems = numProducts;
+
+        return ProductModel.find()
+          .skip((page - 1) * ITEMS_PER_PAGE)
+          .limit(ITEMS_PER_PAGE);
+      })
+      .then((products) => {
+        const contexts = {
+          prods: products,
+          pageTitle: "Shop",
+          path: "/",
+          currentPage: page,
+          hasProducts: products.length > 0,
+          isAuthenticated: req.session.isLoggedIn,
+          totalProducts: totalItems,
+          hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+          hasPrevPage: page > 1,
+          nextPage: page + 1,
+          prevPage: page - 1,
+          lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
+        };
+
+        res.render("shop/index", contexts);
+      })
+      .catch((err) => console.error(err));
   };
 
   static getProducts = (req: Request, res: Response, next: NextFunction) => {
-    ProductModel.find().then((products) => {
-      const contexts = {
-        prods: products,
-        pageTitle: "All Products",
-        path: "/products",
-        hasProducts: products.length > 0,
-        isAuthenticated: req.session.isLoggedIn,
-      };
+    const page: number = Number(req.query.page);
+    let totalItems;
 
-      res.render("./shop/product-list", contexts);
-    });
+    ProductModel.find()
+      .countDocuments()
+      .then((numProducts) => {
+        totalItems = numProducts;
+
+        return ProductModel.find()
+          .skip((page - 1) * ITEMS_PER_PAGE)
+          .limit(ITEMS_PER_PAGE);
+      })
+      .then((products) => {
+        const contexts = {
+          prods: products,
+          pageTitle: "Products",
+          path: "/products",
+          currentPage: page,
+          hasProducts: products.length > 0,
+          isAuthenticated: req.session.isLoggedIn,
+          totalProducts: totalItems,
+          hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+          hasPrevPage: page > 1,
+          nextPage: page + 1,
+          prevPage: page - 1,
+          lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
+        };
+
+        res.render("shop/product-list", contexts);
+      })
+      .catch((err) => console.error(err));
   };
 
   static getCart = async (req: Request, res: Response, next: NextFunction) => {
@@ -41,7 +84,7 @@ class ShopController {
           products: result.cart.items,
           isAuthenticated: req.session.isLoggedIn,
         };
-        res.render("./shop/cart", contexts);
+        res.render("shop/cart", contexts);
       })
       .catch((err) => console.error(err));
   };
@@ -60,7 +103,7 @@ class ShopController {
       path: "/orders",
       isAuthenticated: req.session.isLoggedIn,
     };
-    res.render("./shop/orders", contexts);
+    res.render("shop/orders", contexts);
   };
 
   static getProduct = (req: Request, res: Response, next: NextFunction) => {
@@ -75,7 +118,7 @@ class ShopController {
           isAuthenticated: req.session.isLoggedIn,
         };
 
-        res.render("./shop/product-detail", contexts);
+        res.render("shop/product-detail", contexts);
       })
       .catch((err) => console.error(err));
   };

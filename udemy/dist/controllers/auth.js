@@ -80,7 +80,6 @@ var AuthController = /** @class */ (function () {
             var contexts = {
                 path: "/auth/login",
                 pageTitle: "Login",
-                isAuthenticated: false,
                 errorMessage: errors.array()[0].msg,
                 oldInput: { email: email, password: password },
                 validationErrors: errors.array()
@@ -94,7 +93,6 @@ var AuthController = /** @class */ (function () {
                 var contexts = {
                     path: "/auth/login",
                     pageTitle: "Login",
-                    isAuthenticated: false,
                     errorMessage: req.flash("error"),
                     oldInput: { email: email, password: password },
                     validationErrors: []
@@ -115,7 +113,6 @@ var AuthController = /** @class */ (function () {
                     var contexts = {
                         path: "/auth/login",
                         pageTitle: "Login",
-                        isAuthenticated: false,
                         errorMessage: "Invalid email or password",
                         oldInput: { email: email, password: password },
                         validationErrors: []
@@ -142,7 +139,6 @@ var AuthController = /** @class */ (function () {
         var contexts = {
             path: "/auth/signup",
             pageTitle: "Signup",
-            isAuthenticated: false,
             errorMessage: message,
             oldInput: {
                 email: "",
@@ -164,7 +160,6 @@ var AuthController = /** @class */ (function () {
                     contexts = {
                         path: "/auth/signup",
                         pageTitle: "Signup",
-                        isAuthenticated: false,
                         errorMessage: errors.array()[0].msg,
                         oldInput: { email: email, password: password, confirmPassword: confirmPassword },
                         validationErrors: errors.array()

@@ -38,34 +38,70 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 var order_1 = require("../models/order");
 var product_1 = require("../models/product");
+/** 페이지네이션 구성시 페이지당 표시할 항목 개수 */
+var ITEMS_PER_PAGE = 3;
 var ShopController = /** @class */ (function () {
     function ShopController() {
     }
     var _a;
     _a = ShopController;
     ShopController.getIndex = function (req, res, next) {
-        product_1.ProductModel.find().then(function (products) {
+        var page = Number(req.query.page);
+        var totalItems;
+        product_1.ProductModel.find()
+            .countDocuments()
+            .then(function (numProducts) {
+            totalItems = numProducts;
+            return product_1.ProductModel.find()
+                .skip((page - 1) * ITEMS_PER_PAGE)
+                .limit(ITEMS_PER_PAGE);
+        })
+            .then(function (products) {
             var contexts = {
                 prods: products,
                 pageTitle: "Shop",
                 path: "/",
+                currentPage: page,
                 hasProducts: products.length > 0,
-                isAuthenticated: req.session.isLoggedIn
+                isAuthenticated: req.session.isLoggedIn,
+                totalProducts: totalItems,
+                hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+                hasPrevPage: page > 1,
+                nextPage: page + 1,
+                prevPage: page - 1,
+                lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE)
             };
-            res.render("./shop/index", contexts);
-        });
+            res.render("shop/index", contexts);
+        })["catch"](function (err) { return console.error(err); });
     };
     ShopController.getProducts = function (req, res, next) {
-        product_1.ProductModel.find().then(function (products) {
+        var page = Number(req.query.page);
+        var totalItems;
+        product_1.ProductModel.find()
+            .countDocuments()
+            .then(function (numProducts) {
+            totalItems = numProducts;
+            return product_1.ProductModel.find()
+                .skip((page - 1) * ITEMS_PER_PAGE)
+                .limit(ITEMS_PER_PAGE);
+        })
+            .then(function (products) {
             var contexts = {
                 prods: products,
-                pageTitle: "All Products",
+                pageTitle: "Products",
                 path: "/products",
+                currentPage: page,
                 hasProducts: products.length > 0,
-                isAuthenticated: req.session.isLoggedIn
+                isAuthenticated: req.session.isLoggedIn,
+                totalProducts: totalItems,
+                hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+                hasPrevPage: page > 1,
+                nextPage: page + 1,
+                prevPage: page - 1,
+                lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE)
             };
-            res.render("./shop/product-list", contexts);
-        });
+            res.render("shop/product-list", contexts);
+        })["catch"](function (err) { return console.error(err); });
     };
     ShopController.getCart = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(_a, function (_b) {
@@ -78,7 +114,7 @@ var ShopController = /** @class */ (function () {
                     products: result.cart.items,
                     isAuthenticated: req.session.isLoggedIn
                 };
-                res.render("./shop/cart", contexts);
+                res.render("shop/cart", contexts);
             })["catch"](function (err) { return console.error(err); });
             return [2 /*return*/];
         });
@@ -96,7 +132,7 @@ var ShopController = /** @class */ (function () {
             path: "/orders",
             isAuthenticated: req.session.isLoggedIn
         };
-        res.render("./shop/orders", contexts);
+        res.render("shop/orders", contexts);
     };
     ShopController.getProduct = function (req, res, next) {
         var productId = req.params.productId;
@@ -108,7 +144,7 @@ var ShopController = /** @class */ (function () {
                 path: "/products",
                 isAuthenticated: req.session.isLoggedIn
             };
-            res.render("./shop/product-detail", contexts);
+            res.render("shop/product-detail", contexts);
         })["catch"](function (err) { return console.error(err); });
     };
     ShopController.postCart = function (req, res, next) {
