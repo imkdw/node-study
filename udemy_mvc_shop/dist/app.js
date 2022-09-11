@@ -20,7 +20,8 @@ var error_1 = __importDefault(require("./controllers/error"));
 var user_1 = require("./models/user");
 var auth_1 = __importDefault(require("./routes/auth"));
 var app = (0, express_1["default"])();
-var mongoDbUrl = "mongodb+srv://root:zz11xx22@cluster0.gtcw5zo.mongodb.net/shop?retryWrites=true&w=majority";
+// const mongoDbUrl = "mongodb+srv://root:zz11xx22@cluster0.gtcw5zo.mongodb.net/shop?retryWrites=true&w=majority";
+var mongoDbUrl = "mongodb://localhost:27017/shop";
 /** MongoStore(Save Session) */
 var MongoDBStore1 = (0, connect_mongodb_session_1["default"])(express_session_1["default"]);
 var store = new MongoDBStore1({
@@ -49,11 +50,10 @@ var fileFilter = function (req, file, cb) {
 app.set("view engine", "ejs");
 /** Setting Static Directory */
 app.set("views", path_1["default"].join(__dirname, "..", "src", "views"));
-// app.use(express.static(path.join(__dirname, "..", "src", "views")))
 app.use("/images", express_1["default"].static(path_1["default"].join(__dirname, "..", "images")));
+app.use(express_1["default"].static(path_1["default"].join(__dirname, "..", "src", "public")));
 /** Setting Middleware */
 app.use(body_parser_1["default"].urlencoded({ extended: false }));
-app.use(express_1["default"].static(path_1["default"].join(__dirname, "..", "src", "public")));
 app.use((0, express_session_1["default"])({ secret: "i am imkdw", resave: false, saveUninitialized: false, store: store }));
 app.use((0, morgan_1["default"])("dev"));
 app.use(csrfProtection);

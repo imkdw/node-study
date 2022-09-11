@@ -165,9 +165,13 @@ var ProductController = /** @class */ (function () {
         })["catch"](function (err) { return console.error(err); });
     };
     ProductController.deleteProduct = function (req, res, next) {
-        var productId = req.body.productId;
+        var productId = req.params.productId;
         product_1.ProductModel.deleteOne({ _id: new mongodb_1.ObjectId(productId), userId: res.locals.user._id })
-            .then(function () { return res.redirect("/"); })["catch"](function (err) { return console.error(err); });
+            .then(function () {
+            res.status(200).json({ message: "Success" });
+        })["catch"](function (err) {
+            res.status(500).json({ message: "Deleting product failed" });
+        });
     };
     return ProductController;
 }());

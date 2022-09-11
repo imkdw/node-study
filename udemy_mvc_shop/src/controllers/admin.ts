@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import { ObjectId } from "mongodb";
 import { ProductModel } from "../models/product";
 import { validationResult } from "express-validator";
-import path from "path";
 
 class ProductController {
   static getAddProduct(req: Request, res: Response, next: NextFunction) {
@@ -189,10 +188,14 @@ class ProductController {
   }
 
   static deleteProduct(req: Request, res: Response, next: NextFunction) {
-    const { productId } = req.body;
+    const { productId } = req.params;
     ProductModel.deleteOne({ _id: new ObjectId(productId), userId: res.locals.user._id })
-      .then(() => res.redirect("/"))
-      .catch((err) => console.error(err));
+      .then(() => {
+        res.status(200).json({ message: "Success" });
+      })
+      .catch((err) => {
+        res.status(500).json({ message: "Deleting product failed" });
+      });
   }
 }
 

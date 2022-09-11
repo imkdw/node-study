@@ -17,7 +17,8 @@ import { userModel } from "./models/user";
 import authRouter from "./routes/auth";
 
 const app = express();
-const mongoDbUrl = "mongodb+srv://root:zz11xx22@cluster0.gtcw5zo.mongodb.net/shop?retryWrites=true&w=majority";
+// const mongoDbUrl = "mongodb+srv://root:zz11xx22@cluster0.gtcw5zo.mongodb.net/shop?retryWrites=true&w=majority";
+const mongoDbUrl = "mongodb://localhost:27017/shop";
 
 /** MongoStore(Save Session) */
 const MongoDBStore1 = MongoDBStore(session);
@@ -51,12 +52,12 @@ app.set("view engine", "ejs");
 
 /** Setting Static Directory */
 app.set("views", path.join(__dirname, "..", "src", "views"));
-// app.use(express.static(path.join(__dirname, "..", "src", "views")))
 app.use("/images", express.static(path.join(__dirname, "..", "images")));
+app.use(express.static(path.join(__dirname, "..", "src", "public")));
 
 /** Setting Middleware */
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, "..", "src", "public")));
+
 app.use(session({ secret: "i am imkdw", resave: false, saveUninitialized: false, store: store }));
 app.use(morgan("dev"));
 app.use(csrfProtection);
