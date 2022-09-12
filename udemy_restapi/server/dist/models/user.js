@@ -3,28 +3,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
+exports.UserModel = void 0;
 var mongoose_1 = __importDefault(require("mongoose"));
 var Schema = mongoose_1["default"].Schema;
-var postSchema = new Schema({
-    title: {
+var userSchema = new Schema({
+    email: {
         type: String,
         required: true
     },
-    imageUrl: {
+    password: {
         type: String,
         required: true
     },
-    content: {
+    name: {
         type: String,
         required: true
     },
-    creator: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
+    status: {
+        type: String,
         required: true
-    }
-}, {
-    timestamps: true
+    },
+    posts: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Post"
+        },
+    ]
 });
-var PostModel = mongoose_1["default"].model("Post", postSchema);
-exports["default"] = PostModel;
+exports.UserModel = mongoose_1["default"].model("User", userSchema);

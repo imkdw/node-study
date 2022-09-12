@@ -1,13 +1,19 @@
+import { socketIO } from "./socket";
+import { Server, Socket } from "socket.io";
 import express from "express";
 import morgan from "morgan";
 import mongoose from "mongoose";
 import multer from "multer";
+import path from "path";
 import { v4 as uuid4 } from "uuid";
 
 import feedRouter from "./routes/feed";
-import path from "path";
+import authRouter from "./routes/auth";
 
-const app = express();
+export const app = express();
+// const httpServer = createServer(app);
+// const io = new Server(httpServer);
+// app.set("io", io);
 
 /** multer에서 사용할 스토리지 */
 const fileStorage = multer.diskStorage({
@@ -31,6 +37,7 @@ const fileFilter = (req, file, cb) => {
 
 /** 미들웨어 설정 */
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(morgan("dev"));
 app.use(multer({ storage: fileStorage, fileFilter }).single("image"));
 
@@ -58,17 +65,24 @@ app.use((error, req, res, next) => {
   console.error(error);
   const status = error.statusCode || 500;
   const message = error.message;
-  res.status(status).json({ message });
+  const data = error.data;
+  res.status(status).json({ message, data });
 });
 
 /** 라우터 설정 */
 app.use("/feed", feedRouter);
+app.use("/auth", authRouter);
 
 mongoose
   .connect("mongodb://localhost:27017/shop")
   .then((result) => {
-    app.listen(5000, () => {
-      console.log(`PORT : 5000`);
+    const server = app.listen(5000);
+    const io = socketIO.init(server);
+
+    io.on("connection", (socket: Socket) => {
+      console.log("Client Connected");
     });
+
+    console.log("Server Running on 5000");
   })
   .catch((err) => console.error(err));
