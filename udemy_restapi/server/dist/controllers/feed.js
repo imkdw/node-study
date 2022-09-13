@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -39,6 +50,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
+var socket_1 = require("./../socket");
 var user_1 = require("./../models/user");
 var express_validator_1 = require("express-validator");
 var path_1 = __importDefault(require("path"));
@@ -64,6 +76,7 @@ var FeedController = /** @class */ (function () {
                     totalItems = _b.sent();
                     return [4 /*yield*/, post_1["default"].find()
                             .populate("creator")
+                            .sort({ createdAt: -1 })
                             .skip((currentPage - 1) * perPage)
                             .limit(perPage)];
                 case 3:
@@ -105,7 +118,7 @@ var FeedController = /** @class */ (function () {
         });
     };
     FeedController.createPost = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var _b, title, content, errors, creator, error, error, imageUrl, post, user, userPosts, updatedPosts, err_2;
+        var _b, title, content, errors, creator, error, error, imageUrl, post, user, updatedPosts, err_2;
         return __generator(_a, function (_c) {
             switch (_c.label) {
                 case 0:
@@ -138,12 +151,16 @@ var FeedController = /** @class */ (function () {
                     return [4 /*yield*/, user_1.UserModel.findById(req.app.get("userId"))];
                 case 3:
                     user = _c.sent();
-                    userPosts = user.posts;
-                    updatedPosts = userPosts.push(post);
+                    updatedPosts = user.posts;
+                    updatedPosts.push(post);
                     user.posts = updatedPosts;
                     return [4 /*yield*/, user.save()];
                 case 4:
                     _c.sent();
+                    socket_1.socketIO.getIO().emit("posts", {
+                        action: "create",
+                        post: __assign(__assign({}, post), { creator: { _id: req.app.get("userId"), name: user.name } })
+                    });
                     res.status(201).json({
                         message: "Post Created Successfully",
                         post: post,
@@ -152,106 +169,126 @@ var FeedController = /** @class */ (function () {
                     return [3 /*break*/, 6];
                 case 5:
                     err_2 = _c.sent();
-                    if (!err_2.statusCdoe) {
-                        err_2.statusCode = 500;
+                    if (!err_2.status) {
+                        err_2.status = 500;
                     }
-                    next(err_2);
-                    return [3 /*break*/, 6];
+                    throw err_2;
                 case 6: return [2 /*return*/];
             }
         });
     }); };
-    FeedController.updatePost = function (req, res, next) {
-        var postId = req.params.postId;
-        var _b = req.body, title = _b.title, content = _b.content;
-        var imageUrl = req.body.imageUrl;
-        var errors = (0, express_validator_1.validationResult)(req);
-        /** 유효성 검증시 오류가 있는 경우 */
-        if (!errors.isEmpty()) {
-            var error = new Error("Validation Failed, entered data is incorrect");
-            error.statusCode = 422;
-            throw error;
-        }
-        /** 새로 업로드된 파일이 있다면 그걸로 사용 */
-        if (req.file) {
-            imageUrl = req.file.path;
-        }
-        /** 사진이 없는 경우는 유효성검증 실패 에러 발생 */
-        if (!imageUrl) {
-            var error = new Error("No file picked.");
-            error.statusCode = 422;
-            throw error;
-        }
-        post_1["default"].findById(postId)
-            .then(function (post) {
-            if (!post) {
-                var error = new Error("Could not find post");
-                error.statusCode = 404;
-                throw error;
+    FeedController.updatePost = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+        var postId, _b, title, content, imageUrl, errors, error, error, post, error, error, result, err_3;
+        return __generator(_a, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    postId = req.params.postId;
+                    _b = req.body, title = _b.title, content = _b.content;
+                    imageUrl = req.body.imageUrl;
+                    errors = (0, express_validator_1.validationResult)(req);
+                    /** 유효성 검증시 오류가 있는 경우 */
+                    if (!errors.isEmpty()) {
+                        error = new Error("Validation Failed, entered data is incorrect");
+                        error.statusCode = 422;
+                        throw error;
+                    }
+                    /** 새로 업로드된 파일이 있다면 그걸로 사용 */
+                    if (req.file) {
+                        imageUrl = req.file.path;
+                    }
+                    /** 사진이 없는 경우는 유효성검증 실패 에러 발생 */
+                    if (!imageUrl) {
+                        error = new Error("No file picked.");
+                        error.statusCode = 422;
+                        throw error;
+                    }
+                    _c.label = 1;
+                case 1:
+                    _c.trys.push([1, 4, , 5]);
+                    return [4 /*yield*/, post_1["default"].findById(postId)];
+                case 2:
+                    post = _c.sent();
+                    if (!post) {
+                        error = new Error("Could not find post");
+                        error.statusCode = 404;
+                        throw error;
+                    }
+                    // 작성자와 업데이트를 요청한 유저가 다를경우
+                    if (!post.creator._id.equals(req.app.get("userId"))) {
+                        error = new Error("Not authorized");
+                        error.statusCode = 403;
+                        throw error;
+                    }
+                    /** 업로드 사진이 변경될 경우 기존 사진 삭제 */
+                    if (imageUrl !== post.imageUrl) {
+                        clearImage(post.imageUrl);
+                    }
+                    post.title = title;
+                    post.imageUrl = imageUrl.replace("\\", "/");
+                    post.content = content;
+                    return [4 /*yield*/, post.save()];
+                case 3:
+                    result = _c.sent();
+                    socket_1.socketIO.getIO().emit("posts", { action: "update", post: result });
+                    res.status(200).json({ message: "Post Updated!", post: result });
+                    return [3 /*break*/, 5];
+                case 4:
+                    err_3 = _c.sent();
+                    if (!err_3.statusCode) {
+                        err_3.statusCode = 500;
+                    }
+                    throw err_3;
+                case 5: return [2 /*return*/];
             }
-            // 작성자와 업데이트를 요청한 유저가 다를경우
-            if (!post.creator.equals(req.app.get("userId"))) {
-                var error = new Error("Not authorized");
-                error.statusCode = 403;
-                throw error;
-            }
-            /** 업로드 사진이 변경될 경우 기존 사진 삭제 */
-            if (imageUrl !== post.imageUrl) {
-                clearImage(post.imageUrl);
-            }
-            post.title = title;
-            post.imageUrl = imageUrl.replace("\\", "/");
-            post.content = content;
-            return post.save();
-        })
-            .then(function (result) {
-            res.status(200).json({ message: "Post Updated!", post: result });
-        })["catch"](function (err) {
-            if (!err.statusCode) {
-                err.statusCode = 500;
-            }
-            throw err;
         });
-    };
-    FeedController.deletePost = function (req, res, next) {
-        var postId = req.params.postId; // 원문으로 넘어옴
-        post_1["default"].findById(postId)
-            .then(function (post) {
-            /** Post를 찾을 수 없을때 */
-            if (!post) {
-                var error = new Error("Could not find post");
-                error.statusCode = 404;
-                throw error;
+    }); };
+    FeedController.deletePost = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+        var postId, post, error, error, user, err_4;
+        return __generator(_a, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    postId = req.params.postId;
+                    _b.label = 1;
+                case 1:
+                    _b.trys.push([1, 6, , 7]);
+                    return [4 /*yield*/, post_1["default"].findById(postId)];
+                case 2:
+                    post = _b.sent();
+                    /** Post를 찾을 수 없을때 */
+                    if (!post) {
+                        error = new Error("Could not find post");
+                        error.statusCode = 404;
+                        throw error;
+                    }
+                    /** Post 작성자와 현재 로그인한 사용자가 다를때 */
+                    if (post.creator.toString() !== req.app.get("userId")) {
+                        error = new Error("Not authorized");
+                        error.statusCdoe = 403;
+                        throw error;
+                    }
+                    return [4 /*yield*/, post_1["default"].findByIdAndDelete(postId)];
+                case 3:
+                    _b.sent();
+                    clearImage(post.imageUrl);
+                    return [4 /*yield*/, user_1.UserModel.findById(req.app.get("userId"))];
+                case 4:
+                    user = _b.sent();
+                    user.posts.pull(postId);
+                    return [4 /*yield*/, user.save()];
+                case 5:
+                    _b.sent();
+                    socket_1.socketIO.getIO().emit("posts", { action: "delete" });
+                    return [3 /*break*/, 7];
+                case 6:
+                    err_4 = _b.sent();
+                    if (!err_4.statusCode) {
+                        err_4.statusCode = 500;
+                    }
+                    throw err_4;
+                case 7: return [2 /*return*/];
             }
-            /** Post 작성자와 현재 로그인한 사용자가 다를때 */
-            if (post.creator.toString() !== req.app.get("userId")) {
-                var error = new Error("Not authorized");
-                error.statusCdoe = 403;
-                throw error;
-            }
-            /** 글 삭제시 이미지도 삭제하는 함수 */
-            clearImage(post.imageUrl);
-            return post_1["default"].findByIdAndDelete(postId);
-        })
-            .then(function (result) {
-            /** userId로 사용자를 찾아서 반환 */
-            return user_1.UserModel.findById(req.app.get("userId"));
-        })
-            .then(function (user) {
-            /** 반환된 사용자의 포스트들 중 삭제를 원하는 포스트만 빼고 제거 */
-            var updatedPosts = user.posts.filter(function (post) { return post._id.toString() !== postId; });
-            user.posts = updatedPosts;
-            return user.save();
-        })
-            .then(function (result) {
-            res.status(200).json({ message: "Deleted Post" });
-        })["catch"](function (err) {
-            if (!err.statusCode) {
-                err.statusCode = 500;
-            }
-            throw err;
         });
-    };
+    }); };
     return FeedController;
 }());
 var clearImage = function (filePath) {

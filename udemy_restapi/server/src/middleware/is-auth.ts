@@ -4,6 +4,12 @@ import { Request, Response, NextFunction } from "express";
 export const isAuth = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.get("Authorization");
 
+  /** 헤더에 인증관련 정보가 없을경우 */
+  if (!authHeader) {
+    req.app.set("isAuth", false);
+    return next();
+  }
+
   if (!authHeader) {
     const error: any = new Error("Not Authenticated");
     error.statusCode = 401;
@@ -16,18 +22,18 @@ export const isAuth = (req: Request, res: Response, next: NextFunction) => {
   try {
     decodedToken = jwt.verify(token, "thisismyjwtsecretkey");
   } catch (err) {
-    err.statusCode = 500;
-    throw err;
+    req.app.set("isAuth", false);
+    return next();
   }
 
   if (!decodedToken) {
-    const error: any = new Error("Not Authenticated");
-    error.statusCode = 401;
-    throw error;
+    req.app.set("isAuth", false);
+    return next();
   }
 
   // res.locals.userId = decodedToken.userId;
   req.app.set("userId", decodedToken.userId);
+  req.app.set("isAuth", true);
 
   next();
 };
