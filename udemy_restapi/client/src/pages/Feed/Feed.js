@@ -142,11 +142,24 @@ class Feed extends Component {
     });
 
     const formData = new FormData();
+    formData.append("image", postData.image);
 
-    const postDataKeys = Object.keys(postData);
-    postDataKeys.forEach((key) => {
-      formData.append(key, postData[key]);
-    });
+    if (this.state.editPost) {
+      formData.append("oldPath", this.state.editPost.imagePath);
+    }
+
+    fetch("http://localhost:5000/post-image", {
+      method: "PUT",
+      headers: {
+        Autorization: "Bearer" + this.props.token,
+        "Content-Type": "application/json",
+      },
+      body: formData,
+    })
+      .then((res) => res.json)
+      .then((fileResData) => {
+        const imageUrl = fileResData.filePath;
+      });
 
     const graphqlQuery = {
       query: `
@@ -202,6 +215,7 @@ class Feed extends Component {
             _id: resData.data.createPost.creator._id,
           },
           createdAt: resData.data.createPost.createdAt,
+          imagePath: resData.data.createPost.imageUrl,
         };
         this.setState((prevState) => {
           let updatedPosts = [...prevState.posts];

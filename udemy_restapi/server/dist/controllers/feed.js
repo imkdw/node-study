@@ -50,6 +50,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
+exports.clearImage = void 0;
 var socket_1 = require("./../socket");
 var user_1 = require("./../models/user");
 var express_validator_1 = require("express-validator");
@@ -221,7 +222,7 @@ var FeedController = /** @class */ (function () {
                     }
                     /** 업로드 사진이 변경될 경우 기존 사진 삭제 */
                     if (imageUrl !== post.imageUrl) {
-                        clearImage(post.imageUrl);
+                        (0, exports.clearImage)(post.imageUrl);
                     }
                     post.title = title;
                     post.imageUrl = imageUrl.replace("\\", "/");
@@ -269,7 +270,7 @@ var FeedController = /** @class */ (function () {
                     return [4 /*yield*/, post_1["default"].findByIdAndDelete(postId)];
                 case 3:
                     _b.sent();
-                    clearImage(post.imageUrl);
+                    (0, exports.clearImage)(post.imageUrl);
                     return [4 /*yield*/, user_1.UserModel.findById(req.app.get("userId"))];
                 case 4:
                     user = _b.sent();
@@ -295,4 +296,5 @@ var clearImage = function (filePath) {
     filePath = path_1["default"].join(__dirname, "..", "..", filePath);
     fs_1["default"].unlink(filePath, function (err) { return console.error(err); });
 };
+exports.clearImage = clearImage;
 exports["default"] = FeedController;

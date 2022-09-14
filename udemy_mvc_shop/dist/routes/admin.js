@@ -21,7 +21,6 @@ adminRouter.post("/edit-product", [
     (0, express_validator_1.body)("price").isFloat().withMessage("price must be type of float"),
     (0, express_validator_1.body)("description").isLength({ min: 5, max: 400 }).trim().withMessage("description must be 5~400 letters"),
 ], admin_1["default"].postEditProduct);
-// adminRouter.post("/delete-product", ProductsController.deleteProduct);
 adminRouter["delete"]("/product/:productId", is_auth_1.isAuth, admin_1["default"].deleteProduct);
 exports["default"] = adminRouter;
 //# sourceMappingURL=admin.js.map

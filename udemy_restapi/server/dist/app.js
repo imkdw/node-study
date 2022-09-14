@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 exports.__esModule = true;
 exports.app = void 0;
+var feed_1 = require("./controllers/feed");
 var express_1 = __importDefault(require("express"));
 var morgan_1 = __importDefault(require("morgan"));
 var mongoose_1 = __importDefault(require("mongoose"));
@@ -13,7 +14,7 @@ var uuid_1 = require("uuid");
 var express_graphql_1 = require("express-graphql");
 var cors_1 = __importDefault(require("cors"));
 var is_auth_1 = require("./middleware/is-auth");
-var feed_1 = __importDefault(require("./routes/feed"));
+var feed_2 = __importDefault(require("./routes/feed"));
 var auth_1 = __importDefault(require("./routes/auth"));
 var schema_1 = require("./graphql/schema");
 var resolvers_1 = require("./graphql/resolvers");
@@ -55,6 +56,20 @@ exports.app.use(function (req, res, next) {
     res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
     next();
 });
+exports.app.put("post-image", function (req, res, next) {
+    if (!is_auth_1.isAuth) {
+        throw new Error("Not authenticate");
+    }
+    /** 파일이 존재하지 않을경우 메세지 리턴 */
+    if (!req.file) {
+        return res.status(200).send({ message: "no file provided" });
+    }
+    /** 기존 업로드된 이미지 삭제 */
+    if (req.body.oldPath) {
+        (0, feed_1.clearImage)(req.body.oldPath);
+    }
+    return res.status(201).json({ message: "File Stored", filePath: req.file.path });
+});
 exports.app.use(is_auth_1.isAuth);
 exports.app.use("/graphql", (0, express_graphql_1.graphqlHTTP)({
     schema: schema_1.graphqlSchema,
@@ -85,7 +100,7 @@ exports.app.use(function (error, req, res, next) {
     res.status(status).json({ message: message, data: data });
 });
 /** 라우터 설정 */
-exports.app.use("/feed", feed_1["default"]);
+exports.app.use("/feed", feed_2["default"]);
 exports.app.use("/auth", auth_1["default"]);
 mongoose_1["default"]
     .connect("mongodb://localhost:27017/shop")

@@ -211,7 +211,7 @@ class FeedController {
   };
 }
 
-const clearImage = (filePath: string) => {
+export const clearImage = (filePath: string) => {
   filePath = path.join(__dirname, "..", "..", filePath);
   fs.unlink(filePath, (err) => console.error(err));
 };

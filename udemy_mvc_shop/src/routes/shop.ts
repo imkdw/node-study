@@ -16,8 +16,6 @@ shopRouter.post("/cart", isAuth, ShopController.postCart);
 
 shopRouter.post("/cart-delete-item", isAuth, ShopController.postCartDeleteItem);
 
-// shopRouter.get("/checkout", ShopController.getCheckOut);
-
 shopRouter.get("/orders", isAuth, ShopController.getOrders);
 
 export default shopRouter;

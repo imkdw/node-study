@@ -29,7 +29,6 @@ adminRouter.post(
   ],
   ProductsController.postEditProduct
 );
-// adminRouter.post("/delete-product", ProductsController.deleteProduct);
 adminRouter.delete("/product/:productId", isAuth, ProductsController.deleteProduct);
 
 export default adminRouter;

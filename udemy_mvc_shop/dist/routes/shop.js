@@ -13,7 +13,6 @@ shopRouter.get("/products/:productId", shop_1["default"].getProduct);
 shopRouter.get("/cart", is_auth_1.isAuth, shop_1["default"].getCart);
 shopRouter.post("/cart", is_auth_1.isAuth, shop_1["default"].postCart);
 shopRouter.post("/cart-delete-item", is_auth_1.isAuth, shop_1["default"].postCartDeleteItem);
-// shopRouter.get("/checkout", ShopController.getCheckOut);
 shopRouter.get("/orders", is_auth_1.isAuth, shop_1["default"].getOrders);
 exports["default"] = shopRouter;
 //# sourceMappingURL=shop.js.map

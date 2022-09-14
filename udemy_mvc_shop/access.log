@@ -1,0 +1,6 @@
+[0mGET /?page=1 [32m200[0m 28.525 ms - -[0m
+[0mGET /products/6321b7d53924b792d5985fa2 [32m200[0m 12.183 ms - -[0m
+[0mGET /products/images/219c25c9-f3f8-4532-b018-eec1dbe2fd37-smoke.jpg [33m404[0m 5.307 ms - -[0m
+[0mGET /products [32m200[0m 10.691 ms - -[0m
+[0mPOST /auth/logout [36m302[0m 5.762 ms - 46[0m
+[0mGET / [32m200[0m 8.038 ms - -[0m

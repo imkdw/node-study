@@ -1,3 +1,4 @@
+import { clearImage } from "./controllers/feed";
 import express from "express";
 import morgan from "morgan";
 import mongoose from "mongoose";
@@ -60,6 +61,23 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
   next();
+});
+
+app.put("post-image", (req, res, next) => {
+  if (!isAuth) {
+    throw new Error("Not authenticate");
+  }
+  /** 파일이 존재하지 않을경우 메세지 리턴 */
+  if (!req.file) {
+    return res.status(200).send({ message: "no file provided" });
+  }
+
+  /** 기존 업로드된 이미지 삭제 */
+  if (req.body.oldPath) {
+    clearImage(req.body.oldPath);
+  }
+
+  return res.status(201).json({ message: "File Stored", filePath: req.file.path });
 });
 
 app.use(isAuth);

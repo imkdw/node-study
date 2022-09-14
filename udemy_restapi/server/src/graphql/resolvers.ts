@@ -169,4 +169,28 @@ export class GraphqlResolver {
       totalPosts,
     };
   };
+
+  static post = async ({ id }, req) => {
+    // if (!req.app.get("isAuth")) {
+    //   const error: any = new Error();
+    //   error.code = 401;
+    //   throw 401;
+    // }
+
+    const post: any = await PostModel.findById(id).populate("creator");
+    console.log(post);
+
+    if (!post) {
+      const error: any = new Error("No Post Found");
+      error.code = 404;
+      throw error;
+    }
+
+    return {
+      ...post._doc,
+      _id: post._id.toString(),
+      createdAt: post.createdAt.toISOString(),
+      updatedAt: post.updatedAt.toISOString(),
+    };
+  };
 }

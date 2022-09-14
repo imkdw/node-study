@@ -236,6 +236,26 @@ var GraphqlResolver = /** @class */ (function () {
             });
         });
     };
+    GraphqlResolver.post = function (_b, req) {
+        var id = _b.id;
+        return __awaiter(void 0, void 0, void 0, function () {
+            var post, error;
+            return __generator(_a, function (_c) {
+                switch (_c.label) {
+                    case 0: return [4 /*yield*/, post_1["default"].findById(id).populate("creator")];
+                    case 1:
+                        post = _c.sent();
+                        console.log(post);
+                        if (!post) {
+                            error = new Error("No Post Found");
+                            error.code = 404;
+                            throw error;
+                        }
+                        return [2 /*return*/, __assign(__assign({}, post._doc), { _id: post._id.toString(), createdAt: post.createdAt.toISOString(), updatedAt: post.updatedAt.toISOString() })];
+                }
+            });
+        });
+    };
     return GraphqlResolver;
 }());
 exports.GraphqlResolver = GraphqlResolver;
