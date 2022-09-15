@@ -39,9 +39,9 @@ const store = new MongoDBStore1({
 /** CSRF 설정 */
 const csrfProtection = csurf();
 
-/** SSL/TLS 설정을 위한 KEY 설정 */
-const privateKey = fs.readFileSync("server.key");
-const certificate = fs.readFileSync("server.cert");
+// /** SSL/TLS 설정을 위한 KEY 설정 */
+// const privateKey = fs.readFileSync("server.key");
+// const certificate = fs.readFileSync("server.cert");
 
 /** multer 파일저장소 생성 */
 const fileStorage = multer.diskStorage({

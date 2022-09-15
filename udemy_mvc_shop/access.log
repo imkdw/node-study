@@ -4,3 +4,4 @@
 [0mGET /products [32m200[0m 10.691 ms - -[0m
 [0mPOST /auth/logout [36m302[0m 5.762 ms - 46[0m
 [0mGET / [32m200[0m 8.038 ms - -[0m
+do
