@@ -20,9 +20,10 @@ import ErrorController from "./controllers/error";
 import { userModel } from "./models/user";
 import authRouter from "./routes/auth";
 
-const accessLogStream = fs.createWriteStream(path.join(__dirname, "..", "access.log"), {
-  flags: "a",
-});
+/** morgan 로깅 외부파일로 추출 */
+// const accessLogStream = fs.createWriteStream(path.join(__dirname, "..", "access.log"), {
+//   flags: "a",
+// });
 
 dotenv.config();
 const app = express();
@@ -74,7 +75,8 @@ app.use(express.static(path.join(__dirname, "..", "src", "public")));
 /** 미들웨어 설정 */
 app.use(express.urlencoded({ extended: false }));
 app.use(session({ secret: "i am imkdw", resave: false, saveUninitialized: false, store: store }));
-app.use(morgan("dev", { stream: accessLogStream }));
+app.use(morgan("dev"));
+// app.use(morgan("dev", { stream: accessLogStream }));
 app.use(csrfProtection);
 app.use(flash());
 app.use(multer({ storage: fileStorage, fileFilter }).single("image"));
