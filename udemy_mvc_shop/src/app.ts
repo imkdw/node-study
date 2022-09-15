@@ -12,6 +12,7 @@ import dotenv from "dotenv";
 import helmet from "helmet";
 import compression from "compression";
 import fs from "fs";
+import https from "https";
 
 import adminRouter from "./routes/admin";
 import shopRouter from "./routes/shop";
@@ -37,6 +38,10 @@ const store = new MongoDBStore1({
 
 /** CSRF 설정 */
 const csrfProtection = csurf();
+
+/** SSL/TLS 설정을 위한 KEY 설정 */
+const privateKey = fs.readFileSync("server.key");
+const certificate = fs.readFileSync("server.cert");
 
 /** multer 파일저장소 생성 */
 const fileStorage = multer.diskStorage({
@@ -123,8 +128,18 @@ app.use((error, req, res, next) => {
 mongoose
   .connect(mongoDbUrl)
   .then((result) => {
-    app.listen(app.get("port"), () => {
-      console.log("PORT IS ", app.get("port"));
+    /** https로 서버 오픈시 사용 */
+    // https
+    //   .createServer(
+    //     {
+    //       key: privateKey,
+    //       cert: certificate,
+    //     },
+    //     app
+    //   )
+    //   .listen(process.env.PORT || 3000);
+    app.listen(process.env.PORT || 3000, () => {
+      console.log("PORT : ", app.get("port"));
     });
   })
   .catch((err) => console.error(err));
