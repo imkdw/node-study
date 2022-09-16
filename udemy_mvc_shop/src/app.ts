@@ -28,7 +28,14 @@ import authRouter from "./routes/auth";
 dotenv.config();
 const app = express();
 app.set("port", process.env.PORT);
-const mongoDbUrl = "mongodb://localhost:27017/shop";
+
+const dbConfig = {
+  username: process.env.MONGO_USERNAME,
+  password: process.env.MONGO_PASSWORD,
+  url: process.env.MONGO_URL,
+  db: process.env.MONGO_DB_NAME,
+};
+const mongoDbUrl = `mongodb+srv://${dbConfig.username}:${dbConfig.password}@${dbConfig.url}/${dbConfig.db}?retryWrites=true&w=majority`;
 
 /** 세션 저장을 위한 몽고스토어 생성 */
 const MongoDBStore1 = MongoDBStore(session);

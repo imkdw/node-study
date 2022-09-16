@@ -1,1 +1,0 @@
-{"version":3,"file":"is-auth.js","sourceRoot":"","sources":["../../src/middleware/is-auth.ts"],"names":[],"mappings":";;;AAEA,SAAgB,MAAM,CAAC,GAAY,EAAE,GAAa,EAAE,IAAkB;IACpE,IAAI,CAAC,GAAG,CAAC,OAAO,CAAC,IAAI,EAAE;QACrB,OAAO,GAAG,CAAC,QAAQ,CAAC,aAAa,CAAC,CAAC;KACpC;IAED,IAAI,EAAE,CAAC;AACT,CAAC;AAND,wBAMC"}

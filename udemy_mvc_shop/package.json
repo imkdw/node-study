@@ -8,8 +8,11 @@
     "npm": "8.15.0"
   },
   "scripts": {
-    "start": "tsc-watch --onSuccess \"node dist/app.js\"",
-    "start:dev": "ts-node app.ts"
+    "start": "node dist/app.js",
+    "postinstall": "tsc",
+    "watch-node": "nodemon dist/app.js",
+    "watch-ts": "tsc -w",
+    "deploy": "git add . && git commit -m Heroku && git push heroku master"
   },
   "author": "",
   "license": "ISC",
@@ -63,6 +66,7 @@
     "pug": "^3.0.2",
     "sequelize": "^6.21.3",
     "sequelize-cli": "^6.4.1",
+    "ts-node": "^10.9.1",
     "tsc-watch": "^5.0.3",
     "typescript": "^4.7.4",
     "uuid": "^9.0.0"
