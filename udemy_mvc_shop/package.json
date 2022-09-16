@@ -9,6 +9,7 @@
   },
   "scripts": {
     "start": "node dist/app.js",
+    "start:dev": "tsc-watch --onSuccess \"node dist/app.js\"",
     "postinstall": "tsc",
     "watch-node": "nodemon dist/app.js",
     "watch-ts": "tsc -w",

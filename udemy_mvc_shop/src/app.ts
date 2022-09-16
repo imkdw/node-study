@@ -35,6 +35,7 @@ const dbConfig = {
   url: process.env.MONGO_URL,
   db: process.env.MONGO_DB_NAME,
 };
+
 const mongoDbUrl = `mongodb+srv://${dbConfig.username}:${dbConfig.password}@${dbConfig.url}/${dbConfig.db}?retryWrites=true&w=majority`;
 
 /** 세션 저장을 위한 몽고스토어 생성 */
