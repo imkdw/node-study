@@ -133,7 +133,7 @@ app.use((error, req, res, next) => {
   res.redirect("/500");
 });
 
-/** MongoDB 연결 및 서버연결 */
+/** MongoDB 연결 및 서버오픈 */
 mongoose
   .connect(mongoDbUrl)
   .then((result) => {
