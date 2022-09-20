@@ -33,3 +33,17 @@ export function sumZero(arr: number[]) {
     }
   }
 }
+
+interface ICounter {
+  [key: number]: number;
+}
+
+export function countUniqueValues(array: number[]) {
+  const counter: ICounter = {};
+
+  array.forEach((item) => {
+    counter[item] = (counter[item] || 0) + 1;
+  });
+
+  return Object.keys(counter).length;
+}

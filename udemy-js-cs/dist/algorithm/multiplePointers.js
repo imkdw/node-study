@@ -13,7 +13,7 @@
 //   }
 // }
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sumZero = void 0;
+exports.countUniqueValues = exports.sumZero = void 0;
 function sumZero(arr) {
     /**
      * 멀티플 포인터를 이용해서 연산
@@ -37,3 +37,11 @@ function sumZero(arr) {
     }
 }
 exports.sumZero = sumZero;
+function countUniqueValues(array) {
+    const counter = {};
+    array.forEach((item) => {
+        counter[item] = (counter[item] || 0) + 1;
+    });
+    return Object.keys(counter).length;
+}
+exports.countUniqueValues = countUniqueValues;
