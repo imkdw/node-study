@@ -24,16 +24,17 @@ exports.maxSubarraySum = void 0;
 function maxSubarraySum(arr, num) {
     let maxSum = 0;
     let tempSum = 0;
+    /** 배열길이보다 num이 크면 합을 구할수 없기때문에 null 리턴 */
     if (arr.length < num) {
         return null;
     }
-    /** maxSum에 0부터 num 까지 값을 저장 */
+    /** 맨 처음 0 ~ num의 합 구하기 */
     for (let i = 0; i < num; i++) {
         maxSum += arr[i];
     }
     /** 임시로 sum 값을 저장 */
     tempSum = maxSum;
-    /**  */
+    /** tempSum에 새로운 값을 구하는게 아닌 이전숫자는 빼고 새로운 숫자를 더하는 방식으로 구현 */
     for (let i = num; i < arr.length; i++) {
         tempSum = tempSum - arr[i - num] + arr[i];
         maxSum = Math.max(maxSum, tempSum);
