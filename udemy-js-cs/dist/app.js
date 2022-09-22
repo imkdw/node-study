@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const challenge3_1 = require("./algorithm/challenge3");
 /** 1부터 N까지 합 구하기 */
 // console.log(oneToN(10))
 /** 문자열 입력받아서 단어수 카운트 */
@@ -22,3 +23,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /** Frequency Counter / Multiple Pointers - areThereDuplicates */
 // console.log(areThereDuplicates(1, 2, 2));
 // console.log(areThereDuplicates("a", "b", "c", "c"));
+/** Multiple Pointers - averagePair */
+// console.log(averagePair([1, 2, 3], 2.5));
+// console.log(averagePair([1, 3, 3, 5, 6, 7, 10, 12, 19], 8));
+/** Multiple Pointers - isSubsequence */
+// console.log(isSubsequence("hello", "hello world"));
+// console.log(isSubsequence("sing", "sting"));
+// console.log(isSubsequence("abc", "acb"));
+/** Sliding Window - maxSubarraySum */
+console.log((0, challenge3_1.maxSubarraySum1)([100, 200, 300, 400], 2));

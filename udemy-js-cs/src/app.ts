@@ -1,6 +1,6 @@
 import { anagram } from "./algorithm/anagram";
 import { arrayMultiply } from "./algorithm/arrayMultiply";
-import { areThereDuplicates, sameFrequency } from "./algorithm/challenge3";
+import { areThereDuplicates, averagePair, isSubsequence, maxSubarraySum1, sameFrequency } from "./algorithm/challenge3";
 import { countString } from "./algorithm/countString";
 import { search } from "./algorithm/divisionAndConquer";
 import { countUniqueValues, sumZero } from "./algorithm/multiplePointers";
@@ -38,3 +38,15 @@ import { maxSubarraySum } from "./algorithm/slidingWindow";
 /** Frequency Counter / Multiple Pointers - areThereDuplicates */
 // console.log(areThereDuplicates(1, 2, 2));
 // console.log(areThereDuplicates("a", "b", "c", "c"));
+
+/** Multiple Pointers - averagePair */
+// console.log(averagePair([1, 2, 3], 2.5));
+// console.log(averagePair([1, 3, 3, 5, 6, 7, 10, 12, 19], 8));
+
+/** Multiple Pointers - isSubsequence */
+// console.log(isSubsequence("hello", "hello world"));
+// console.log(isSubsequence("sing", "sting"));
+// console.log(isSubsequence("abc", "acb"));
+
+/** Sliding Window - maxSubarraySum */
+console.log(maxSubarraySum1([100, 200, 300, 400], 2));

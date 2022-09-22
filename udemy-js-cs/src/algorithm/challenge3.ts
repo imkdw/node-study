@@ -70,3 +70,67 @@ export function areThereDuplicates(...data: areThereParams): boolean {
 
   return false;
 }
+
+export function averagePair(arr: number[], num: number) {
+  let left = 0;
+  let right = arr.length - 1;
+
+  while (left < right) {
+    const avg = (arr[left] + arr[right]) / 2;
+
+    if (avg === num) {
+      return true;
+    }
+
+    if (avg < num) {
+      left += 1;
+    } else {
+      right -= 1;
+    }
+  }
+
+  return false;
+}
+
+export function isSubsequence(str1: string, str2: string) {
+  let left = 0,
+    right = 0;
+  if (!str1) {
+    return true;
+  }
+
+  while (right < str2.length) {
+    if (str1[left] === str2[right]) {
+      left += 1;
+    }
+
+    if (left === str1.length) {
+      return true;
+    }
+
+    right += 1;
+  }
+
+  return false;
+}
+
+export function maxSubarraySum1(arr: number[], num: number) {
+  let tempSum = 0,
+    maxSum = 0;
+
+  if (arr.length < num) {
+    return null;
+  }
+
+  for (let i = 0; i < num; i++) {
+    maxSum += arr[i];
+  }
+
+  tempSum = maxSum;
+  for (let i = num; i < arr.length; i++) {
+    tempSum = tempSum - arr[i - num] + arr[i];
+    maxSum = Math.max(tempSum, maxSum);
+  }
+
+  return maxSum;
+}
