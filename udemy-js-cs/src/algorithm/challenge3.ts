@@ -134,3 +134,25 @@ export function maxSubarraySum1(arr: number[], num: number) {
 
   return maxSum;
 }
+
+export function minSubArrayLen(arr: number[], num: number) {
+  let total = 0;
+  let start = 0;
+  let end = 0;
+  let minLen = Infinity;
+
+  while (start < arr.length) {
+    if (total < num && end < arr.length) {
+      total += arr[end];
+      end++;
+    } else if (total >= num) {
+      minLen = Math.min(minLen, end - start);
+      total -= arr[start];
+      start++;
+    } else {
+      break;
+    }
+  }
+
+  return minLen === Infinity ? 0 : minLen;
+}

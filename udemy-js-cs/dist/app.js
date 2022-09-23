@@ -31,4 +31,7 @@ const challenge3_1 = require("./algorithm/challenge3");
 // console.log(isSubsequence("sing", "sting"));
 // console.log(isSubsequence("abc", "acb"));
 /** Sliding Window - maxSubarraySum */
-console.log((0, challenge3_1.maxSubarraySum1)([100, 200, 300, 400], 2));
+// console.log(maxSubarraySum1([100, 200, 300, 400], 2));
+/** Sliding Window - minSubArrayLen */
+console.log((0, challenge3_1.minSubArrayLen)([2, 3, 1, 2, 4, 3], 7));
+console.log((0, challenge3_1.minSubArrayLen)([2, 1, 6, 5, 4], 9));

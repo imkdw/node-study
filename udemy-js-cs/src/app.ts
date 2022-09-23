@@ -1,6 +1,13 @@
 import { anagram } from "./algorithm/anagram";
 import { arrayMultiply } from "./algorithm/arrayMultiply";
-import { areThereDuplicates, averagePair, isSubsequence, maxSubarraySum1, sameFrequency } from "./algorithm/challenge3";
+import {
+  areThereDuplicates,
+  averagePair,
+  isSubsequence,
+  maxSubarraySum1,
+  minSubArrayLen,
+  sameFrequency,
+} from "./algorithm/challenge3";
 import { countString } from "./algorithm/countString";
 import { search } from "./algorithm/divisionAndConquer";
 import { countUniqueValues, sumZero } from "./algorithm/multiplePointers";
@@ -49,4 +56,8 @@ import { maxSubarraySum } from "./algorithm/slidingWindow";
 // console.log(isSubsequence("abc", "acb"));
 
 /** Sliding Window - maxSubarraySum */
-console.log(maxSubarraySum1([100, 200, 300, 400], 2));
+// console.log(maxSubarraySum1([100, 200, 300, 400], 2));
+
+/** Sliding Window - minSubArrayLen */
+console.log(minSubArrayLen([2, 3, 1, 2, 4, 3], 7));
+console.log(minSubArrayLen([2, 1, 6, 5, 4], 9));
