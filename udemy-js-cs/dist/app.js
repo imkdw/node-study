@@ -24,4 +24,7 @@ const sort_1 = require("./algorithm/sort");
 /** Sort Algorithm */
 // console.log(basicSort([1, 5, 2, 7, 11, 15, 22]));
 // console.log(basicSort(["asd", "asdasd", "ajfn1io", "aasdunias2"]));
-console.log((0, sort_1.bubbleSort)([6, 9, 3, 1, 5]));
+// console.log(bubbleSort([8, 1, 2, 3, 4, 5, 6, 7]));
+// console.log(selectionSort([6, 3, 9, 1, 5]));
+// console.log(insertionSort([6, 3, 9, 1, 5]));
+console.log((0, sort_1.mergeSort)([1, 10, 50], [2, 14, 99, 100]));
