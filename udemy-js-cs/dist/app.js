@@ -28,3 +28,4 @@ const sort_1 = require("./algorithm/sort");
 // console.log(selectionSort([6, 3, 9, 1, 5]));
 // console.log(insertionSort([6, 3, 9, 1, 5]));
 console.log((0, sort_1.mergeSort)([1, 10, 50], [2, 14, 99, 100]));
+console.log((0, sort_1.mergeSort)([1, 10, 50, 17, 12, 51, 2, 51, 15, 51, 512, 421, 4124, 1234, 21], [2, 14, 99, 100, 15, 1521, 12321, 536, 12321]));
