@@ -1,47 +1,40 @@
 "use strict";
-// function maxSubarraySum(arr, num) {
-//   if (arr.length < num) return null;
-//   let total = 0;
-//   for (let i = 0; i < num; i++) {
-//     total += arr[i];
-//   }
-//   let currentTotal = total;
-//   for (let i = num; i < arr.length; i++) {
-//     currentTotal += arr[i] - arr[i - num];
-//     total = Math.max(total, currentTotal);
-//   }
-//   return total;
-// }
-// function minSubArrayLen(nums, sum) {
-//   let total = 0;
-//   let start = 0;
-//   let end = 0;
-//   let minLen = Infinity;
-//   while (start < nums.length) {
-//     if (total < sum && end < nums.length) {
-//       total += nums[end];
-//       end++;
-//     } else if (total >= sum) {
-//       minLen = Math.min(minLen, end - start);
-//       total -= nums[start];
-//       start++;
-//     } else {
-//       break;
-//     }
-//   }
-//   return minLen === Infinity ? 0 : minLen;
-// }
-// function findLongestSubstring(str) {
-//   let longest = 0;
-//   let seen = {};
-//   let start = 0;
-//   for (let i = 0; i < str.length; i++) {
-//     let char = str[i];
-//     if (seen[char]) {
-//       start = Math.max(start, seen[char]);
-//     }
-//     longest = Math.max(longest, i - start + 1);
-//     seen[char] = i + 1;
-//   }
-//   return longest;
-// }
+/**
+ * 메세지 1 바로 전송
+ * 6초 뒤 메세지 2 전송
+ * 4초 뒤 메세지 3 전송
+ * 위 로직은 7번 반복
+ */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.messageEvent = void 0;
+function promiseMessage(message, ms) {
+    return new Promise((resolve) => {
+        setTimeout(() => resolve(message), ms);
+    });
+}
+function messageEvent() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const datas = [
+            { message: "First Message", ms: 1 },
+            { message: "Second Message", ms: 6000 },
+            { message: "Third Message", ms: 4000 },
+        ];
+        for (let i = 0; i < 7; i++) {
+            console.log(`-----${i}번째 출력-----`);
+            for (const data of datas) {
+                const { message, ms } = data;
+                console.log(yield promiseMessage(message, ms));
+            }
+        }
+    });
+}
+exports.messageEvent = messageEvent;
