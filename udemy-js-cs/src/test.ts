@@ -19,7 +19,6 @@ export async function messageEvent() {
   ];
 
   for (let i = 0; i < 7; i++) {
-    console.log(`-----${i}번째 출력-----`);
     for (const data of datas) {
       const { message, ms } = data;
       console.log(await promiseMessage(message, ms));
