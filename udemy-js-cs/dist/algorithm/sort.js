@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.mergeSort = exports.insertionSort = exports.selectionSort = exports.bubbleSort = exports.basicSort = void 0;
+exports.mergeSort = exports.mergeSortHelper = exports.insertionSort = exports.selectionSort = exports.bubbleSort = exports.basicSort = void 0;
 function basicSort(arr) {
     function asc(num1, num2) {
         return num1 - num2;
@@ -67,7 +67,8 @@ function insertionSort(arr) {
     return arr;
 }
 exports.insertionSort = insertionSort;
-function mergeSort(arr1, arr2) {
+function mergeSortHelper(arr1, arr2) {
+    /** 배열 2개를 받아서 두개 다 순서대로 합침 */
     let results = [];
     let i = 0;
     let j = 0;
@@ -90,5 +91,15 @@ function mergeSort(arr1, arr2) {
         j++;
     }
     return results;
+}
+exports.mergeSortHelper = mergeSortHelper;
+function mergeSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
+    }
+    const mid = Math.floor(arr.length / 2);
+    const left = mergeSort(arr.slice(0, mid));
+    const right = mergeSort(arr.slice(mid));
+    return mergeSortHelper(left, right);
 }
 exports.mergeSort = mergeSort;

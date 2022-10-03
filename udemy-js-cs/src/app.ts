@@ -31,11 +31,4 @@ import { messageEvent } from "./test";
 // console.log(bubbleSort([8, 1, 2, 3, 4, 5, 6, 7]));
 // console.log(selectionSort([6, 3, 9, 1, 5]));
 // console.log(insertionSort([6, 3, 9, 1, 5]));
-// console.log(mergeSort([1, 10, 50], [2, 14, 99, 100]));
-// console.log(mergeSort([1, 10, 50, 17, 12, 51, 2, 51, 15, 51, 512, 421, 4124, 1234, 21], [2, 14, 99, 100, 15, 1521, 12321, 536, 12321]));
-
-async function app() {
-  await messageEvent();
-}
-
-app();
+console.log(mergeSort([1, 5, 2, 7, 6, 8, 10]));

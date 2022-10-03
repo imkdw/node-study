@@ -75,7 +75,8 @@ export function insertionSort(arr: number[]) {
   return arr;
 }
 
-export function mergeSort(arr1: number[], arr2: number[]) {
+export function mergeSortHelper(arr1: number[], arr2: number[]) {
+  /** 배열 2개를 받아서 두개 다 순서대로 합침 */
   let results: number[] = [];
   let i = 0;
   let j = 0;
@@ -100,4 +101,16 @@ export function mergeSort(arr1: number[], arr2: number[]) {
   }
 
   return results;
+}
+
+export function mergeSort(arr: number[]): number[] {
+  if (arr.length <= 1) {
+    return arr;
+  }
+
+  const mid = Math.floor(arr.length / 2);
+  const left = mergeSort(arr.slice(0, mid));
+  const right = mergeSort(arr.slice(mid));
+
+  return mergeSortHelper(left, right);
 }

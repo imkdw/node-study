@@ -29,7 +29,6 @@ function messageEvent() {
             { message: "Third Message", ms: 4000 },
         ];
         for (let i = 0; i < 7; i++) {
-            console.log(`-----${i}번째 출력-----`);
             for (const data of datas) {
                 const { message, ms } = data;
                 console.log(yield promiseMessage(message, ms));
