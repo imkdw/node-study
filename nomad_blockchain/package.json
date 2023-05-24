@@ -1,11 +1,13 @@
 {
   "dependencies": {
+    "crypto": "^1.0.1",
     "typescript": "^5.0.4"
   },
   "name": "nomad_blockchain",
   "version": "1.0.0",
   "main": "index.js",
   "devDependencies": {
+    "@types/node": "^20.2.3",
     "tsc-watch": "^6.0.4"
   },
   "scripts": {
